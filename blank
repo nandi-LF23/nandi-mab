@@ -1,0 +1,122 @@
+UPDATE nutrients_data SET identifier = 'M0_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 2';
+UPDATE nutrients_data SET identifier = 'M0_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 3';
+UPDATE nutrients_data SET identifier = 'M0_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 4';
+UPDATE nutrients_data SET identifier = 'M0_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 5';
+UPDATE nutrients_data SET identifier = 'M0_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 6';
+UPDATE nutrients_data SET identifier = 'M0_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 7';
+UPDATE nutrients_data SET identifier = 'M0_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 8';
+UPDATE nutrients_data SET identifier = 'M0_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M0 9';
+
+
+
+
+
+
+UPDATE nutrients_data SET identifier = 'M1_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 1';
+UPDATE nutrients_data SET identifier = 'M1_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 2';
+UPDATE nutrients_data SET identifier = 'M1_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 3';
+UPDATE nutrients_data SET identifier = 'M1_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 4';
+UPDATE nutrients_data SET identifier = 'M1_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 5';
+UPDATE nutrients_data SET identifier = 'M1_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 6';
+UPDATE nutrients_data SET identifier = 'M1_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 7';
+UPDATE nutrients_data SET identifier = 'M1_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 8';
+UPDATE nutrients_data SET identifier = 'M1_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M1 9';
+
+
+
+UPDATE nutrients_data SET identifier = 'M2_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 1';
+UPDATE nutrients_data SET identifier = 'M2_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 2';
+UPDATE nutrients_data SET identifier = 'M2_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 3';
+UPDATE nutrients_data SET identifier = 'M2_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 4';
+UPDATE nutrients_data SET identifier = 'M2_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 5';
+UPDATE nutrients_data SET identifier = 'M2_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 6';
+UPDATE nutrients_data SET identifier = 'M2_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 7';
+UPDATE nutrients_data SET identifier = 'M2_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 8';
+UPDATE nutrients_data SET identifier = 'M2_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M2 9';
+
+
+
+UPDATE nutrients_data SET identifier = 'M3_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 1';
+UPDATE nutrients_data SET identifier = 'M3_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 2';
+UPDATE nutrients_data SET identifier = 'M3_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 3';
+UPDATE nutrients_data SET identifier = 'M3_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 4';
+UPDATE nutrients_data SET identifier = 'M3_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 5';
+UPDATE nutrients_data SET identifier = 'M3_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 6';
+UPDATE nutrients_data SET identifier = 'M3_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 7';
+UPDATE nutrients_data SET identifier = 'M3_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 8';
+UPDATE nutrients_data SET identifier = 'M3_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M3 9';
+
+
+
+
+UPDATE nutrients_data SET identifier = 'M4_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 1';
+UPDATE nutrients_data SET identifier = 'M4_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 2';
+UPDATE nutrients_data SET identifier = 'M4_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 3';
+UPDATE nutrients_data SET identifier = 'M4_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 4';
+UPDATE nutrients_data SET identifier = 'M4_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 5';
+UPDATE nutrients_data SET identifier = 'M4_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 6';
+UPDATE nutrients_data SET identifier = 'M4_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 7';
+UPDATE nutrients_data SET identifier = 'M4_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 8';
+UPDATE nutrients_data SET identifier = 'M4_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M4 9';
+
+
+
+
+
+
+UPDATE nutrients_data SET identifier = 'M5_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 1';
+UPDATE nutrients_data SET identifier = 'M5_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 2';
+UPDATE nutrients_data SET identifier = 'M5_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 3';
+UPDATE nutrients_data SET identifier = 'M5_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 4';
+UPDATE nutrients_data SET identifier = 'M5_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 5';
+UPDATE nutrients_data SET identifier = 'M5_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 6';
+UPDATE nutrients_data SET identifier = 'M5_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 7';
+UPDATE nutrients_data SET identifier = 'M5_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 8';
+UPDATE nutrients_data SET identifier = 'M5_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M5 9';
+
+UPDATE nutrients_data SET identifier = 'M6_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 1';
+UPDATE nutrients_data SET identifier = 'M6_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 2';
+UPDATE nutrients_data SET identifier = 'M6_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 3';
+UPDATE nutrients_data SET identifier = 'M6_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 4';
+UPDATE nutrients_data SET identifier = 'M6_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 5';
+UPDATE nutrients_data SET identifier = 'M6_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 6';
+UPDATE nutrients_data SET identifier = 'M6_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 7';
+UPDATE nutrients_data SET identifier = 'M6_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 8';
+UPDATE nutrients_data SET identifier = 'M6_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M6 9';
+
+
+
+
+UPDATE nutrients_data SET identifier = 'M7_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 1';
+UPDATE nutrients_data SET identifier = 'M7_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 2';
+UPDATE nutrients_data SET identifier = 'M7_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 3';
+UPDATE nutrients_data SET identifier = 'M7_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 4';
+UPDATE nutrients_data SET identifier = 'M7_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 5';
+UPDATE nutrients_data SET identifier = 'M7_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 6';
+UPDATE nutrients_data SET identifier = 'M7_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 7';
+UPDATE nutrients_data SET identifier = 'M7_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 8';
+UPDATE nutrients_data SET identifier = 'M7_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M7 9';
+
+
+
+UPDATE nutrients_data SET identifier = 'M8_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 1';
+UPDATE nutrients_data SET identifier = 'M8_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 2';
+UPDATE nutrients_data SET identifier = 'M8_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 3';
+UPDATE nutrients_data SET identifier = 'M8_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 4';
+UPDATE nutrients_data SET identifier = 'M8_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 5';
+UPDATE nutrients_data SET identifier = 'M8_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 6';
+UPDATE nutrients_data SET identifier = 'M8_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 7';
+UPDATE nutrients_data SET identifier = 'M8_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 8';
+UPDATE nutrients_data SET identifier = 'M8_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M8 9';
+
+
+
+UPDATE nutrients_data SET identifier = 'M9_1' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 1';
+UPDATE nutrients_data SET identifier = 'M9_2' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 2';
+UPDATE nutrients_data SET identifier = 'M9_3' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 3';
+UPDATE nutrients_data SET identifier = 'M9_4' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 4';
+UPDATE nutrients_data SET identifier = 'M9_5' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 5';
+UPDATE nutrients_data SET identifier = 'M9_6' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 6';
+UPDATE nutrients_data SET identifier = 'M9_7' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 7';
+UPDATE nutrients_data SET identifier = 'M9_8' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 8';
+UPDATE nutrients_data SET identifier = 'M9_9' WHERE node_address = '0x000d17ac-5' AND identifier = 'M9 9';
