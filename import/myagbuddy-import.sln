@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{A0786B88-2ADB-4C21-ABE8-AA2D79766269}") = "myagbuddy-import", "myagbuddy-import.phpproj", "{9F0FF3FD-F0D3-4D8F-B61B-0D318DF21DDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F0FF3FD-F0D3-4D8F-B61B-0D318DF21DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F0FF3FD-F0D3-4D8F-B61B-0D318DF21DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9FFE9187-1D58-4946-A529-18D962EDD90D}
+	EndGlobalSection
+EndGlobal

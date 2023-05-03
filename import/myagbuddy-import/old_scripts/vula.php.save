@@ -1,0 +1,85 @@
+<pre>
+
+<?php
+require 'vendor/autoload.php';
+$client = new GuzzleHttp\Client();
+$res = $client->request('POST', 'https://intellect.themachinenetwork.co.za/config/v1/session', [
+
+        'headers' => ['username' => 'intellect@liquidfibre.com', 'password'=>'LiquidFibre2018!']
+
+]);
+
+$body = $res->getBody();
+
+$body = json_decode($body);
+$request = $client->request('GET','https://intellect.themachinenetwork.co.za/data/v1/receive?count=500', [
+        'headers' => ['Authorization' => $body->token, 'Content-Type' => 'application/json']
+]);
+$body = $request->getBody();
+
+$body = json_decode($body);
+
+echo '<table>';
+
+for($i=0;sizeof($body->uplinks)>$i;$i++)
+{
+if($body->uplinks[$i]->datagramUplinkEvent->nodeId == $_GET['nodeid']) {
+ // print_r(  $body->uplinks[$i]); }
+
+$line = bin2hex(base64_decode($body->uplinks[$i]->datagramUplinkEvent->payload));
+$split = str_split($line);
+echo '<tr>';
+
+
+	$EpochTimeStamp = substr($line,4,8);
+    //$EpochTimeStamp = '2118f45a';
+
+
+    $EpochTimeStamp = hexdec(substr($EpochTimeStamp,6,2).substr($EpochTimeStamp,4,2).substr($EpochTimeStamp,2,2).substr($EpochTimeStamp,0,2));
+		$dataDate = date("Y-m-d H:i:s",$EpochTimeStamp);
+
+		echo '<td>'.$dataDate.'</td>';
+
+echo '<td>'.hexdec(substr($line,13,2)).'</td>';
+echo '<td>'.(substr($line,16,2)).'</td>';
+echo '<td>'.(substr($line,18,2)).'</td>';
+echo '<td>'.(substr($line,20,2)).'</td>';
+
+$sensor_count=substr($line,20,2);/*
+
+		//echo 'senser count:'.$sensor_count;
+		
+		//4= lenght of data
+							$moist = (substr($line,22,4*$sensor_count));
+							$temp = (substr($line,22+4*$sensor_count,4*$sensor_count));
+		//print_r($sensors);
+
+		$readings = array();
+
+		  //                  $au= $line[5];
+							//$fp = fopen('/code/integrations/controller/readings/data/I_'.$strdatetime.'_1500001_000.csv', 'w');
+
+							$msensor = str_split($moist,4);
+		//print_r($msensor);
+
+							$tsensor = str_split($temp,4);
+		//print_r($tsensor);
+							
+							
+							
+							for($i=0;$i < (substr($line,20,2));$i++)
+							{
+									$msensor[$i] = (hexdec(substr($msensor[$i],2,2).substr($msensor[$i],0,2))/100);
+									$tsensor[$i] = (hexdec(substr($tsensor[$i],2,2).substr($tsensor[$i],0,2))/100);
+	
+
+							
+								
+							}
+
+
+echo '</tr>';
+}
+}
+
+echo '</table>';
