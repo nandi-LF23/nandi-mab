@@ -40,6 +40,17 @@ class CompanyController extends Controller
         });
     }
 
+    //get all entities for dropdown
+    public function indexAll(Request $request)
+    {
+
+        $companies = Company::all();
+
+        return response()->json([
+            'rows' => $companies
+        ]);
+    }
+
     // get all (table)
     public function index(Request $request)
     {
@@ -49,8 +60,7 @@ class CompanyController extends Controller
             'initial'  => 'required',
             'filter'   => 'nullable',
             'sort_by'  => 'required',
-            'sort_dir' => 'required',
-            'drop_all' => 'integer'
+            'sort_dir' => 'required'
         ]);
 
         $limit  = $request->per_page;
@@ -100,21 +110,13 @@ class CompanyController extends Controller
             $total = $companies->count(DB::raw('distinct cc.company_name'));
             if ($total) {
                 $sortBy = Utils::findColumnAlias(Utils::findFromPartial($columns, $sortBy, 'company_name'));
-                // $companies = $companies->orderBy($sortBy, $sortDir)->skip($offset)->take($limit)->get();
-                $companies = $companies->orderBy($sortBy, $sortDir)->take($limit)->get();
-
+                $companies = $companies->orderBy($sortBy, $sortDir)->skip($offset)->take($limit)->get();
             }
-            // else {
-            //     $companies = $companies->orderBy($sortBy, $sortDir)->get();
-            //     // dd($companies);
-            // }
-
             if ($this->acc->is_admin) {
                 $company_ids = DB::table('companies')->pluck('id');
             } else {
                 $company_ids = $grants['Entities']['View']['C'];
             }
-
             // Column Totals
             $totals['user_count']   = DB::table('users')->select(DB::raw('COUNT(*) as uc'))->whereIn('company_id', $company_ids)->value('uc');
             $totals['role_count']   = DB::table('roles')->select(DB::raw('COUNT(*) as rc'))->whereIn('company_id', $company_ids)->value('rc');
