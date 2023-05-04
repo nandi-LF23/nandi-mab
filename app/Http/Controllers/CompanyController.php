@@ -164,27 +164,27 @@ class CompanyController extends Controller
         $ccs_by_id = [];
         $companies = Company::select('company_name', 'id');
 
-        if (!$this->acc->is_admin) {
-            foreach ($request->context as $rule) {
+        // if (!$this->acc->is_admin) {
+        //     foreach ($request->context as $rule) {
 
-                if (empty($rule['module']) || empty($rule['verb'])) {
-                    continue;
-                }
+        //         if (empty($rule['module']) || empty($rule['verb'])) {
+        //             continue;
+        //         }
 
-                // Security Context
-                $verb    = $rule['verb'];
-                $module  = $rule['module'];
+        //         // Security Context
+        //         $verb    = $rule['verb'];
+        //         $module  = $rule['module'];
 
-                // permission check
-                $grants = $this->acc->requestAccess([$module => ['p' => [$verb]]]);
-                if (!empty($grants[$module][$verb]['C'])) {
-                    $companies->whereIn('id', $grants[$module][$verb]['C']);
-                } else {
-                    // no explicit edit company perms, so just load the user's own company
-                    $companies->where('id', $this->acc->company_id);
-                }
-            }
-        }
+        //         // permission check
+        //         $grants = $this->acc->requestAccess([$module => ['p' => [$verb]]]);
+        //         if (!empty($grants[$module][$verb]['C'])) {
+        //             $companies->whereIn('id', $grants[$module][$verb]['C']);
+        //         } else {
+        //             // no explicit edit company perms, so just load the user's own company
+        //             $companies->where('id', $this->acc->company_id);
+        //         }
+        //     }
+        // }
 
         $companies = $companies->orderBy('company_name')->get()->toArray();
 
