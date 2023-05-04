@@ -2,21 +2,18 @@
 
 
 namespace App;
-
-use PDO;
 use Str;
 use DB;
 use App\Models\cultivars_management;
 use Illuminate\Support\Facades\Log;
 use App\Models\nutrient_templates;
-use App\Models\nutri_data;
+use App\Models\nutrients_data;
 use Illuminate\Support\Facades\Http;
 
 
 // A collection of various agronomy calculations
 
-class Calculations
-{
+class Calculations {
 
   public static function calcStatus(
     $moisture,    // accumulative / average (Depending on node's graph_type)
@@ -26,7 +23,7 @@ class Calculations
     $todays_date, // DateTime object
     $timezone,
     $debug = false
-  ) {
+  ){
 
     $result = [
       'status'      => 0,
@@ -34,18 +31,15 @@ class Calculations
       'lower_value' => 0
     ];
 
-    if (!$field_id || !$moisture) {
-      return $result;
-    }
+    if(!$field_id || !$moisture){ return $result; }
 
-    if ($debug) {
+    if($debug){
       Log::debug(
-        "$debug: moisture: " . $moisture .
-          ', field_id: ' . $field_id .
-          ', full: ' . $full . ', refill: ' . $refill .
-          ', todays_date: ' . $todays_date->format('d/m/Y') .
-          ', timezone: ' . $timezone->getName()
-      );
+        "$debug: moisture: " . $moisture . 
+        ', field_id: ' . $field_id .
+        ', full: ' . $full . ', refill: ' . $refill .
+        ', todays_date: ' . $todays_date->format('d/m/Y') .
+        ', timezone: ' . $timezone->getName());
     }
 
     $status = 0;
@@ -61,14 +55,14 @@ class Calculations
       'lower',
       'duration'
     )
-      ->join('cultivars', 'cultivars_management.id', 'cultivars.cultivars_management_id')
-      ->where('field_id', $field_id)
-      ->orderBy('stage_start_date', 'asc')
-      ->get();
+    ->join('cultivars','cultivars_management.id', 'cultivars.cultivars_management_id')
+    ->where('field_id', $field_id)
+    ->orderBy('stage_start_date', 'asc')
+    ->get();
 
-    if ($growth_stages->count()) {
+    if($growth_stages->count()){
       // TRY TO GET THE ACTIVE CULTIVAR STAGE
-      foreach ($growth_stages as $stage) {
+      foreach($growth_stages as $stage){
 
         $stage_start_date = new \DateTime($stage->stage_start_date);
         $stage_start_date->setTimezone($timezone);
@@ -78,14 +72,14 @@ class Calculations
         $stage_end_date->add(new \DateInterval('P' . $stage->duration . 'D'));
 
         // TODAY'S DATE FALLS IN STAGE'S RANGE
-        if ($todays_date >= $stage_start_date && $todays_date <= $stage_end_date) {
+        if($todays_date >= $stage_start_date && $todays_date <= $stage_end_date){
           $chosen_stage = $stage;
 
           $upper_value = $refill + ($capacity * ($chosen_stage->upper / 100));
           $lower_value = $refill + ($capacity * ($chosen_stage->lower / 100));
-
+          
           $capacity = $upper_value - $lower_value;
-
+          
           break;
         }
       }
@@ -101,7 +95,7 @@ class Calculations
     // lower value is either stage lower or fallback to refill
 
     // status calculation (preventing div zero for capacity)
-    $status = $capacity ? (($moisture - $lower_value) / $capacity) * 100 : 0;
+    $status = $capacity ? ( ( $moisture - $lower_value ) / $capacity ) * 100 : 0;
 
     // format value
     $status = (float)number_format((float)($status), 2, '.', '');
@@ -123,7 +117,7 @@ class Calculations
     // Calculate the Irrigation Recommendation only if all required values exist
     if ($moisture > 0) {
 
-      if ($upperValue > $moisture) {
+      if($upperValue > $moisture){
         // Calculate the irrigation recommendation
         $irriRec = ($upperValue - $moisture);
       } else {
@@ -140,14 +134,15 @@ class Calculations
         // Calculations are in inches by default
         $irriRec = bcdiv($irriRec / 25.44, 1, 2) . 'in';
       }
-    } else {
+    } 
+    else {
       // Some of the required values are missing so we cannot make a recommendation
       // Validate the values so that we can help the user to generate a recommendation
       if ($moisture == 0) {
         $irriRec = 'N/A';
       }
     }
-
+  
     // Return the recommendation
     return $irriRec;
   }
@@ -159,9 +154,9 @@ class Calculations
     $ts48,
     $ts72,
     $tz
-  ) {
+  ){
 
-    $return = ['one' => 0, 'two' => 0, 'three' => 0];
+    $return = [ 'one' => 0, 'two' => 0, 'three' => 0];
     $column = $graph_type == 'sum' ? 'accumulative' : 'average';
 
     $te24 = clone $ts24;
@@ -170,26 +165,26 @@ class Calculations
 
     // 24 Hour
     $ts24_string =  $ts24->format('Y-m-d') . ' 18:00:00';
-    $te24_string = ($te24->modify('+1 day'))->format('Y-m-d') . ' 06:00:00';
+    $te24_string = ($te24->modify('+1 day'))->format( 'Y-m-d') . ' 06:00:00';
 
     $ts48_string =  $ts48->format('Y-m-d') . ' 18:00:00';
-    $te48_string = ($te48->modify('+1 day'))->format('Y-m-d') . ' 06:00:00';
+    $te48_string = ($te48->modify('+1 day'))->format( 'Y-m-d') . ' 06:00:00';
 
     $ts72_string =  $ts72->format('Y-m-d') . ' 18:00:00';
-    $te72_string = ($te72->modify('+1 day'))->format('Y-m-d') . ' 06:00:00';
+    $te72_string = ($te72->modify('+1 day'))->format( 'Y-m-d') . ' 06:00:00';
 
     // ONE QUERY
-    $range = DB::table('node_data')
-      ->select($column, 'date_time')
-      ->where($column, '>', 0)
-      ->where('probe_id', '=', $node_address)
-      ->where(function ($query) use ($ts24_string, $te24_string, $ts48_string, $te48_string, $ts72_string, $te72_string) {
-        $query
-          ->whereBetween('date_time', [$ts24_string, $te24_string])
-          ->orWhereBetween('date_time', [$ts48_string, $te48_string])
-          ->orWhereBetween('date_time', [$ts72_string, $te72_string]);
-      })
-      ->orderBy('date_time', 'asc');
+    $range = DB::connection('mysql')->table('node_data')
+    ->select($column, 'date_time')
+    ->where($column, '>', 0)
+    ->where('probe_id', '=', $node_address)
+    ->where(function($query) use ($ts24_string, $te24_string, $ts48_string, $te48_string, $ts72_string, $te72_string) {
+      $query
+      ->whereBetween  ('date_time', [ $ts24_string, $te24_string ])
+      ->orWhereBetween('date_time', [ $ts48_string, $te48_string ])
+      ->orWhereBetween('date_time', [ $ts72_string, $te72_string ]);
+    })
+    ->orderBy('date_time','asc');
 
     $range = $range->get();
 
@@ -197,19 +192,19 @@ class Calculations
     $range_48 = [];
     $range_72 = [];
 
-    foreach ($range as $obj) {
+    foreach($range as $obj){
       $dt = new \DateTime($obj->date_time, $tz);
       //if($obj->{$column} > 0){
-      $dts = $dt->format('Y-m-d H:i:s');
-      if ($dt > $ts24 && $dt < $te24) {
-        $range_24[$dts] = (float) $obj->{$column};
-      } else
-        if ($dt > $ts48 && $dt < $te48) {
-        $range_48[$dts] = (float) $obj->{$column};
-      } else
-        if ($dt > $ts72 && $dt < $te72) {
-        $range_72[$dts] = (float) $obj->{$column};
-      }
+        $dts = $dt->format('Y-m-d H:i:s');
+        if($dt > $ts24 && $dt < $te24){
+          $range_24[$dts] = (float) $obj->{$column};
+        } else
+        if($dt > $ts48 && $dt < $te48){
+          $range_48[$dts] = (float) $obj->{$column};
+        } else
+        if($dt > $ts72 && $dt < $te72){
+          $range_72[$dts] = (float) $obj->{$column};
+        }
       //}
     }
 
@@ -225,13 +220,13 @@ class Calculations
     $values, // 12 hour time period SM values (averages or accumulative values)
     $column,  // either average or accumulative
     $variance = 0 // adjustable variance (also forces positive differences) (SM loss, not gain)
-  ) {
+  ){
     $gross_loss = 0;
-    if ($values) {
+    if($values){
       $prev_val = (float) $values[array_key_first($values)];
-      foreach ($values as $k => $val) {
+      foreach($values as $k => $val){
         $diff = $prev_val - (float) $val;
-        if ($diff > $variance) {
+        if($diff > $variance){
           $gross_loss += $diff;
         }
         $prev_val = $val;
@@ -239,6 +234,146 @@ class Calculations
     }
     return $gross_loss;
   }
+
+  public static function calcNutrientAverageGaugeValuesJDOC($node_address)
+  {
+    $results = [
+      'nutrient_lower' => 0,
+      'nutrient_upper' => 0,
+      'nutrient_gauge' => 0,
+      'nutrient_avg'   => 0,
+      'moisture_avg'   => 0,
+      'nutrient_pc'    => 0,
+      'nutrient_label' => '',
+      'NO3_AVG' =>0,
+      'NH4_AVG' => 0
+    ];
+    log::debug('THE NODE ADDRESS ABOUT TO BE CALCD:'.$node_address);
+   // if($node_address == '355523768818892-0')
+    if(true)
+    {
+     // log::debug('inside if');
+
+$dataset = DB::connection('mysql')->table('nutri_data')->where('node_address',$node_address)->orderBy('id','DESC')->Limit(1)->get();
+if ($dataset->count() > 0)
+{
+
+log::debug('get node adddr:'.$dataset[0]->node_address);
+
+$NO3_avg = 0;
+$NH4_avg = 0;
+$counter1 = 0;
+$counter2 = 0;
+
+/*
+for($i = 3; $i <= 6; $i++)
+{
+ // log::debug('inside first for loop (i)');
+  for($j = 1; $j <= 4; $j++)
+  {
+   // log::debug('inside second for loop (j)');
+    $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe',$dataset[0]->node_address)->Limit(1)->get();
+    if ($dataset_nutrient_template_data->count() > 0)
+    { 
+      $groupstring = 'M'.$i.'_'.$j.'_GROUP';
+      if($dataset_nutrient_template_data[0]->{$groupstring}==1){
+        $datasetstring = 'M'.$i.'_'.$j;
+        if(isset($dataset[0]->{$datasetstring})) {
+
+            
+            $dataset_nutrient_templates = DB::connection('mysql')->table('nutrient_templates')->where('id',$dataset_nutrient_template_data[0]->$datasetstring)->Limit(1)->get();
+            if($dataset_nutrient_templates->count() > 0){
+              $counter1++;
+              $template = json_decode($dataset_nutrient_templates[0]->template);
+              $NO3_avg += ($dataset[0]->$datasetstring * $template->poly1) + $template->poly2;
+            }
+        }
+      }
+    }
+  }
+}
+*/
+for($i = 3; $i <= 6; $i++)
+{
+  log::debug('inside first for loop (i)');
+ 
+  for($j = 1; $j <= 4; $j++)
+  {
+    $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe',$dataset[0]->node_address)->Limit(1)->get();
+    if ($dataset_nutrient_template_data->count() > 0)
+    { 
+      $groupstring = 'M'.$i.'_'.$j.'_GROUP';
+      if($dataset_nutrient_template_data[0]->{$groupstring}==1){
+        $datasetstring = 'M'.$i.'_'.$j;
+       // if(isset($dataset[0]->{$datasetstring})) {
+
+            
+            $dataset_nutrient_templates = DB::connection('mysql')->table('nutrient_templates')->where('id',$dataset_nutrient_template_data[0]->$datasetstring)->Limit(1)->get();
+            if($dataset_nutrient_templates->count() > 0){
+              $counter1++;
+              $template = json_decode($dataset_nutrient_templates[0]->template);
+              $NO3_avg += ($dataset[0]->$datasetstring * $template->poly1) + $template->poly2;
+            }
+        //}
+      }
+    }
+   // log::debug('inside second for loop (j)');
+    $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe',$dataset[0]->node_address)->Limit(1)->get();
+    if ($dataset_nutrient_template_data->count() > 0)
+    { 
+      $groupstring = 'M'.$i.'_'.$j.'_GROUP';
+      if($dataset_nutrient_template_data[0]->{$groupstring}==2){
+        $datasetstring = 'M'.$i.'_'.$j;
+       // if(isset($dataset[0]->{$datasetstring})) {
+
+            
+            $dataset_nutrient_templates = DB::connection('mysql')->table('nutrient_templates')->where('id',$dataset_nutrient_template_data[0]->$datasetstring)->Limit(1)->get();
+            if($dataset_nutrient_templates->count() > 0){
+              $counter2++;
+              $template = json_decode($dataset_nutrient_templates[0]->template);
+              $NH4_avg += ($dataset[0]->$datasetstring * $template->poly1) + $template->poly2;
+            }
+        //}
+      }
+    }
+  }
+}
+
+//log::debug('NO3 avg: '.$NO3_avg/$counter1);
+
+$results = [
+  'nutrient_lower' => 0,
+  'nutrient_upper' => 0,
+  'nutrient_gauge' => 0,
+  'nutrient_avg'   => 0,
+  'moisture_avg'   => 0,
+  'nutrient_pc'    => 0,
+  'nutrient_label' => '',
+  'NO3_AVG' => ($counter1 ? number_format((float)$NO3_avg/$counter1, 1, '.', '') : 0),
+  'NH4_AVG' => ($counter2 ? number_format((float)$NH4_avg/$counter2, 1, '.', '') : 0)
+];
+}
+return $results; 
+  }
+  else{ 
+    $results = [
+      'nutrient_lower' => 0,
+      'nutrient_upper' => 0,
+      'nutrient_gauge' => 0,
+      'nutrient_avg'   => 0,
+      'moisture_avg'   => 0,
+      'nutrient_pc'    => 0,
+      'nutrient_label' => '',
+      'NO3_AVG' => 0,
+      'NH4_AVG' => 0,
+      'PPM_AVG' => 0
+    /*  'moisture_avg' => 0,
+      'temp_avg' => 0*/
+    ];
+    return $results; 
+  }
+}
+
 
   // TODO: This function needs to be rewritten to accept either a dataset of values or a node address
   // and either a template JSON object or a template id (for max flexibilty and to centralize calculations)
@@ -249,257 +384,18 @@ class Calculations
       'nutrient_upper' => 0,
       'nutrient_gauge' => 0,
       'nutrient_avg'   => 0,
+      'moisture_avg'   => 0,
       'nutrient_pc'    => 0,
       'nutrient_label' => '',
-      'NO3_avg' => 0,
-      'NH4_avg' => 0
-      /*  'moisture_avg' => 0,
+      'NO3_AVG' => 0,
+      'NH4_AVG' => 0,
+      'PPM_AVG' => 0
+    /*  'moisture_avg' => 0,
       'temp_avg' => 0*/
     ];
-
-    if (!$node_address) {
-      return $results;
-    }
-
-    // fetch latest data values from nutri_data table
-    $dataset = nutri_data::where('node_address', $node_address)
-      // ->whereIn('identifier', ['M3_1', 'M4_1', 'M5_1', 'M6_1', 'M0 1', 'M1 1', 'M2 1', 'M3 1', 'M4 1', 'M5 1', 'M6 1', 'M7 1', 'M8 1', 'M9 1'])
-      /// ->orderBy('identifier', 'asc') 
-      ->orderBy('id', 'desc')
-      ->limit(1)
-      ->get();
-
-    // get template values
-    $tpl = nutrient_templates::where('id', $template_id)->first();
-    if (!$tpl) {
-      throw new \Exception("Missing Template: $template_id for node: $node_address");
-    }
-
-    $values = json_decode($tpl->template, true);
-    // dd($dataset);
-
-    if (is_array($values) && $dataset->count() == 4) {
-      
-      $poly1 = $values['poly1'] ?: 1;
-      $poly2 = $values['poly2'] ?: 1;
-      $lower = $values['lower_limit'] ?: 0;
-      $upper = $values['upper_limit'] ?: 0;
-
-
-      /*
-        Brad: understand.....instead of it being an average of 4 sensors it would be
-        the average of M3 & M4 for NH4 and 
-        M5 & M6 for NO3 and the sum of the 2 averages 
-        would be the resulting Nitrogen level
-      */
-      /*
-      $nh4_1 = ($dataset->M3_1 * $poly1) + $poly2; // M3_1
-      $nh4_2 = ($dataset->M4_1 * $poly1) + $poly2; // M4_1
-      $nh4_avg = ($nh4_1 + $nh4_2) / 2;
-
-      $no3_1 = ($dataset->M5_1 * $poly1) + $poly2; // M5_1
-      $no3_2 = ($dataset->M6_1 * $poly1) + $poly2; // M6_1
-      $no3_avg = ($no3_1 + $no3_2) / 2;
-
-      $ppm_avg = $nh4_avg + $no3_avg;
-*/
-      // get template values
-      /*$tpl = nutrient_templates::where('id', $template_id)->first();
-if(!$tpl){ throw new \Exception("Missing Template: $template_id for node: $node_address"); }*/
-      //$values = json_decode($tpl->template, true);
-
-
-      $host = 'https://sandbox.myagbuddy.com';
-      /*$dataset = Http::get($host.'/api/loadnodedata/'.$node_address);
-print_r($dataset);die;*/
-      $servername = "localhost";
-      $username = "myagbuddy";
-      $password = "N1ckn4ggp4dyw@gg!3212";
-
-
-      $conn = new PDO("mysql:host=$servername;dbname=agri_sandbox", $username, $password);
-
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-      $stmt = $conn->query("SELECT * FROM nutri_data WHERE node_address= '" . $node_address . "' ORDER BY id DESC LIMIT 1");
-
-      $dataset = $stmt->fetch(PDO::FETCH_OBJ);
-
-      $NO3_avg = 0;
-      $NH4_avg = 0;
-
-
-
-      $stmt = $conn->query("SELECT * FROM nutrient_template_data WHERE nutriprobe= '" . $node_address . "' ORDER BY id DESC LIMIT 1");
-      $dataset = $stmt->fetch(PDO::FETCH_OBJ);
-      $counter1 = 0;
-      for ($i = 3; $i < 6; $i++) {
-        for ($j = 1; $j < 4; $j + 2) {
-
-          if ($dataset->{'M' . $i . '_' . $j}) {
-
-            $counter1++;
-            $stmt = $conn->query("SELECT * FROM nutrient_templates WHERE id=" . $dataset->{'M' . $i . '_' . $j});
-            $polynomials = $stmt->fetch(PDO::FETCH_OBJ);
-            $template = json_decode($polynomials->template);
-            // dd($template);
-            $NO3_avg += ($dataset->{'M' . $i . '_' . $j} * $template->poly1) + $template->poly2;
-          }
-        }
-      }
-
-      $counter2 = 0;
-      for ($i = 3; $i < 6; $i++) {
-        for ($j = 2; $j == 4; $j + 2) {
-          if ($dataset->{'M' . $i . '_' . $j}) {
-            $counter2++;
-            $stmt = $conn->query("SELECT * FROM nutrient_templates WHERE id=" . $dataset->{'M' . $i . '_' . $j});
-            $polynomials = $stmt->fetch(PDO::FETCH_OBJ);
-            $template = json_decode($polynomials->template);
-            $NH4_avg += ($dataset->{'M' . $i . '_' . $j} * $template->poly1) + $template->poly2;
-          }
-        }
-      }
-
-
-      $NH4_avg = $NH4_avg / $counter1;
-      $NO3_avg = $NO3_avg / $counter2;
-
-      $ppm_avg = ($NH4_avg + $NO3_avg) / 2;
-
-      $diff    = abs($ppm_avg - $lower);
-      $range   = abs($upper - $lower);
-      $range   = $range ?: 1;
-
-      $results['nutrient_lower'] = (float)$lower;
-      $results['nutrient_upper'] = (float)$upper;
-      $results['nutrient_gauge'] = (float)(($diff / $range) * 180) - 90; /* ANGLE SCALED VALUE (FOR TURNING DIAL) */
-      $results['nutrient_pc']    = (float)(($diff / $range) * 100);      /* LINEAR PERCENTAGE VALUE (FOR COLORING FIELD) */
-      $results['NH4_AVG']   = (float)$NH4_avg; /* ACTUAL VALUE */
-      $results['NO3_AVG']   = (float)$NO3_avg; /* ACTUAL VALUE */
-      $results['nutrient_avg']   = (float)$ppm_avg; /* ACTUAL VALUE */
-      $results['moisture_avg']   = (float)$moisture_avg; /* ACTUAL VALUE */
-      $results['temperature_avg']   = (float)$temperature_avg; /* ACTUAL VALUE */
-      $results['nutrient_label'] = $tpl->name;
-    }
-
-    return $results;
+return $results;
+ 
   }
-  /*
-
-$M3_avg_val = 0;
-$M3_val = 0;
-$M3 = [];
-$count = 0;
-if(isset($item->M3_1))
-{
-    $count++;
-    $M3_val = (($item->M3_1 * $poly1) + $poly2);
-}
-if(isset($item->M3_2))
-{
-    $count++;
-    $M3_val += (($item->M3_2 * $poly1) + $poly2);
-}
-if(isset($item->M3_3))
-{
-    $count++;
-    $M3_val += (($item->M3_3 * $poly1) + $poly2);
-}
-if(isset($item->M3_4))
-{
-    $count++;
-    $M3_val += (($item->M3_4 * $poly1) + $poly2);
-}
-
-$M3_avg_val = $M3_val/$count; 
-
-
-$M4_avg_val = 0;
-$M4_val = 0;
-$M4 = [];
-$count = 0;
-if(isset($item->M4_1))
-{
-    $count++;
-    $M4_val = (($item->M4_1 * $poly1) + $poly2);
-}
-if(isset($item->M4_2))
-{
-    $count++;
-    $M4_val += (($item->M4_2 * $poly1) + $poly2);
-}
-if(isset($item->M4_3))
-{
-    $count++;
-    $M4_val += (($item->M4_3 * $poly1) + $poly2);
-}
-if(isset($item->M3_4))
-{
-    $count++;
-    $M4_val += (($item->M4_4 * $poly1) + $poly2);
-}
-
-$M4_avg_val = $M4_val/$count; 
-
-$M5_avg_val = 0;
-$M5_val = 0;
-$M5 = [];
-$count = 0;
-if(isset($item->M5_1))
-{
-    $count++;
-    $M5_val = (($item->M5_1 * $poly1) + $poly2);
-}
-if(isset($item->M5_2))
-{
-    $count++;
-    $M5_val += (($item->M5_2 * $poly1) + $poly2);
-}
-if(isset($item->M5_3))
-{
-    $count++;
-    $M5_val += (($item->M5_3 * $poly1) + $poly2);
-}
-if(isset($item->M5_4))
-{
-    $count++;
-    $M5_val += (($item->M5_4 * $poly1) + $poly2);
-}
-
-$M5_avg_val = $M5_val/$count; 
-
-$M6_avg_val = 0;
-$M6_val = 0;
-$M6 = [];
-$count = 0;
-if(isset($item->M6_1))
-{
-    $count++;
-    $M6_val = (($item->M6_1 * $poly1) + $poly2);
-}
-if(isset($item->M6_2))
-{
-    $count++;
-    $M6_val += (($item->M6_2 * $poly1) + $poly2);
-}
-if(isset($item->M6_3))
-{
-    $count++;
-    $M6_val += (($item->M6_3 * $poly1) + $poly2);
-}
-if(isset($item->M6_4))
-{
-    $count++;
-    $M6_val += (($item->M6_4 * $poly1) + $poly2);
-}
-
-$M6_avg_val = $M6_val/$count; 
-
-
-*/
-
-
 
 
   public static function calcPercentageOfColorRange($percentage, $colors)
@@ -515,10 +411,10 @@ $M6_avg_val = $M6_val/$count;
       ];
       
     */
-    $pickRGB = function ($color1, $color2, $weight) {
-      $p = $weight;
-      $w = ($p * 2) - 1;
-      $w1 = (($w / 1) + 1) / 2;
+    $pickRGB = function($color1, $color2, $weight) {
+      $p = $weight; 
+      $w = ($p * 2) - 1; 
+      $w1 = (($w/1)+1) / 2; 
       $w2 = 1 - $w1;
       return [
         round(($color1[0] * $w1) + ($color2[0] * $w2)), // r
@@ -532,10 +428,9 @@ $M6_avg_val = $M6_val/$count;
 
     $colorRange = [];
 
-    for ($i = 0; $i < count($colors); $i++) {
-      if ($percentage <= $colors[$i][0]) {
-        $colorRange = [$i - 1, $i];
-        break;
+    for($i = 0; $i < count($colors); $i++){
+      if($percentage <= $colors[$i][0]){
+        $colorRange = [$i-1, $i]; break;
       }
     }
 
@@ -549,11 +444,12 @@ $M6_avg_val = $M6_val/$count;
     $range = $secondColorP - $firstColorP;
     $lower = $percentage - $firstColorP;
     $ratio = $lower / $range;
-
-    $rgb = $pickRGB($secondColorA, $firstColorA, $ratio);
+    
+    $rgb = $pickRGB( $secondColorA, $firstColorA, $ratio );
 
     // convert to hex
     return '#' . sprintf("%02X", $rgb[0]) . sprintf("%02X", $rgb[1]) . sprintf("%02X", $rgb[2]);
+
   }
 
   public static function getLatestNodeAvgSM($node)
@@ -562,21 +458,36 @@ $M6_avg_val = $M6_val/$count;
     $node_address = is_array($node) ? $node['node_address'] : $node->node_address;
     $node_type = is_array($node) ? $node['node_type'] : $node->node_type;
 
-    if ($node_type == 'Soil Moisture') {
-      $val = bcdiv(DB::table('node_data')
-        ->select('average')
-        ->where('probe_id', $node_address)
-        ->orderBy('id', 'desc')
-        ->limit(1)
-        ->value('average'), 1, 2);
-    } else if ($node_type == 'Nutrients') {
-      $val = bcdiv(DB::table('nutri_data')->select('M0_1')
-        ->where('node_address', $node_address)
-        ->orderBy('id', 'desc')
-        ->limit(1)
-        ->value('M0_1'), 1, 2);
-    }
-    return $val;
+    if($node_type == 'Soil Moisture'){
+      $val = bcdiv(DB::connection('mysql')->table('node_data')
+      ->select('average')
+      ->where('probe_id', $node_address)
+      ->orderBy('id', 'desc')
+      ->limit(1)
+      ->value('average'), 1, 2);
+    } else if($node_type == 'Nutrients'){
+      $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address',$node_address)->orderBy('id','DESC')->Limit(1)->get();
+      $val = 0;
+      $counter = 0;
+        
+        for($j = 1; $j <= 4; $j++)
+        {
+log::debug('inside for loop');
+            $datasetstring = 'M0_'.$j;
+            if(isset($dataset[0]->{$datasetstring})) {
+
+                $counter++;
+                
+                $val += $dataset[0]->{$datasetstring};
+            }
+          }
+          if($val)
+          {$val = $val / $counter;}
+        }
+
+    
+   
+    return number_format((float)($val), 2, '.', '');
   }
 
   public static function getLatestNodeAvgTemp($node)
@@ -585,33 +496,44 @@ $M6_avg_val = $M6_val/$count;
     $node_address = is_array($node) ? $node['node_address'] : $node->node_address;
     $node_type = is_array($node) ? $node['node_type'] : $node->node_type;
 
-    if ($node_type == 'Soil Moisture') {
-      $temps = DB::table('node_data')
-        ->select(['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15'])
-        ->where('probe_id', $node_address)
-        ->orderBy('id', 'desc')
-        ->limit(1)
-        ->get()
-        ->toArray();
+    if($node_type == 'Soil Moisture'){
+      $temps = DB::connection('mysql')->table('node_data')
+      ->select(['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15'])
+      ->where('probe_id', $node_address)
+      ->orderBy('id', 'desc')
+      ->limit(1)
+      ->get()
+      ->toArray();
       $tot = 0;
       $ctr = 0;
-      if ($temps) {
-        for ($i = 1; $i <= 15; $i++) {
+      if($temps){
+        for($i = 1; $i <= 15; $i++){
           $k = "t$i";
-          if (!empty($temps[$k]) && $temps[$k] > 0) {
-            $tot += (float)$temps[$k];
-            $ctr++;
-          }
+          if(!empty($temps[$k]) && $temps[$k] > 0){ $tot += (float)$temps[$k]; $ctr++; }
         }
         $val = bcdiv($ctr < 1 ? $tot : ($tot / $ctr), 1, 2);
       }
-    } else if ($node_type == 'Nutrients') {
-      $val = bcdiv(DB::table('nutri_data')->select('M1_1')
-        ->where('node_address', $node_address)
-        ->orderBy('id', 'desc')
-        ->limit(1)
-        ->value('M1_1'), 1, 2);
+    } else if($node_type == 'Nutrients'){
+      $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address',$node_address)->orderBy('id','DESC')->Limit(1)->get();
+      $val = 0;
+      $counter = 0;
+        
+        for($j = 1; $j <= 4; $j++)
+        {
+log::debug('inside for loop');
+            $datasetstring = 'M1_'.$j;
+            if(isset($dataset[0]->{$datasetstring})) {
+
+                $counter++;
+                
+                $val += $dataset[0]->{$datasetstring};
+            }
+          }
+          if($val)
+          {$val = $val / $counter;}
+        }
+        return number_format((float)($val), 1, '.', '');
     }
-    return $val;
-  }
+    
+  
 }

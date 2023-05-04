@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 use App\Models\hardware_config;
 use App\Models\node_data;
 use App\Models\node_data_meter;
-use App\Models\nutri_data;
 use App\Models\cultivars_management;
 use App\Models\fields;
 use App\Calculations;
@@ -47,7 +46,7 @@ class DashboardController extends Controller
     // sorting
     $sortBy  = $request->sort_by;
     $sortDir = $request->sort_dir;
-log::debug($sortBy);
+
     // filtering
     $nodeType = $request->node_type;
     $filter   = !empty($request->filter) ? $request->filter : ''; // (optional filter param)
@@ -112,7 +111,6 @@ log::debug($sortBy);
 
     $sortBy = Utils::findColumnAlias(Utils::findFromPartial($columns, $sortBy, 'date_time'));
 
-
     $nodes = hardware_config::select($columns)
       ->leftJoin('fields', 'hardware_config.node_address', 'fields.node_id') // needed for the calculations
       ->leftJoin('companies', 'hardware_config.company_id', 'companies.id')  // needed for the entity column
@@ -129,7 +127,7 @@ log::debug($sortBy);
               ->on('hardware_config.date_time', '=', 'node_data_meters.date_time');
           });
       })
-     ->when($nodeType != 'All', function ($query) use ($nodeType) {
+      ->when($nodeType != 'All', function ($query) use ($nodeType) {
         if ($nodeType == 'Soil Moisture') {
           $query->leftJoin('node_data', function ($join) {
             $join
@@ -180,32 +178,10 @@ log::debug($sortBy);
         $nodes = $nodes->get();
       }
     }
+
     if ($nodes) {
       foreach ($nodes as &$node) {
-      
-          if (node_data::where('probe_id',$node->node_address)->count() > 0) {
-            $dt = node_data::where('probe_id',$node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
-            if (isset($dt->date_time))
-              $node->date_time = $dt->date_time;
-            else
-              $node->date_time = null;
-          }
-          if (node_data_meter::where('node_id',$node->node_address)->count() > 0) {
-            $dt = node_data_meter::where('node_id',$node->node_address)->select('date_time')->orderByDesc('idwm')->limit(1)->first();
-            if (isset($dt->date_time))
-              $node->date_time = $dt->date_time;
-            else
-              $node->date_time = null;
-            }
-        
-        
-    /*    if (nutri_data::where('node_address',$node->node_address)->count() > 0) {
-          $dt = nutri_data::where('node_address',$node->node_address)->select('date_sampled as date_time')->orderByDesc('id')->limit(1)->first();
-          if (isset($dt->date_time))
-            $node->date_time = $dt->date_time;
-          else
-            $node->date_time = null;
-          }*/
+
         // Set default title if field row is missing
         if (empty($node->field_name)) {
           $node->field_name = 'Field ' . $node->node_address;
@@ -230,7 +206,7 @@ log::debug($sortBy);
         } else {
           $node->eto = "0.00";
         }
-        
+
         // localize datetime + calc last reading difference
         if ($node->date_time) {
           $lr = new \DateTime($node->date_time);
@@ -239,7 +215,7 @@ log::debug($sortBy);
           $node->date_diff = $todays_date->diff($lr);
         } else {
           // quick way to set custom properties on laravel collection objects (array syntax)
-        //  $node->date_time = '1970-01-01 00:00:00';
+          $node->date_time = '1970-01-01 00:00:00';
           $node->date_diff = '';
         }
 
@@ -272,9 +248,9 @@ log::debug($sortBy);
             $node->irri_rec = Calculations::calcIrriRec(
               (float)$node->{$moisture},
               (float)$result['upper_value'],
-              $this->acc->unit_of_measure,
               $node->ni ?: 1,
-              $node->nr ?: 1
+              $node->nr ?: 1,
+              $this->acc->unit_of_measure
             );
           } else {
             $node->irri_rec = "0.00{$prefix}";
