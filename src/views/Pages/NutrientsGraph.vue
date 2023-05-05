@@ -1703,7 +1703,7 @@ export default {
   /* right: 0!important; */
   margin: 0 auto !important;
   /* left: 0!important; */
-  width: 100%;
+  width: 97%;
   top: 0px !important;
   text-align: center;
 }
