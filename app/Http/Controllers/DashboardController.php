@@ -181,15 +181,20 @@ log::debug($sortBy);
       }
     }
     if ($nodes) {
-      foreach ($nodes as &$node) {
-      
+      foreach ($nodes as $node) {
+                Log::debug(node_data::where('probe_id', $node->node_address)->count());
           if (node_data::where('probe_id',$node->node_address)->count() > 0) {
             $dt = node_data::where('probe_id',$node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
-            if (isset($dt->date_time))
-              $node->date_time = $dt->date_time;
+                    if (isset($dt->date_time)) {
+                        $node->date_time = $dt->date_time;
+                      //  Log::debug($dt);
+                      //  Log::debug($node->date_time);
+                    }
             else
               $node->date_time = null;
           }
+
+             //   Log::debug(node_data_meter::where('node_id', $node->node_address)->count());
           if (node_data_meter::where('node_id',$node->node_address)->count() > 0) {
             $dt = node_data_meter::where('node_id',$node->node_address)->select('date_time')->orderByDesc('idwm')->limit(1)->first();
             if (isset($dt->date_time))
@@ -197,15 +202,18 @@ log::debug($sortBy);
             else
               $node->date_time = null;
             }
-        
-        
-    /*    if (nutri_data::where('node_address',$node->node_address)->count() > 0) {
-          $dt = nutri_data::where('node_address',$node->node_address)->select('date_sampled as date_time')->orderByDesc('id')->limit(1)->first();
-          if (isset($dt->date_time))
-            $node->date_time = $dt->date_time;
+
+               // Log::debug(nutri_data::where('node_address', $node->node_address)->count());
+        if (nutri_data::where('node_address',$node->node_address)->count() > 0) {
+          $dt = nutri_data::where('node_address',$node->node_address)->select('date_sampled')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_sampled)) {
+                        $node->date_time = $dt->date_sampled;
+                    //    Log::debug($dt);
+                     //   Log::debug($node->date_time);
+                    }
           else
             $node->date_time = null;
-          }*/
+          }
         // Set default title if field row is missing
         if (empty($node->field_name)) {
           $node->field_name = 'Field ' . $node->node_address;
@@ -230,7 +238,7 @@ log::debug($sortBy);
         } else {
           $node->eto = "0.00";
         }
-        
+
         // localize datetime + calc last reading difference
         if ($node->date_time) {
           $lr = new \DateTime($node->date_time);
@@ -239,7 +247,7 @@ log::debug($sortBy);
           $node->date_diff = $todays_date->diff($lr);
         } else {
           // quick way to set custom properties on laravel collection objects (array syntax)
-        //  $node->date_time = '1970-01-01 00:00:00';
+          //$node->date_time = '1970-01-01 00:00:00';
           $node->date_diff = '';
         }
 
@@ -261,7 +269,7 @@ log::debug($sortBy);
           );
 
           if (is_array($result)) {
-            $node->status = $result['status'];   
+            $node->status = $result['status'];
           } else {
             $node->status = 0;
           }

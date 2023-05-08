@@ -374,11 +374,25 @@ export default {
 
       n_template: 0,
 
+      myTooltip: [],
+
       plotOptions: {
         series: {
+          stickyTracking: false,
           states: {
             inactive: {
               opacity: 1
+            }
+          },
+          events: {
+            click: function (evt) {
+              this.chart.myTooltip.options.enabled = true;
+              this.chart.myTooltip.refresh(evt.point, evt);
+            },
+            mouseOut: function () {
+              console.log('hi');
+              //this.chart.myTooltip.hide();
+              this.chart.myTooltip.options.enabled = true;
             }
           }
         }
@@ -423,6 +437,11 @@ export default {
             minWidth: 700,
             scrollPositionX: 1
           },
+          events: {
+            load: function () {
+              this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip);
+            }
+          }
         },
         exporting: {
           buttons: {
@@ -470,9 +489,6 @@ export default {
               }, 1);
             },
             afterSetExtremes: this.afterSetExtremes,
-            click: function (event) {
-              clean_tooltip();
-            }
           }
 
         },
@@ -498,6 +514,7 @@ export default {
           y: 80
         },
         tooltip: {
+          enabled:false,
           shape: "square",
           headerShape: "callout",
           borderWidth: 0,
@@ -1495,7 +1512,7 @@ export default {
         console.log(this.export_data.N3);
         console.log(this.export_data.N4);*/
 
-   this.$axios.post('/api/export_csv_nutri', {
+      this.$axios.post('/api/export_csv_nutri', {
         subdays: this.sub_days,
         nutriprobe: this.current_node,
         export_data: this.export_data
