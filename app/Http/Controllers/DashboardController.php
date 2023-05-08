@@ -183,16 +183,7 @@ log::debug($sortBy);
     if ($nodes) {
       foreach ($nodes as $node) {
                 Log::debug(node_data::where('probe_id', $node->node_address)->count());
-          if (node_data::where('probe_id',$node->node_address)->count() > 0) {
-            $dt = node_data::where('probe_id',$node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
-                    if (isset($dt->date_time)) {
-                        $node->date_time = $dt->date_time;
-                      //  Log::debug($dt);
-                      //  Log::debug($node->date_time);
-                    }
-            else
-              $node->date_time = null;
-          }
+
 
              //   Log::debug(node_data_meter::where('node_id', $node->node_address)->count());
           if (node_data_meter::where('node_id',$node->node_address)->count() > 0) {
@@ -214,7 +205,17 @@ log::debug($sortBy);
           else
             $node->date_time = null;
           }
-        // Set default title if field row is missing
+
+        if (node_data::where('probe_id', $node->node_address)->count() > 0) {
+                    $dt = node_data::where('probe_id', $node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_time)) {
+                        $node->date_time = $dt->date_time;
+                        //  Log::debug($dt);
+                        //  Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+                // Set default title if field row is missing
         if (empty($node->field_name)) {
           $node->field_name = 'Field ' . $node->node_address;
         }

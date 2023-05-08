@@ -375,10 +375,10 @@ export default {
       n_template: 0,
 
       myTooltip: [],
+      stickyTracking: false,
 
       plotOptions: {
         series: {
-          stickyTracking: false,
           states: {
             inactive: {
               opacity: 1
@@ -387,10 +387,10 @@ export default {
           events: {
             click: function (evt) {
               this.chart.myTooltip.options.enabled = true;
+              // console.log(this.chart.myTooltip);
               this.chart.myTooltip.refresh(evt.point, evt);
             },
             mouseOut: function () {
-              console.log('hi');
               //this.chart.myTooltip.hide();
               this.chart.myTooltip.options.enabled = true;
             }
@@ -418,7 +418,7 @@ export default {
       return {
         credits: { enabled: false },
         chart: {
-          marginTop: 180,
+          // marginTop: 180,
           type: 'line',
           zoomType: this.zoomOrDrag == false ? 'x' : false,
           panning: true,
@@ -439,7 +439,8 @@ export default {
           },
           events: {
             load: function () {
-              this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip);
+              this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip); 
+              console.log(this.options.tooltip);
             }
           }
         },
@@ -514,30 +515,30 @@ export default {
           y: 80
         },
         tooltip: {
-          enabled:false,
-          shape: "square",
-          headerShape: "callout",
-          borderWidth: 0,
-          shadow: false,
-          useHTML: true,
-          positioner: function () {
-            return { x: 0, y: 800 };
-          },
-          split: true,
-          distance: 30,
-          padding: 5,
+          // enabled:false,
+          // shape: "square",
+          // headerShape: "callout",
+          // borderWidth: 0,
+          // shadow: false,
+          // useHTML: true,
+          // positioner: function () {
+          //   return { x: 0, y: 800 };
+          // },
+          // split: true,
+          // distance: 30,
+          // padding: 5,
           formatter() {
             let s = "";
             s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
             this.points.forEach(function (point) {
               var oum = point.series.options.oum;
               if (point.series.name == 'Avg Temp') {
-                s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> °' + oum + '<img src="https://img.icons8.com/ios-filled/12/333333/vertical-line.png"/> ';
+                s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> °' + oum + '<img src="https://img.icons8.com/ios-filled/12/333333/vertical-line.png"/> <br>';
               }
               else if (point.series.name == 'Avg SM') {
-                s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> % <img src="https://img.icons8.com/ios-filled/12/333333/vertical-line.png"/> ';
+                s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> % <img src="https://img.icons8.com/ios-filled/12/333333/vertical-line.png"/> <br>';
               } else {
-                s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/12/333333/vertical-line.png"/> ';
+                s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/12/333333/vertical-line.png"/> <br>';
               }
             });
             return s;
@@ -1651,7 +1652,12 @@ export default {
 </script>
 <style>
 .highcharts-tooltip {
-  pointer-events: auto !important;
+  /* pointer-events: auto !important; */
+  background-color: white !important;
+}
+
+.highcharts-label-box {
+  fill: #fff !important;
 }
 
 /* .highcharts-tooltip-container .highcharts-tooltip>span {
@@ -1696,7 +1702,7 @@ export default {
   border-radius: 2px;
 }  */
 
-.highcharts-tooltip-box span:first-child {
+/* .highcharts-tooltip-box span:first-child {
   font-size: 15px;
   color: #fff;
   white-space: nowrap;
@@ -1705,11 +1711,10 @@ export default {
   padding: 18px;
   background-color: transparent;
   right: 8px !important;
-  /* margin: 0 auto!important; */
   top: -18px !important;
   text-align: center;
   border-radius: 2px;
-}
+} */
 
 /* .highcharts-tooltip-box,
 .highcharts-tooltip {
@@ -1718,21 +1723,21 @@ export default {
   left: 0 !important;
 } */
 
-.highcharts-tooltip,
-.highcharts-tooltip-box {
+/* .highcharts-tooltip,
+.highcharts-tooltip-box { */
   /* right: 0!important; */
-  margin: 0 auto !important;
+  /* margin: 0 auto !important; */
   /* left: 0!important; */
-  width: 97%;
+  /* width: 97%;
   top: 0px !important;
   text-align: center;
-}
+} */
 
 /* .highcharts-tooltip-box {
   top: 125px !important;
 } */
 
-.highcharts-tooltip {
+/* .highcharts-tooltip {
   top: 30px !important;
 }
 
@@ -1746,19 +1751,18 @@ export default {
   display: block;
   position: sticky;
   padding: 5px !important;
-  border: 0 !important;
+  border: 0 !important; */
   /* font-weight: bold; */
-  padding-top: 8px !important;
+  /* padding-top: 8px !important;
 }
 
 .graph_margin {
   margin-top: -100px;
-}
+} */
 
-@media only screen and (max-width: 800px) {
+/* @media only screen and (max-width: 800px) { */
 
-  .date_of_reading {
-    /* position: absolute !important; */
+  /* .date_of_reading {
     text-align: center !important;
     display: block;
     width: 100% !important;
@@ -1773,9 +1777,9 @@ export default {
 
   .graph_margin {
     margin-top: 0px;
-  }
+  } */
 
-  .highcharts-tooltip-box span:first-child {
+  /* .highcharts-tooltip-box span:first-child {
     width: 100% !important;
     right: 5px !important;
     left: 0px !important;
@@ -1791,6 +1795,6 @@ export default {
 
   .highcharts-tooltip-box {
     top: 70px !important;
-  }
-}
+  } */
+/* } */
 </style>
