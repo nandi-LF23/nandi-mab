@@ -469,7 +469,10 @@ export default {
                 }
               }, 1);
             },
-            afterSetExtremes: this.afterSetExtremes
+            afterSetExtremes: this.afterSetExtremes,
+            click: function (event) {
+              clean_tooltip();
+            }
           }
 
         },
