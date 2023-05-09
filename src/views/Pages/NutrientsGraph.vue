@@ -387,12 +387,14 @@ export default {
           events: {
             click: function (evt) {
               this.chart.myTooltip.options.enabled = true;
-              // console.log(this.chart.myTooltip);
+              // this.chart.myTooltip.options.enabled = true;
               this.chart.myTooltip.refresh(evt.point, evt);
             },
             mouseOut: function () {
               //this.chart.myTooltip.hide();
               this.chart.myTooltip.options.enabled = true;
+              console.log(this.chart.myTooltip);
+
             }
           }
         }
@@ -440,7 +442,6 @@ export default {
           events: {
             load: function () {
               this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip); 
-              console.log(this.options.tooltip);
             }
           }
         },

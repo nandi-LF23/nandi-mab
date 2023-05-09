@@ -139,7 +139,7 @@ class HardwareConfigController extends Controller
             }
         }
         if ($nodes) {
-            foreach ($nodes as $node) {
+            foreach ($nodes as &$node) {
                 Log::debug(node_data::where('probe_id', $node->node_address)->count());
 
 
@@ -326,7 +326,42 @@ class HardwareConfigController extends Controller
                 $nodes = $nodes->skip($offset)->take($limit)->get();
             }
         }
+        if ($nodes) {
+            foreach ($nodes as &$node) {
+                //Log::debug(node_data::where('probe_id', $node->node_address)->count());
 
+
+                //   Log::debug(node_data_meter::where('node_id', $node->node_address)->count());
+                if (node_data_meter::where('node_id', $node->node_address)->count() > 0) {
+                    $dt = node_data_meter::where('node_id', $node->node_address)->select('date_time')->orderByDesc('idwm')->limit(1)->first();
+                    if (isset($dt->date_time))
+                        $node->date_time = $dt->date_time;
+                    else
+                        $node->date_time = null;
+                }
+
+                // Log::debug(nutri_data::where('node_address', $node->node_address)->count());
+                if (nutri_data::where('node_address', $node->node_address)->count() > 0) {
+                    $dt = nutri_data::where('node_address', $node->node_address)->select('date_sampled')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_sampled)) {
+                        $node->date_time = $dt->date_sampled;
+                        //    Log::debug($dt);
+                        //   Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+
+                if (node_data::where('probe_id', $node->node_address)->count() > 0) {
+                    $dt = node_data::where('probe_id', $node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_time)) {
+                        $node->date_time = $dt->date_time;
+                        //  Log::debug($dt);
+                       //  Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+            }
+        }
         if ($nodes) {
             foreach ($nodes as &$row) {
                 if ($row->date_time) {
