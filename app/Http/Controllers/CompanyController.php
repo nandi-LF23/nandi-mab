@@ -430,7 +430,7 @@ class CompanyController extends Controller
                     'summary'   => $summary_data['data'],
                     'totals'    => $summary_data['totals'],
                     'details'   => $detail_data,
-                    'years'     => $years,        // (List of years for user to choose from on frontend) 
+                    'years'     => $years,        // (List of years for user to choose from on frontend)
                     'companies' => $companies,    // the user's company choices (made on front-end via multi-select)
                     'cc_ids'    => $cc_ids
                 ]);
@@ -526,7 +526,7 @@ class CompanyController extends Controller
         // integration options  (TODO: Filter by permissions)
         $defaults = IntegrationManager::options($cc->id, 'entities_manage');
 
-        // Ensure Defaults only returned for Active Integrations 
+        // Ensure Defaults only returned for Active Integrations
         if (!empty($defaults)) {
             $saved = json_decode($cc->integrations, true);
             $company['integrations'] = !empty($saved) ? Utils::array_merge_rec($defaults, $saved) : $defaults;
@@ -877,7 +877,7 @@ class CompanyController extends Controller
         // permission check
         if (!$this->acc->is_admin) {
 
-            // If this is a distributor or a normal user, 
+            // If this is a distributor or a normal user,
             // the list of allowed companies to delete would equal the list of companies to move objects over to.
 
             $grants = $this->acc->requestAccess(['Entities' => ['p' => ['All']]]);
@@ -944,7 +944,7 @@ class CompanyController extends Controller
 
         if ($allowed_ccs) {
             foreach ($allowed_ccs as $k => $cc) {
-                $allowed_ccs_by_id['"' . $cc['id'] . '"'] = $cc;
+                $allowed_ccs_by_id['"' . is_object($cc) ? $cc->id : $cc['id'] . '"'] = $cc;
             }
         }
 
@@ -1014,7 +1014,7 @@ class CompanyController extends Controller
         // permission check
         if (!$this->acc->is_admin) {
 
-            // If this is a distributor or a normal user, 
+            // If this is a distributor or a normal user,
             // the list of allowed companies to delete would equal the list of companies to move objects over to.
 
             $grants = $this->acc->requestAccess(['Entities' => ['p' => ['All']]]);
@@ -1162,7 +1162,7 @@ class CompanyController extends Controller
         }
 
         // For tying in with various integrations
-        Eventy::action('company.delete', $company);
+        //Eventy::action('company.delete', $company);
 
         // Remove Nutrient Templates first (As they Reference both the Company + User)
         DB::table('nutrient_templates')->where('company_id', $company_id)->delete();
@@ -1172,7 +1172,8 @@ class CompanyController extends Controller
 
         // Remove the company
         Company::destroy($company_id);
-
+       // Company::where('id', $company_id)->delete();
+        
         // Clear company cache
         Cache::forget(config('mab.instance') . "_mab_perms_{$company_id}");
 

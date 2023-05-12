@@ -153,6 +153,7 @@ import swal from 'sweetalert2';
 // Tweak to prevent Tooltip from disappearing (Testing working)
 Highcharts.Pointer.prototype.reset = function () { return undefined; };
 
+
 export default {
 
   mixins: [mab_utils],
@@ -374,8 +375,18 @@ export default {
 
       n_template: 0,
 
+      clone_container: null,
+      clone_tooltip: null,
+      hc_tooltip: '',
+      orig_tooltip: [],
+      orig_container: [],
+
       myTooltip: [],
       stickyTracking: false,
+
+      //clean_tooltip: this.clean_tooltip(),
+
+      // hasClass: this.hasClass(),
 
       plotOptions: {
         series: {
@@ -384,6 +395,44 @@ export default {
               opacity: 1
             }
           },
+          stickyTracking: false,
+          cursor: 'pointer',
+          //point: {
+            // events: {
+            //   click: function () {
+            //     this.clean_tooltip();
+
+            //     this.hc_tooltip = document.getElementsByClassName("highcharts-tooltip");
+            //     this.orig_tooltip = this.hc_tooltip[0];
+
+            //     this.clone_tooltip = this.orig_tooltip.cloneNode(true);
+            //     this.clone_tooltip.classList.remove("invisible");
+            //     this.clone_tooltip.classList.add("clone");
+
+            //     this.clone_container = this.series.chart.tooltip.label.element.cloneNode(true);
+            //     this.clone_container.classList.remove("invisible");
+            //     this.clone_container.classList.add("clone");
+
+            //     this.chart.container.firstChild.appendChild(this.clone_container);
+            //     this.chart.container.appendChild(this.clone_tooltip);
+            //   },
+            //   mouseOver: function () {
+            //     // var orig_tooltip, orig_container;
+            //     this.hc_tooltip = document.getElementsByClassName("highcharts-tooltip");
+
+            //     this.orig_container = this.hc_tooltip[0];
+            //     this.orig_tooltip = this.hc_tooltip[1];
+
+            //     if (this.orig_container && !this.hasClass(this.orig_container, "clone")) {
+            //       this.orig_container.classList.add("invisible");
+            //     }
+
+            //     if (this.orig_tooltip && !this.hasClass(this.orig_tooltip, "clone")) {
+            //       this.orig_tooltip.classList.add("invisible");
+            //     }
+            //   }
+            // }
+          //}
           events: {
             click: function (evt) {
               this.chart.myTooltip.options.enabled = true;
@@ -441,7 +490,7 @@ export default {
           },
           events: {
             load: function () {
-              this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip); 
+              this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip);
             }
           }
         },
@@ -491,6 +540,11 @@ export default {
               }, 1);
             },
             afterSetExtremes: this.afterSetExtremes,
+            // events: {
+            //   click: function (event) {
+            //     clean_tooltip();
+            //   }
+            // }
           }
 
         },
@@ -516,18 +570,17 @@ export default {
           y: 80
         },
         tooltip: {
-          // enabled:false,
-          // shape: "square",
-          // headerShape: "callout",
-          // borderWidth: 0,
-          // shadow: false,
-          // useHTML: true,
-          // positioner: function () {
-          //   return { x: 0, y: 800 };
-          // },
-          // split: true,
-          // distance: 30,
-          // padding: 5,
+          shape: "square",
+          headerShape: "callout",
+          borderWidth: 0,
+          shadow: false,
+          useHTML: true,
+          positioner: function () {
+            return { x: 50, y: 0 };
+          },
+          split: true,
+          distance: 30,
+          padding: 5,
           formatter() {
             let s = "";
             s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
@@ -1636,6 +1689,71 @@ export default {
         this.maybeReloadGraphData();
       }
     },
+
+    // generateTestData() {
+
+    //   var random_data = [];
+
+    //   random_data.push({
+
+    //     val1: 439.56,
+    //     val2: 649.16,
+    //     val3: 117.44,
+    //     val4: 132.44
+
+    //   });
+
+    //   random_data.push({
+
+    //     val1: 486.23,
+    //     val2: 379.41,
+    //     val3: 300.00,
+    //     val4: 114.15
+
+    //   });
+
+
+    //   var chart_data = [];
+
+    //   for (var i = 0; i < random_data.length; i++) {
+    //     var value = random_data[i];
+    //     var tooltip_data = "<div class='img-block center'></div>";
+    //     tooltip_data += '<br /><b>' + value.val1 + '</b>';
+    //     tooltip_data += '<br /><b>' + value.val2 + '</b>';
+    //     tooltip_data += '<br /><b>' + value.val3 + '</b>';
+    //     tooltip_data += '<br /><b>' + value.val4 + '</b>';
+
+    //     chart_data.push({
+    //       y: value.val1,
+    //       name: tooltip_data
+    //     });
+    //   }
+
+    //   return chart_data;
+    // },
+
+    //var data1 = generateTestData();
+    // End generating test data
+
+    // var clone_container = null;
+    // var clone_tooltip = null;
+
+    // hasClass(element, cls) {
+    //   return element.classList.contains(cls);
+    // },
+
+    // clean_tooltip() {
+    //   if (this.clone_container) {
+    //     this.chart.container.firstChild.removeChild(this.clone_container);
+    //     this.clone_container = null;
+    //   }
+
+    //   if (this.clone_tooltip) {
+    //     this.chart.container.removeChild(this.clone_tooltip);
+    //     this.clone_tooltip = null;
+    //   }
+    // },
+
   },
 
   created() {
@@ -1726,10 +1844,10 @@ export default {
 
 /* .highcharts-tooltip,
 .highcharts-tooltip-box { */
-  /* right: 0!important; */
-  /* margin: 0 auto !important; */
-  /* left: 0!important; */
-  /* width: 97%;
+/* right: 0!important; */
+/* margin: 0 auto !important; */
+/* left: 0!important; */
+/* width: 97%;
   top: 0px !important;
   text-align: center;
 } */
@@ -1753,8 +1871,8 @@ export default {
   position: sticky;
   padding: 5px !important;
   border: 0 !important; */
-  /* font-weight: bold; */
-  /* padding-top: 8px !important;
+/* font-weight: bold; */
+/* padding-top: 8px !important;
 }
 
 .graph_margin {
@@ -1763,7 +1881,7 @@ export default {
 
 /* @media only screen and (max-width: 800px) { */
 
-  /* .date_of_reading {
+/* .date_of_reading {
     text-align: center !important;
     display: block;
     width: 100% !important;
@@ -1780,7 +1898,7 @@ export default {
     margin-top: 0px;
   } */
 
-  /* .highcharts-tooltip-box span:first-child {
+/* .highcharts-tooltip-box span:first-child {
     width: 100% !important;
     right: 5px !important;
     left: 0px !important;
