@@ -1880,7 +1880,7 @@ export default {
 } */
 
 /* @media only screen and (max-width: 800px) { */
-
+ 
 /* .date_of_reading {
     text-align: center !important;
     display: block;
