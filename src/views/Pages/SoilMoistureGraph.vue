@@ -881,7 +881,7 @@ export default {
   /* right: 0!important; */
   margin: 0 auto !important;
   /* left: 0!important; */
-  width: 97%;
+  width: 100%;
   top: 0px !important;
   text-align: center;
 }
