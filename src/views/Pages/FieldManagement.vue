@@ -115,8 +115,8 @@
 
           <b-col class="avg-styles" lg="4" md="6">
             <ul v-if=" field_model.node_type == 'nut' ">
-              <li>SM Avg: 20%</li>
-              <li>Temp Avg: 20C</li>
+              <li>SM Avg: {{ field_model.sm_gauge }}%</li>
+              <li>Temp Avg: {{ field_model.temp_gauge }}C</li>
             </ul>
           </b-col>
 
@@ -480,7 +480,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [20],
+          data: [this.field_model.sm_gauge],
           dataLabels: {
             format: 'S.M Average {y}%',
             borderWidth: 0,
@@ -576,7 +576,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [20],
+          data: [this.field_model.temp_gauge],
           dataLabels: {
             format: 'Temp Average {y}%',
             borderWidth: 0,
@@ -672,7 +672,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [20],
+          data: [this.fieldsData.NO3_avg],
           dataLabels: {
             format: 'N03 {y} PPM',
             borderWidth: 0,
@@ -768,7 +768,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [20],
+          data: [this.fieldsData.NH4_avg],
           dataLabels: {
             format: 'NH4 {y} PPM',
             borderWidth: 0,
@@ -1210,6 +1210,9 @@ export default {
               'charging': item.charging,
               'battLevel': item.bp,
               'pump_status': false,
+
+                'NO3_avg' : 'NO3_avg' in item ? item.NO3_avg.toString() : null,
+                'NH4_avg' :'NH4_avg' in item ? item.NH4_avg.toString() : null,
 
               'nutrient_lower': 'nutrient_lower' in item ? item.nutrient_lower.toString() : null,
               'nutrient_upper': 'nutrient_upper' in item ? item.nutrient_upper.toString() : null,
