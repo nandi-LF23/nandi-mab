@@ -447,7 +447,8 @@ class FieldMapController extends Controller
                     // PROCESS NUTRIENT DATA
                     // ---------------------
 
-                } else if ($node['node_type'] == 'Nutrients') {
+                }
+                if ($node['node_type'] == 'Nutrients') {
 
                     // ENSURE NODE HAS ASSOCIATED FIELD DEFINED
                     if ($node['field_id']) {
@@ -481,19 +482,19 @@ class FieldMapController extends Controller
                         // Attempt to calculate NUTRIENT GAUGE VALUES
 
                         //  $results = Calculations::calcNutrientAverageGaugeValues($node_address,null);
-
-                        $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address', $node_address)->orderBy('id', 'DESC')->Limit(1)->get();
-                        if ($dataset->count() > 0) {
-
-                            //log::debug('get node adddr:'.$dataset[0]->node_address);
-
-                            $NO3_avg = 0;
+$NO3_avg = 0;
                             $NH4_avg = 0;
                             $counter1 = 0;
                             $counter2 = 0;
+                        $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address', $node_address)->orderBy('id', 'DESC')->Limit(1)->get();
+                        if ($dataset->count() > 0) {
+
+                            log::debug('get node adddr:'.$dataset[0]->node_address);
+
+
 
                             for ($i = 3; $i <= 6; $i++) {
-                                // log::debug('inside first for loop (i)');
+                                 log::debug('inside first for loop (i)');
 
                                 for ($j = 1; $j <= 4; $j++) {
                                     $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe', $dataset[0]->node_address)->Limit(1)->get();
@@ -513,7 +514,7 @@ class FieldMapController extends Controller
                                             //}
                                         }
                                     }
-                                    // log::debug('inside second for loop (j)');
+                                     log::debug('inside second for loop (j)');
                                     $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe', $dataset[0]->node_address)->Limit(1)->get();
                                     if ($dataset_nutrient_template_data->count() > 0) {
                                         $groupstring = 'M' . $i . '_' . $j . '_GROUP';
@@ -541,8 +542,9 @@ class FieldMapController extends Controller
                             $data['nutrient_avg'] = 0;
                             $data['nutrient_pc'] = 0; // percentage
                             $data['nutrient_label'] = 0;
-                            $data['NO3_avg'] = ($counter1?$NO3_avg/$counter1:1 );
-                            $data['NH4_avg'] = ($counter2 ? $NH4_avg / $counter2 : 1);
+                            $data['NO3_avg'] = $counter1?$NO3_avg/$counter1:1;
+                            $data['NH4_avg'] = $counter2 ? $NH4_avg / $counter2 :1;
+                            log::debug($data['NH4_avg']);
                             // CALCULATE SM FIELD STATUS COLOR
                             $ppmAverageColor = Calculations::calcPercentageOfColorRange(
                                 $data['nutrient_pc'],

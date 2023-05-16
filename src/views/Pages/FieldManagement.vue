@@ -56,45 +56,17 @@
               <!-- <div class='text-center'>N03 PPM Avg</div> -->
               <highcharts class="hc" :options=" chartOptionsN03PPM " :update-args=" chartUpdateArgs " ref="hchart">
               </highcharts>
-              <!-- <NiftyGauge :angle=" field_model.nutrient_gauge "
-                :tooltip=" 'L: ' + field_model.nutrient_lower + ', U: ' + field_model.nutrient_upper + ', A: ' + field_model.nutrient_avg "
-                :size=" '50%' " :subl=" field_model.nutrient_lower " :subm=" field_model.nutrient_avg "
-                :subr=" field_model.nutrient_upper " :label=" field_model.nutrient_label "
-                @clicked=" goToManageNutrients(field_model) " /> -->
-              <!-- <highcharts class="hc" :options=" chartOptions " :update-args=" chartUpdateArgs " ref="hchart">
-              </highcharts> -->
-
             </div>
-
-
-            <!-- <NiftyGauge :angle=" field_model.nutrient_gauge "
-                :tooltip=" 'L: ' + field_model.nutrient_lower + ', U: ' + field_model.nutrient_upper + ', A: ' + field_model.nutrient_avg "
-                :size=" '50%' " :subl=" field_model.nutrient_lower " :subm=" field_model.nutrient_avg "
-                :subr=" field_model.nutrient_upper " :label=" field_model.nutrient_label "
-                @clicked=" goToManageNutrients(field_model) " /> -->
-            <!-- <highcharts class="hc" :options=" chartOptions " :update-args=" chartUpdateArgs " ref="hchart">
-              </highcharts> -->
 
             <div v-if=" nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut') ">
               <div class='text-center'>S.M</div>
               <!-- the gauge. -->
-
               <highcharts class="hc" :options=" chartOptionsSM " :update-args=" chartUpdateArgs " ref="hchart">
               </highcharts>
-              <!-- <NiftyGauge
-                :angle="field_model.sm_gauge"
-                :tooltip="'F: ' + field_model.full + ', S: ' + field_model.status + ', R: ' + field_model.refill"
-                :size="'50%'"
-                :subl="field_model.refill"
-                :subm="field_model.status"
-                :subr="field_model.full"
-                :stops="[ 'from', '90deg', '#f44336', '0%', '#f44336', '50%', '#ffeb3b', '68.75%', '#4caf50', '81.25%', '#0052c1', '100%' ]"
-                @clicked="goToManageSM(field_model)" /> -->
             </div>
           </b-col>
 
           <b-col lg="4" sm="6">
-
             <div v-if=" nodeFilterType == 'nut' && field_model.node_type == 'nut' ">
               <!-- <div class='text-center'>NH4 PPM Avg</div> -->
               <highcharts class="hc" :options=" chartOptionsNH4PPM " :update-args=" chartUpdateArgs " ref="hchart">
@@ -105,18 +77,13 @@
               <div class='text-center'>Temp</div>
               <highcharts class="hc" :options=" chartOptionsTemp " :update-args=" chartUpdateArgs " ref="hchart">
               </highcharts>
-
-              <!-- <NiftyGauge :angle=" field_model.temp_gauge " :size=" '50%' " :subl=" '0' " :subm=" field_model.temp_avg "
-                :subr=" '100' "
-                :stops=" ['from', '90deg', '#0052c1', '0%', '#0052c1', '50%', '#f44336', '75%', '#f44336', '100%'] "
-                @clicked=" goToManageSM(field_model) " /> -->
             </div>
           </b-col>
 
           <b-col class="avg-styles" lg="4" md="6">
-            <ul v-if=" field_model.node_type == 'nut' ">
-              <li>SM Avg: {{ field_model.sm_gauge }}%</li>
-              <li>Temp Avg: {{ field_model.temp_gauge }}C</li>
+            <ul v-if=" nodeFilterType == 'nut' && field_model.node_type == 'nut' ">
+              <li>SM Avg: {{ (field_model.sm_gauge).toFixed(2) }}%</li>
+              <li>Temp Avg: {{ (field_model.temp_gauge).toFixed(2) }}C</li>
             </ul>
           </b-col>
 
@@ -354,14 +321,16 @@ export default {
         temp_avg: ''
       },
 
-      field_model: {
-        field_name: '',
-        node_address: '',
-        node_type: '',
-        status: '',
-        sm_avg: '',
-        temp_avg: ''
-      },
+        field_model: {
+            field_name: '',
+            node_address: '',
+            node_type: '',
+            status: '',
+            sm_avg: '',
+            temp_avg: '',
+            NH4_avg: '',
+            N03_avg: ''
+        },
 
       bv: 0,
       bp: 0,
@@ -413,8 +382,10 @@ export default {
 
   computed: {
     chartOptionsSM() {
-      console.log(this.fieldsData);
-      var fields_smAvg = this.fieldsData.sm_avg;
+      var fields_smAvg = parseInt(this.field_model.sm_gauge);
+      // fields_smAvg = fields_smAvg.toFixed(2);
+
+      console.log(fields_smAvg);
 
       return {
         tooltip: {
@@ -480,7 +451,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [this.field_model.sm_gauge],
+          data: [fields_smAvg],
           dataLabels: {
             format: 'S.M Average {y}%',
             borderWidth: 0,
@@ -509,8 +480,10 @@ export default {
     },
 
     chartOptionsTemp() {
-      console.log(this.fieldsData);
-      var fields_smAvg = this.fieldsData.sm_avg;
+      var fields_smTemp = this.field_model.temp_gauge;
+      fields_smTemp = fields_smTemp.toFixed(2);
+
+      // console.log(fields_smTemp);
 
       return {
         tooltip: {
@@ -576,7 +549,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [this.field_model.temp_gauge],
+          data: [fields_smTemp],
           dataLabels: {
             format: 'Temp Average {y}%',
             borderWidth: 0,
@@ -605,8 +578,8 @@ export default {
     },
 
     chartOptionsN03PPM() {
-      console.log(this.fieldsData);
-      var fields_smAvg = this.fieldsData.sm_avg;
+      var fields_N03 = this.field_model.NO3_avg;
+      fields_N03 = fields_N03.toFixed(2);
 
       return {
         tooltip: {
@@ -672,7 +645,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [this.fieldsData.NO3_avg],
+          data: [fields_N03],
           dataLabels: {
             format: 'N03 {y} PPM',
             borderWidth: 0,
@@ -701,8 +674,8 @@ export default {
     },
 
     chartOptionsNH4PPM() {
-      console.log(this.fieldsData);
-      var fields_smAvg = this.fieldsData.sm_avg;
+      var fields_NH4 = this.field_model.NH4_avg;
+      fields_NH4 = fields_NH4.toFixed(2);
 
       return {
         tooltip: {
@@ -768,7 +741,7 @@ export default {
 
         series: [{
           name: 'Average',
-          data: [this.fieldsData.NH4_avg],
+          data: [fields_NH4],
           dataLabels: {
             format: 'NH4 {y} PPM',
             borderWidth: 0,
@@ -1211,8 +1184,8 @@ export default {
               'battLevel': item.bp,
               'pump_status': false,
 
-                'NO3_avg' : 'NO3_avg' in item ? item.NO3_avg.toString() : null,
-                'NH4_avg' :'NH4_avg' in item ? item.NH4_avg.toString() : null,
+                'NO3_avg' : item.NO3_avg,
+                'NH4_avg' :item.NH4_avg,
 
               'nutrient_lower': 'nutrient_lower' in item ? item.nutrient_lower.toString() : null,
               'nutrient_upper': 'nutrient_upper' in item ? item.nutrient_upper.toString() : null,

@@ -28,11 +28,11 @@ class DataImportControllerHawk extends Controller
         set_time_limit(0);
 
         Log::debug('dmtImportHawk imei:'.$imei);
-        
+
         Log::debug('dmtImportHawk print_r'. serialize(print_r($request->all())));
 
        // return print_r($request->all());
-        
+
         // DISCARD INCOMPLETE REQUESTS
         if(empty($imei)) return response()->json([], 200);
         $data = $request->all();
@@ -51,7 +51,7 @@ class DataImportControllerHawk extends Controller
                 ->post("https://sandbox.myagbuddy.com/api/dmtimport/{$imei}");*/
             }
         }
-       
+
         $moisture_probe_models = [ 'ACHSDI', 'ACCSDI' ];
         $nutrient_probe_models = [ 'EC1VER', 'EC2VER' ];
 
@@ -162,7 +162,7 @@ class DataImportControllerHawk extends Controller
                  //   $bp   = !empty($field["AnalogueData"]['1']) ? ( ( 3300 - (float) $field["AnalogueData"]['1'] ) / 4100  )*100 : 0; // Batt.Percentage.
                     // backfill
 
-                    
+
 
                     /*
                     Dead level= 3.3v
@@ -205,7 +205,7 @@ $range = 4100 - 3300;
                 foreach($t_values as $key => $val){ $item->{$key} = $val; }
                 $item->accumulative = $m_values['accumulative'];
                 $item->average = $m_values['average'];
-                $item->rg = 0; 
+                $item->rg = 0;
 
                 $item->bv = $item->bv ?: $bv;
                 $item->bp = $item->bp ?: $bp;
@@ -227,7 +227,7 @@ $range = 4100 - 3300;
 
             if(!empty($n_values)){
                 $item = new nutri_data();
-                    
+
                 $item->node_address = $node_address; $item->probe_serial = $probe_serial;
                 $item->vendor_model_fw = $vendor_model_fw; $item->ver = $node_ver;
                 foreach($n_values as $key => $val){
@@ -240,7 +240,7 @@ $range = 4100 - 3300;
 
                 $item->latt = $item->latt ?: $latt;
                 $item->lng = $item->lng ?: $lng;
-                
+
                 $item->ambient_temp = $item->ambient_temp ?: $temp;
 
                 $item->message_id = 'dmt_'.$node_address . '_' . $date_sampled;
@@ -248,7 +248,7 @@ $range = 4100 - 3300;
                 $n_items[] = $item;
 
                 $hw_items[$node_address] = [ 'latitude'  => $latt, 'longitude' => $lng, 'date_time' => $date_sampled ];
-            
+
 
                 Log::info(print_r($item));
                 $item->save();
@@ -257,27 +257,29 @@ $range = 4100 - 3300;
 
         } // end for Records
 
-        if($m_items){
-            foreach($m_items as &$m_item){
-                if(!node_data::where('message_id_2', $m_item->message_id_2)->exists()){
-                    $m_item->save();
+        if ($m_items) {
+            foreach ($m_items as &$m_item) {
+                $m_item->save();
+                /*  if(!node_data::where('message_id_2', $m_item->message_id_2)->exists()){
+                $m_item->save();
                 } else if(!empty($request->update_existing)){
-                    $existing = node_data::where('message_id_2', $m_item->message_id_2)->first();
-                    if($existing){
-                        $existing->update([
-                            'ambient_temp' => $m_item->ambient_temp,
-                            'bv' => $m_item->bv,
-                            'bp' => $m_item->bp
-                        ]);
-                    }
+                $existing = node_data::where('message_id_2', $m_item->message_id_2)->first();
+                if($existing){
+                $existing->update([
+                'ambient_temp' => $m_item->ambient_temp,
+                'bv' => $m_item->bv,
+                'bp' => $m_item->bp
+                ]);
                 }
+                }
+                }*/
             }
         }
         if($n_items){
             foreach($n_items as &$n_item){
-                
+
                         $n_item->save();
-               
+
             }
         }
         if($hw_items){
@@ -288,7 +290,7 @@ $range = 4100 - 3300;
                         $latt = $item['latitude']; $lng  = $item['longitude'];
                         // GPS DRIFT PREVENTION
                         if(($latt && (abs($latt - $hw->latt) > $gps_epsilon)) || ($lng && (abs($lng - $hw->lng) > $gps_epsilon))){
-                            $hw->latt = $latt; 
+                            $hw->latt = $latt;
                             $hw->lng  = $lng;
                         }
                     }

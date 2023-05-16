@@ -190,6 +190,8 @@ export default {
       full: 0,
       refill: 0,
 
+      status: '',
+
       plotOptions: {
         series: {
           states: {
@@ -411,7 +413,7 @@ export default {
 
 
         if (resp.data) {
-
+console.log(resp.data);
           if (resp.data.message && resp.data.message == 'no_data') {
             swal.fire({
               title: 'No data found',
@@ -541,8 +543,8 @@ export default {
 
     enableSeriesDragDrop() {
       if (this.series && this.series.length) {
-        console.log("Enabling Series Drag and Drop");
-        console.log(this.series);
+        // console.log("Enabling Series Drag and Drop");
+        // console.log(this.series);
 
         if (this.graph_type == 'stack') {
           // Remove labels on yAxis when DnD is true
@@ -608,7 +610,7 @@ export default {
 
         // Lock in Y Max/Min
         if (this.graph_type != 'ave') {
-          console.log(this.$refs.hchart);
+          //console.log(this.$refs.hchart);
           this.yMax = this.$refs.hchart.chart.yAxis[0].max;
           this.yMin = this.$refs.hchart.chart.yAxis[0].min;
         }
@@ -619,7 +621,7 @@ export default {
 
     disableSeriesDragDrop() {
       if (this.series && this.series.length) {
-        console.log("Disabling series DnD");
+        //console.log("Disabling series DnD");
 
         // Disable drag
         this.series.forEach((series, idx) => {
@@ -881,7 +883,7 @@ export default {
   /* right: 0!important; */
   margin: 0 auto !important;
   /* left: 0!important; */
-  width: 100%;
+  width: 97%;
   top: 0px !important;
   text-align: center;
 }
