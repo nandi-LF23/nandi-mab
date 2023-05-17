@@ -604,6 +604,7 @@ $M6_avg_val = $M6_val/$count;
           }
         }
         $val = bcdiv($ctr < 1 ? $tot : ($tot / $ctr), 1, 2);
+        $val = number_format($val, 2, '.', '');
       }
     } else if ($node_type == 'Nutrients') {
       $val = bcdiv(DB::table('nutri_data')->select('M1_1')
@@ -611,6 +612,8 @@ $M6_avg_val = $M6_val/$count;
         ->orderBy('id', 'desc')
         ->limit(1)
         ->value('M1_1'), 1, 2);
+      $val = number_format($val, 2, '.', '');
+
     }
     return $val;
   }
