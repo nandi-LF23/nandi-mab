@@ -315,7 +315,11 @@ export default {
             let s = "";
             s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
             this.points.forEach(function (point) {
+              console.log(point);
               s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
+              // if (this.series.name == 'Average' && this.status) {
+              //   s += '<span style="color:black;">●</span> Status: <strong>' + this.status + '%</strong><br>';
+              // }
             });
             return s;
           },
@@ -413,7 +417,6 @@ export default {
 
 
         if (resp.data) {
-console.log(resp.data);
           if (resp.data.message && resp.data.message == 'no_data') {
             swal.fire({
               title: 'No data found',

@@ -480,8 +480,11 @@ class GraphController extends Controller
                     $stage_start_date = new \DateTime($stage->stage_start_date);
                     $stage_start_date->setTimezone(new \DateTimeZone($this->tz));
 
-                    $low  = (float)($field->refill + ($capacity * ($stage->lower / 100)));
-                    $high = (float)($field->refill + ($capacity * ($stage->upper / 100)));
+                    // $low  = (float)($field->refill + ($capacity * ($stage->lower / 100)));
+                    // $high = (float)($field->refill + ($capacity * ($stage->upper / 100)));
+
+                    $low  = (float)bcdiv($field->refill + ($capacity * ($stage->lower / 100)), 1, 2);
+                    $high = (float)bcdiv($field->refill + ($capacity * ($stage->upper / 100)), 1, 2);
 
                     $y_min = $low < $y_min ? $low : $y_min;
                     $y_max = $high > $y_max ? $high : $y_max;
@@ -499,8 +502,11 @@ class GraphController extends Controller
 
                 $ld = ($ld->getTimestamp() + $ld->getOffset()) * 1000;
 
-                $low  = (float)($field->refill + ($capacity * ($last->lower / 100)));
-                $high = (float)($field->refill + ($capacity * ($last->upper / 100)));
+                // $low  = (float)($field->refill + ($capacity * ($last->lower / 100)));
+                // $high = (float)($field->refill + ($capacity * ($last->upper / 100)));
+
+                $low  = (float)bcdiv($field->refill + ($capacity * ($stage->lower / 100)), 1, 2);
+                $high = (float)bcdiv($field->refill + ($capacity * ($stage->upper / 100)), 1, 2);
 
                 $y_min = $low < $y_min ? $low : $y_min;
                 $y_max = $high > $y_max ? $high : $y_max;
@@ -669,8 +675,10 @@ class GraphController extends Controller
                     'x_min' => (float)number_format($x_min, 2, '.', ''),
                     'y_max' => (float)number_format($y_max, 2, '.', '') + 1,
                     'y_min' => (float)number_format($y_min, 2, '.', '') - 1,
-                    'full'  => (float)number_format($field->full, 2, '.', ''),
-                    'refill' => (float)number_format($field->refill, 2, '.', '')
+                    // 'full'  => (float)number_format($field->full, 2, '.', ''),
+                    // 'refill' => (float)number_format($field->refill, 2, '.', '')
+                    'full'  => $field->full,
+                    'refill' => $field->refill
                 ];
                 break;
 

@@ -12,78 +12,78 @@
         </div>
 
         <b-form-group class='type_filter_menu'>
-          <b-form-radio-group v-model=" nodeFilterType " :options=" nodeFilterTypes " size="sm" style="width:100%" buttons
-            button-variant="primary" @change=" filterNodeType " v-on:click.stop.prevent=" () => { } ">
+          <b-form-radio-group v-model="nodeFilterType" :options="nodeFilterTypes" size="sm" style="width:100%" buttons
+            button-variant="primary" @change="filterNodeType" v-on:click.stop.prevent="() => { }">
           </b-form-radio-group>
         </b-form-group>
       </template>
 
       <template v-for="(     marker, index     ) in      markers     ">
-        <div :key=" nodeFilterType + index " v-if=" marker.visible " class='field_record' @click=" focusMarker(marker) ">
+        <div :key="nodeFilterType + index" v-if="marker.visible" class='field_record' @click=" focusMarker(marker)">
           <div class='field_name'>{{ marker.field_name }}</div>
           <div class='node_address'>{{ marker.node_address }}</div>
-          <div class='last_reading_date' :style=" 'color:' + calcLastReadingColor(marker) ">{{ marker.date_time }}</div>
-          <div v-if=" marker.node_type == 'sm' && marker.status " class='field_sm_status'>Status: {{ marker.status }}%
+          <div class='last_reading_date' :style="'color:' + calcLastReadingColor(marker)">{{ marker.date_time }}</div>
+          <div v-if="marker.node_type == 'sm' && marker.status" class='field_sm_status'>Status: {{ marker.status }}%
           </div>
           <div class='indicators'>
-            <SMStatusGraph v-if=" marker.node_type == 'sm' && marker.status " :full=" marker.full "
-              :status=" marker.status " :refill=" marker.refill " :size=" '35%' "
-              :tooltip=" 'F: ' + marker.full + '%, S: ' + marker.status + '%, R: ' + marker.refill + '%' "
-              :label=" 'S.M' " @clicked=" goToGraph(marker) " />
+            <SMStatusGraph v-if="marker.node_type == 'sm' && marker.status" :full="marker.full"
+              :status="marker.status" :refill="marker.refill" :size="'35%'"
+              :tooltip="'F: ' + marker.full + '%, S: ' + marker.status + '%, R: ' + marker.refill + '%'"
+              :label="'S.M'" @clicked=" goToGraph(marker)" />
             <div v-else style="width:35%"></div>
-            <BVIndicator :level=" marker.battLevel " :size=" '35%' " :charging=" marker.charging "
-              :tooltip=" 'Level: ' + marker.battLevel + '%' " />
+            <BVIndicator :level="marker.battLevel" :size="'35%'" :charging="marker.charging"
+              :tooltip="'Level: ' + marker.battLevel + '%'" />
           </div>
         </div>
       </template>
     </FocusMenu>
 
-    <b-modal dialog-class='mab_modal' v-model=" fieldModalVisible " centered hide-backdrop no-enforce-focus size='lg'>
+    <b-modal dialog-class='mab_modal' v-model="fieldModalVisible" centered hide-backdrop no-enforce-focus size='lg'>
 
-      <template #modal-header=" { close } ">
+      <template #modal-header="{ close }">
         <h6 class="modal-title">{{ field_model.field_name }}</h6>
         <!-- <span>{{ field_model.temp_avg }}</span>
           <span>{{ field_model. }}</span> -->
-        <div :style=" 'color:' + calcLastReadingColor(field_model) ">{{ field_model.date_time }}</div>
+        <div :style="'color:' + calcLastReadingColor(field_model)">{{ field_model.date_time }}</div>
         <span>{{ field_model.node_address }}</span>
 
       </template>
 
-      <template #default=" { hide } ">
+      <template #default="{ hide }">
         <b-row>
           <b-col lg="4" md="6">
-            <div v-if=" nodeFilterType == 'nut' && field_model.node_type == 'nut' ">
+            <div v-if="nodeFilterType == 'nut' && field_model.node_type == 'nut'">
               <!-- <div class='text-center'>N03 PPM Avg</div> -->
-              <highcharts class="hc" :options=" chartOptionsN03PPM " :update-args=" chartUpdateArgs " ref="hchart">
+              <highcharts class="hc" :options="chartOptionsN03PPM" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
             </div>
 
-            <div v-if=" nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut') ">
+            <div v-if="nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut')">
               <div class='text-center'>S.M</div>
               <!-- the gauge. -->
-              <highcharts class="hc" :options=" chartOptionsSM " :update-args=" chartUpdateArgs " ref="hchart">
+              <highcharts class="hc" :options="chartOptionsSM" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
             </div>
           </b-col>
 
           <b-col lg="4" sm="6">
-            <div v-if=" nodeFilterType == 'nut' && field_model.node_type == 'nut' ">
+            <div v-if="nodeFilterType == 'nut' && field_model.node_type == 'nut'">
               <!-- <div class='text-center'>NH4 PPM Avg</div> -->
-              <highcharts class="hc" :options=" chartOptionsNH4PPM " :update-args=" chartUpdateArgs " ref="hchart">
+              <highcharts class="hc" :options="chartOptionsNH4PPM" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
             </div>
             <div
-              v-else-if=" nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut') ">
+              v-else-if="nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut')">
               <div class='text-center'>Temp</div>
-              <highcharts class="hc" :options=" chartOptionsTemp " :update-args=" chartUpdateArgs " ref="hchart">
+              <highcharts class="hc" :options="chartOptionsTemp" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
             </div>
           </b-col>
 
           <b-col class="avg-styles" lg="4" md="6">
-            <ul v-if=" nodeFilterType == 'nut' && field_model.node_type == 'nut' ">
-              <li>SM Avg: {{ (field_model.sm_gauge).toFixed(2) }}%</li>
-              <li>Temp Avg: {{ (field_model.temp_gauge).toFixed(2) }}C</li>
+            <ul v-if="nodeFilterType == 'nut' && field_model.node_type == 'nut'">
+              <li>SM Avg: {{ (field_model.sm_avg) }}</li>
+              <li>Temp Avg: {{ (field_model.temp_avg) }}C</li>
             </ul>
           </b-col>
 
@@ -96,43 +96,42 @@
         </b-row>
       </template>
 
-      <template #modal-footer=" { ok, cancel, hide } ">
-        <b-button variant="outline-primary" class="ml-auto" @click=" closeFieldModal ">
+      <template #modal-footer="{ ok, cancel, hide }">
+        <b-button variant="outline-primary" class="ml-auto" @click="closeFieldModal">
           Close
         </b-button>
       </template>
     </b-modal>
 
-    <MglMap :repaint=" true " :mapboxGl=" mapboxObj " :accessToken=" $store.state.mapBoxAccessToken "
-      :mapStyle.sync=" mapStyle " :attributionControl=" false " :center=" startPos " logoPosition="bottom-right"
-      @load=" mapLoaded " @zoom=" scaleMarkers " @zoomend=" filterFields " @dragend=" filterFields ">
+    <MglMap :repaint="true" :mapboxGl="mapboxObj" :accessToken="$store.state.mapBoxAccessToken"
+      :mapStyle.sync="mapStyle" :attributionControl="false" :center="startPos" logoPosition="bottom-right"
+      @load="mapLoaded" @zoom="scaleMarkers" @zoomend="filterFields" @dragend="filterFields">
 
       <template v-for="(     marker, idx     ) in      markers     ">
 
-        <template v-if=" marker.zones && marker.zones.length ">
-          <MglGeojsonLayer v-for="(     zone, idx2     ) in      marker.zones     " :key=" idx + '_' + idx2 "
-            :sourceId=" zone.layer.id " :layerId=" zone.layer.id " :source=" zone.source " :layer=" zone.layer "
-            @click=" setFieldModalZoneInfo(marker.node_address, zone) " :clearSource=" false " />
+        <template v-if="marker.zones && marker.zones.length">
+          <MglGeojsonLayer v-for="(     zone, idx2     ) in      marker.zones     " :key="idx + '_' + idx2"
+            :sourceId="zone.layer.id" :layerId="zone.layer.id" :source="zone.source" :layer="zone.layer"
+            @click=" setFieldModalZoneInfo(marker.node_address, zone)" :clearSource="false" />
         </template>
 
-        <MglGeojsonLayer v-if=" marker.perimeter " :sourceId=" marker.node_address " :layerId=" marker.node_address "
-          :source=" marker.perimeter " :layer=" marker.layer " :clearSource=" false "
-          @click=" showFieldModal(marker.node_address) " @mouseover=" showLayerCursor " @mouseout=" hideLayerCursor " />
+        <MglGeojsonLayer v-if="marker.perimeter" :sourceId="marker.node_address" :layerId="marker.node_address"
+          :source="marker.perimeter" :layer="marker.layer" :clearSource="false"
+          @click=" showFieldModal(marker.node_address)" @mouseover="showLayerCursor" @mouseout="hideLayerCursor" />
 
-        <MglMarker :key=" marker.node_address + '_' + idx " :ref=" marker.node_address "
-          @click=" !marker.perimeter ? showFieldModal(marker.node_address) : {} " :coordinates=" marker.position "
+        <MglMarker :key="marker.node_address + '_' + idx" :ref="marker.node_address"
+          @click=" !marker.perimeter ? showFieldModal(marker.node_address) : {}" :coordinates="marker.position"
           anchor="top">
 
           <div class='field_marker' slot="marker">
-            <div :class="
-              [
+            <div :class="[
                 'marker',
                 mapLayerType.includes('nodes') && marker.visible ? 'marker_visible' : 'marker_hidden',
                 marker.perimeter ? 'has_perimeter' : 'no_perimeter'
               ]
-            "
-              :style=" 'color:' + calcMarkerIconColor(marker, marker.status, marker.node_type) + '; transform:scale(' + markerScale + '); transform-origin:top center;' + calcMarkerBorderColor(marker) ">
-              <template v-if=" marker.node_type == 'well' ">
+              "
+              :style="'color:' + calcMarkerIconColor(marker, marker.status, marker.node_type) + '; transform:scale(' + markerScale + '); transform-origin:top center;' + calcMarkerBorderColor(marker)">
+              <template v-if="marker.node_type == 'well'">
                 <svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible"
                   width="100%" height="100%" viewBox="0 0 165 187.5">
                   <path stroke-width="0"
@@ -140,7 +139,7 @@
                     fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16" />
                 </svg>
               </template>
-              <template v-else-if=" marker.node_type == 'meter' ">
+              <template v-else-if="marker.node_type == 'meter'">
                 <svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible"
                   width="100%" height="100%" viewBox="0 0 225 150">
                   <path stroke-width="0"
@@ -148,7 +147,7 @@
                     fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16" />
                 </svg>
               </template>
-              <template v-else-if=" marker.node_type == 'sm' ">
+              <template v-else-if="marker.node_type == 'sm'">
                 <svg stroke-width=".501" stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg"
                   overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5">
                   <g stroke-linecap="round" stroke="none" fill="none" font-size="16">
@@ -163,7 +162,7 @@
                 </svg>
 
               </template>
-              <template v-else-if=" marker.node_type == 'nut' ">
+              <template v-else-if="marker.node_type == 'nut'">
                 <svg stroke-width=".501" stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg"
                   overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5">
                   <g stroke-linecap="round" stroke="none" fill="none" font-size="16">
@@ -186,45 +185,45 @@
     </MglMap>
 
     <b-form-group class='info_filter_menu'>
-      <b-form-checkbox-group v-model=" mapLayerType " :options=" mapLayerTypes " stacked buttons button-variant="primary"
-        size="sm" @change=" filterNodeType " v-on:click.stop.prevent=" () => { } ">
+      <b-form-checkbox-group v-model="mapLayerType" :options="mapLayerTypes" stacked buttons button-variant="primary"
+        size="sm" @change="filterNodeType" v-on:click.stop.prevent="() => { }">
       </b-form-checkbox-group>
     </b-form-group>
 
-    <base-button icon type="primary" class='legend_btn' size="sm" @click=' toggleLegendModal() '><span
+    <base-button icon type="primary" class='legend_btn' size="sm" @click=' toggleLegendModal()'><span
         class='cirle'>?</span></base-button>
 
-    <b-modal v-model=" showLegendModal " dialog-class='legend_modal' centered hide-backdrop no-close-on-esc
+    <b-modal v-model="showLegendModal" dialog-class='legend_modal' centered hide-backdrop no-close-on-esc
       no-close-on-backdrop>
 
-      <template #modal-header=" { close } ">
+      <template #modal-header="{ close }">
         <h6 slot="header" class="modal-title" id="modal-title-default">Legend</h6>
       </template>
 
-      <template #default=" { hide } ">
+      <template #default="{ hide }">
         <div class='legend_box'>
           <b-row>
             <b-col md>
               <h3>Soil Moisture Probes</h3>
-              <div class='line'><span class='licon blue' v-html=" renderSvgIcon('sm') "></span> 75%+ Moisture </div>
-              <div class='line'><span class='licon green' v-html=" renderSvgIcon('sm') "></span> 50-75% Moisture </div>
-              <div class='line'><span class='licon orange' v-html=" renderSvgIcon('sm') "></span> 25-50% Moisture </div>
-              <div class='line'><span class='licon red' v-html=" renderSvgIcon('sm') "></span> 0-25% Moisture </div>
+              <div class='line'><span class='licon blue' v-html="renderSvgIcon('sm')"></span> 75%+ Moisture </div>
+              <div class='line'><span class='licon green' v-html="renderSvgIcon('sm')"></span> 50-75% Moisture </div>
+              <div class='line'><span class='licon orange' v-html="renderSvgIcon('sm')"></span> 25-50% Moisture </div>
+              <div class='line'><span class='licon red' v-html="renderSvgIcon('sm')"></span> 0-25% Moisture </div>
             </b-col>
             <b-col md>
               <h3>Nutrient Probes</h3>
-              <div class='line'><span class='licon blue' v-html=" renderSvgIcon('nut') "></span> Coming Soon </div>
+              <div class='line'><span class='licon blue' v-html="renderSvgIcon('nut')"></span> Coming Soon </div>
             </b-col>
           </b-row>
           <b-row>
             <b-col md>
               <h3>Wells</h3>
-              <div class='line'><span class='licon green' v-html=" renderSvgIcon('well') "></span> Pump Running </div>
-              <div class='line'><span class='licon red' v-html=" renderSvgIcon('well') "></span> Pump Idle </div>
+              <div class='line'><span class='licon green' v-html="renderSvgIcon('well')"></span> Pump Running </div>
+              <div class='line'><span class='licon red' v-html="renderSvgIcon('well')"></span> Pump Idle </div>
             </b-col>
             <b-col md>
               <h3>Meters</h3>
-              <div class='line'><span class='licon blue' v-html=" renderSvgIcon('meter') "></span> Water Meter </div>
+              <div class='line'><span class='licon blue' v-html="renderSvgIcon('meter')"></span> Water Meter </div>
             </b-col>
           </b-row>
           <b-row>
@@ -234,24 +233,24 @@
           </b-row>
           <b-row>
             <b-col md>
-              <div class='line'><span class='licon' v-html=" renderSvgIcon('green_zone') "></span> Zone 1 </div>
-              <div class='line'><span class='licon' v-html=" renderSvgIcon('lightgreen_zone') "></span> Zone 2 </div>
+              <div class='line'><span class='licon' v-html="renderSvgIcon('green_zone')"></span> Zone 1 </div>
+              <div class='line'><span class='licon' v-html="renderSvgIcon('lightgreen_zone')"></span> Zone 2 </div>
             </b-col>
             <b-col md>
-              <div class='line'><span class='licon' v-html=" renderSvgIcon('yellow_zone') "></span> Zone 3 </div>
-              <div class='line'><span class='licon' v-html=" renderSvgIcon('red_zone') "></span> Zone 4 </div>
+              <div class='line'><span class='licon' v-html="renderSvgIcon('yellow_zone')"></span> Zone 3 </div>
+              <div class='line'><span class='licon' v-html="renderSvgIcon('red_zone')"></span> Zone 4 </div>
             </b-col>
           </b-row>
         </div>
       </template>
 
-      <template #modal-footer=" { ok, cancel, hide } ">
+      <template #modal-footer="{ ok, cancel, hide }">
         <base-button type="link" class="ml-auto" variant="outline-primary"
-          @click=" toggleLegendModal() ">Close</base-button>
+          @click=" toggleLegendModal()">Close</base-button>
       </template>
     </b-modal>
 
-    <div v-show=' loading ' class='mab_spinner light center large'></div>
+    <div v-show='loading' class='mab_spinner light center large'></div>
   </div>
 </template>
 <script>
@@ -321,16 +320,16 @@ export default {
         temp_avg: ''
       },
 
-        field_model: {
-            field_name: '',
-            node_address: '',
-            node_type: '',
-            status: '',
-            sm_avg: '',
-            temp_avg: '',
-            NH4_avg: '',
-            N03_avg: ''
-        },
+      field_model: {
+        field_name: '',
+        node_address: '',
+        node_type: '',
+        status: '',
+        sm_avg: '',
+        temp_avg: '',
+        NH4_avg: '',
+        N03_avg: '',
+      },
 
       bv: 0,
       bp: 0,
@@ -382,10 +381,9 @@ export default {
 
   computed: {
     chartOptionsSM() {
-      var fields_smAvg = parseInt(this.field_model.sm_gauge);
+      var fields_smAvg = parseInt(this.field_model.sm_avg);
       // fields_smAvg = fields_smAvg.toFixed(2);
 
-      console.log(fields_smAvg);
 
       return {
         tooltip: {
@@ -453,7 +451,7 @@ export default {
           name: 'Average',
           data: [fields_smAvg],
           dataLabels: {
-            format: 'S.M Average {y}%',
+            format: 'S.M Avg {y}%',
             borderWidth: 0,
             color: '#333333',
             style: {
@@ -480,10 +478,7 @@ export default {
     },
 
     chartOptionsTemp() {
-      var fields_smTemp = this.field_model.temp_gauge;
-      fields_smTemp = fields_smTemp.toFixed(2);
-
-      // console.log(fields_smTemp);
+      var fields_smTemp = this.field_model.temp_avg;
 
       return {
         tooltip: {
@@ -548,10 +543,10 @@ export default {
         },
 
         series: [{
-          name: 'Average',
+          name: 'Temperature',
           data: [fields_smTemp],
           dataLabels: {
-            format: 'Temp Average {y}%',
+            format: 'Temp Avg {y}C',
             borderWidth: 0,
             color: '#333333',
             style: {
@@ -579,7 +574,6 @@ export default {
 
     chartOptionsN03PPM() {
       var fields_N03 = this.field_model.NO3_avg;
-      fields_N03 = fields_N03.toFixed(2);
 
       return {
         tooltip: {
@@ -644,7 +638,7 @@ export default {
         },
 
         series: [{
-          name: 'Average',
+          name: 'N03',
           data: [fields_N03],
           dataLabels: {
             format: 'N03 {y} PPM',
@@ -675,7 +669,6 @@ export default {
 
     chartOptionsNH4PPM() {
       var fields_NH4 = this.field_model.NH4_avg;
-      fields_NH4 = fields_NH4.toFixed(2);
 
       return {
         tooltip: {
@@ -740,7 +733,7 @@ export default {
         },
 
         series: [{
-          name: 'Average',
+          name: 'NH4',
           data: [fields_NH4],
           dataLabels: {
             format: 'NH4 {y} PPM',
@@ -806,7 +799,8 @@ export default {
         ) {
 
           this.fieldsData = resp.data.nodes;
-          console.log(this.fieldsData);
+          this.field_model.node_address = resp.data.nodes;
+
           this.populateMarkers();
           this.calcBounds();
           this.setupMap();
@@ -886,8 +880,7 @@ export default {
           // COMMON DATA
           this.node_id = resp.data.node_id;
           this.field_name = resp.data.field_name;
-          this.field_model.sm_avg = resp.field_model.sm_avg;
-          console.log(this.field_model.sm_avg);
+          //this.field_model.sm_avg = resp.field_model.sm_avg;
           // Experimental
           if (this.bInitialQuery) {
             this.graph_start_date = resp.data.graph_start_date;
@@ -1115,7 +1108,6 @@ export default {
           // ensure non-zero coords
           if (item.lng && item.latt) {
             // create markers array
-
             this.markers.push({
               'id': item.id,
 
@@ -1184,8 +1176,8 @@ export default {
               'battLevel': item.bp,
               'pump_status': false,
 
-                'NO3_avg' : item.NO3_avg,
-                'NH4_avg' :item.NH4_avg,
+              'NO3_avg': item.NO3_avg,
+              'NH4_avg': item.NH4_avg,
 
               'nutrient_lower': 'nutrient_lower' in item ? item.nutrient_lower.toString() : null,
               'nutrient_upper': 'nutrient_upper' in item ? item.nutrient_upper.toString() : null,
@@ -1195,7 +1187,9 @@ export default {
 
               'sm_gauge': 'sm_gauge' in item ? item.sm_gauge : 0,
               'temp_gauge': 'temp_gauge' in item ? item.temp_gauge : 0,
-              'temp_avg': 'temp_avg' in item ? item.temp_avg : 0,
+              'temp_avg': 'temp_avg' in item ? item.ambient_temp : 0,
+              'sm_avg': 'sm_avg' in item ? item.sm_avg : 0,
+              // 'ambient_temp': 'ambient_temp' in item ? item.ambient_temp : 0,
 
               'perimeter': item.perimeter !== null ? { type: 'geojson', data: JSON.parse(item.perimeter) } : null,
               'layer': (typeof item.layer === 'object' && item.layer !== null) ? (JSON.parse(JSON.stringify(item.layer))) : null,
@@ -1460,7 +1454,7 @@ ul {
 
 .avg-styles ul {
   position: absolute;
-  bottom:10%;
+  bottom: 10%;
 }
 
 .avg-styles li {
