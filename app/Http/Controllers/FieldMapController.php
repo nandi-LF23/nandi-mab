@@ -32,7 +32,6 @@ class FieldMapController extends Controller
 
     public function getMarkerValues(Request $request)
     {
-
     }
     public function index(Request $request)
     {
@@ -362,7 +361,6 @@ class FieldMapController extends Controller
                     $data['date_time'] = $lr->format('Y-m-d H:i:s');
                     $data['date_diff'] = $todays_date->diff($lr);
                     log::debug($node['node_address'] . ' reading :' . $data['date_time']);
-
                 }
 
 
@@ -373,7 +371,7 @@ class FieldMapController extends Controller
                 if ($node['node_type'] == 'Soil Moisture') {
 
                     // FORMAT SM + TEMP READINGS
-/*          for($i = 1; $i < 15; $i++){
+                    /*          for($i = 1; $i < 15; $i++){
             $data["sm$i"] = (float) bcdiv($data["sm$i"],1, 2);
             $data["t$i"]  = (float) bcdiv($data["t$i"], 1, 2);
           }
@@ -397,6 +395,16 @@ class FieldMapController extends Controller
                         $data['sm_avg'] = Calculations::getLatestNodeAvgSM($node);
                         $data['sm_gauge'] = ($data['status'] * 1.8) - 90;
                         $data['temp_avg'] = Calculations::getLatestNodeAvgTemp($node);
+                        
+                        $user = Auth::user();
+
+                        if ($user->unit_of_measure == 2) {
+                            $data['temp_avg'] = number_format((float)($data['temp_avg'] * (9 / 5) + 32), 1, '.', '');
+                            $data['temp_uom'] = ' °F';
+                        } else if ($user->unit_of_measure == 1) {
+                            $data['temp_avg'] = number_format((float)($data['temp_avg']), 1, '.', '');
+                            $data['temp_uom'] = ' °C';
+                        }
                         $data['temp_gauge'] = ($data['temp_avg'] * 1.8) - 90;
 
                         if ($data['sm_gauge'] < -90) {
@@ -430,7 +438,6 @@ class FieldMapController extends Controller
 
                             $defaults['layer']['paint']['fill-color'] = $statusColor;
                             $defaults['layer']['paint']['fill-outline-color'] = $statusColor;
-
                         }
                     }
 
@@ -454,7 +461,6 @@ class FieldMapController extends Controller
                     if ($node['field_id']) {
 
                         $moisture = 'average'; // always
-
                         // calculate status
                         $result = Calculations::calcStatus(
                             (float) $data[$moisture],
@@ -469,7 +475,19 @@ class FieldMapController extends Controller
                         $data['status'] = $result['status'];
                         $data['sm_avg'] = Calculations::getLatestNodeAvgSM($node);
                         $data['sm_gauge'] = ($data['status'] * 1.8) - 90;
+
                         $data['temp_avg'] = Calculations::getLatestNodeAvgTemp($node);
+
+                        $user = Auth::user();
+
+                        if ($user->unit_of_measure == 2) {
+                            $data['temp_avg'] = number_format((float)($data['temp_avg'] * (9 / 5) + 32), 1, '.', '');
+                            $data['temp_uom'] = ' °F';
+                        } else if ($user->unit_of_measure == 1) {
+                            $data['temp_avg'] = number_format((float)($data['temp_avg']), 1, '.', '');
+                            $data['temp_uom'] = ' °C';
+                        }
+
                         $data['temp_gauge'] = ($data['temp_avg'] * 1.8) - 90;
 
                         if ($data['sm_gauge'] < -90) {
@@ -482,19 +500,19 @@ class FieldMapController extends Controller
                         // Attempt to calculate NUTRIENT GAUGE VALUES
 
                         //  $results = Calculations::calcNutrientAverageGaugeValues($node_address,null);
-$NO3_avg = 0;
-                            $NH4_avg = 0;
-                            $counter1 = 0;
-                            $counter2 = 0;
+                        $NO3_avg = 0;
+                        $NH4_avg = 0;
+                        $counter1 = 0;
+                        $counter2 = 0;
                         $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address', $node_address)->orderBy('id', 'DESC')->Limit(1)->get();
                         if ($dataset->count() > 0) {
 
-                            log::debug('get node adddr:'.$dataset[0]->node_address);
+                            log::debug('get node adddr:' . $dataset[0]->node_address);
 
 
 
                             for ($i = 3; $i <= 6; $i++) {
-                                 log::debug('inside first for loop (i)');
+                                log::debug('inside first for loop (i)');
 
                                 for ($j = 1; $j <= 4; $j++) {
                                     $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe', $dataset[0]->node_address)->Limit(1)->get();
@@ -514,7 +532,7 @@ $NO3_avg = 0;
                                             //}
                                         }
                                     }
-                                     log::debug('inside second for loop (j)');
+                                    log::debug('inside second for loop (j)');
                                     $dataset_nutrient_template_data = DB::connection('mysql')->table('nutrient_template_data')->where('nutriprobe', $dataset[0]->node_address)->Limit(1)->get();
                                     if ($dataset_nutrient_template_data->count() > 0) {
                                         $groupstring = 'M' . $i . '_' . $j . '_GROUP';
@@ -542,8 +560,8 @@ $NO3_avg = 0;
                             $data['nutrient_avg'] = 0;
                             $data['nutrient_pc'] = 0; // percentage
                             $data['nutrient_label'] = 0;
-                            $data['NO3_avg'] = $counter1?$NO3_avg/$counter1:1;
-                            $data['NH4_avg'] = $counter2 ? $NH4_avg / $counter2 :1;
+                            $data['NO3_avg'] = $counter1 ? $NO3_avg / $counter1 : 1;
+                            $data['NH4_avg'] = $counter2 ? $NH4_avg / $counter2 : 1;
                             log::debug($data['NH4_avg']);
                             // CALCULATE SM FIELD STATUS COLOR
                             $ppmAverageColor = Calculations::calcPercentageOfColorRange(
@@ -636,7 +654,6 @@ $NO3_avg = 0;
                                     ];
 
                                     unset($info['geom']);
-
                                 }
                                 $data['zones'] = $zones;
                             }
@@ -680,8 +697,7 @@ $NO3_avg = 0;
         // LOG ACTIVITIES
         if (empty($request->is_refresh)) {
             $details = !empty($grants['Field Management']['View']['C']) ?
-                'Company IDs: ' . implode(',', $grants['Field Management']['View']['C']) :
-                ($this->acc->is_admin ? 'All Objects' : 'Access Denied');
+                'Company IDs: ' . implode(',', $grants['Field Management']['View']['C']) : ($this->acc->is_admin ? 'All Objects' : 'Access Denied');
             $this->acc->logActivity('View', 'Map', $details);
         }
 

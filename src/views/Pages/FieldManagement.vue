@@ -82,8 +82,8 @@
 
           <b-col class="avg-styles" lg="4" md="6">
             <ul v-if="nodeFilterType == 'nut' && field_model.node_type == 'nut'">
-              <li>SM Avg: {{ (field_model.sm_avg) }}</li>
-              <li>Temp Avg: {{ (field_model.temp_avg) }}C</li>
+              <li>SM Avg: {{ (field_model.sm_avg) }}%</li>
+              <li>Temp Avg: {{ (field_model.temp_avg) + field_model.temp_uom }}</li>
             </ul>
           </b-col>
 
@@ -329,6 +329,7 @@ export default {
         temp_avg: '',
         NH4_avg: '',
         N03_avg: '',
+        temp_uom: '',
       },
 
       bv: 0,
@@ -478,7 +479,9 @@ export default {
     },
 
     chartOptionsTemp() {
+
       var fields_smTemp = this.field_model.temp_avg;
+      //console.log(this.field_model.temp_uom);
 
       return {
         tooltip: {
@@ -546,7 +549,7 @@ export default {
           name: 'Temperature',
           data: [fields_smTemp],
           dataLabels: {
-            format: 'Temp Avg {y}C',
+            format: 'Temp Avg {y}',
             borderWidth: 0,
             color: '#333333',
             style: {
@@ -574,6 +577,8 @@ export default {
 
     chartOptionsN03PPM() {
       var fields_N03 = this.field_model.NO3_avg;
+
+      fields_N03 = parseFloat(fields_N03.toFixed(2));
 
       return {
         tooltip: {
@@ -669,6 +674,7 @@ export default {
 
     chartOptionsNH4PPM() {
       var fields_NH4 = this.field_model.NH4_avg;
+      fields_NH4 = parseFloat(fields_NH4.toFixed(2));
 
       return {
         tooltip: {
@@ -1187,7 +1193,8 @@ export default {
 
               'sm_gauge': 'sm_gauge' in item ? item.sm_gauge : 0,
               'temp_gauge': 'temp_gauge' in item ? item.temp_gauge : 0,
-              'temp_avg': 'temp_avg' in item ? item.ambient_temp : 0,
+              'temp_avg': 'temp_avg' in item ? item.temp_avg : 0,
+              'temp_uom': 'temp_uom' in item ? item.temp_uom : 0,
               'sm_avg': 'sm_avg' in item ? item.sm_avg : 0,
               // 'ambient_temp': 'ambient_temp' in item ? item.ambient_temp : 0,
 
