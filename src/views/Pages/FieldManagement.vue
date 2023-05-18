@@ -26,10 +26,10 @@
           <div v-if="marker.node_type == 'sm' && marker.status" class='field_sm_status'>Status: {{ marker.status }}%
           </div>
           <div class='indicators'>
-            <SMStatusGraph v-if="marker.node_type == 'sm' && marker.status" :full="marker.full"
-              :status="marker.status" :refill="marker.refill" :size="'35%'"
-              :tooltip="'F: ' + marker.full + '%, S: ' + marker.status + '%, R: ' + marker.refill + '%'"
-              :label="'S.M'" @clicked=" goToGraph(marker)" />
+            <SMStatusGraph v-if="marker.node_type == 'sm' && marker.status" :full="marker.full" :status="marker.status"
+              :refill="marker.refill" :size="'35%'"
+              :tooltip="'F: ' + marker.full + '%, S: ' + marker.status + '%, R: ' + marker.refill + '%'" :label="'S.M'"
+              @clicked=" goToGraph(marker)" />
             <div v-else style="width:35%"></div>
             <BVIndicator :level="marker.battLevel" :size="'35%'" :charging="marker.charging"
               :tooltip="'Level: ' + marker.battLevel + '%'" />
@@ -72,8 +72,7 @@
               <highcharts class="hc" :options="chartOptionsNH4PPM" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
             </div>
-            <div
-              v-else-if="nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut')">
+            <div v-else-if="nodeFilterType == 'sm' && (field_model.node_type == 'sm' || field_model.node_type == 'nut')">
               <div class='text-center'>Temp</div>
               <highcharts class="hc" :options="chartOptionsTemp" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
@@ -103,9 +102,9 @@
       </template>
     </b-modal>
 
-    <MglMap :repaint="true" :mapboxGl="mapboxObj" :accessToken="$store.state.mapBoxAccessToken"
-      :mapStyle.sync="mapStyle" :attributionControl="false" :center="startPos" logoPosition="bottom-right"
-      @load="mapLoaded" @zoom="scaleMarkers" @zoomend="filterFields" @dragend="filterFields">
+    <MglMap :repaint="true" :mapboxGl="mapboxObj" :accessToken="$store.state.mapBoxAccessToken" :mapStyle.sync="mapStyle"
+      :attributionControl="false" :center="startPos" logoPosition="bottom-right" @load="mapLoaded" @zoom="scaleMarkers"
+      @zoomend="filterFields" @dragend="filterFields">
 
       <template v-for="(     marker, idx     ) in      markers     ">
 
@@ -125,10 +124,10 @@
 
           <div class='field_marker' slot="marker">
             <div :class="[
-                'marker',
-                mapLayerType.includes('nodes') && marker.visible ? 'marker_visible' : 'marker_hidden',
-                marker.perimeter ? 'has_perimeter' : 'no_perimeter'
-              ]
+              'marker',
+              mapLayerType.includes('nodes') && marker.visible ? 'marker_visible' : 'marker_hidden',
+              marker.perimeter ? 'has_perimeter' : 'no_perimeter'
+            ]
               "
               :style="'color:' + calcMarkerIconColor(marker, marker.status, marker.node_type) + '; transform:scale(' + markerScale + '); transform-origin:top center;' + calcMarkerBorderColor(marker)">
               <template v-if="marker.node_type == 'well'">
@@ -330,6 +329,8 @@ export default {
         NH4_avg: '',
         N03_avg: '',
         temp_uom: '',
+        full: 0,
+        refill: 0
       },
 
       bv: 0,
@@ -382,9 +383,10 @@ export default {
 
   computed: {
     chartOptionsSM() {
-      var fields_smAvg = parseInt(this.field_model.sm_avg);
-      // fields_smAvg = fields_smAvg.toFixed(2);
+      var fields_smAvg = parseFloat(this.field_model.sm_avg);
 
+      var refill1 = parseFloat(this.field_model.refill);
+      var full1 = parseFloat(this.field_model.full);
 
       return {
         tooltip: {
@@ -415,10 +417,10 @@ export default {
           size: '80%',
         },
 
-        yAxis: {
+        yAxis: [{
           min: 0,
           max: 100,
-          tickPixelInterval: 30,
+          tickPixelInterval: 10,
           tickPosition: 'inside',
           tickColor: '#000000',
           tickLength: 50,
@@ -447,6 +449,46 @@ export default {
             thickness: 10
           }]
         },
+
+        {
+          min: 0,
+          max: 100,
+          //tickPixelInterval: 30,
+          tickPosition: 'inside',
+          tickColor: 'transparent',
+          tickLength: 10,
+          tickWidth: 5,
+          minorTickInterval: null,
+          labels: {
+            //distance: 10,
+            enabled: false
+          },
+          plotBands: [{
+            from: full1 - 2,
+            to: full1 + 2,
+            color: '#0000ff', // blue
+            thickness: 10
+          }]
+        },
+        {
+          min: 0,
+          max: 100,
+          //tickPixelInterval: 30,
+          tickPosition: 'outside',
+          tickColor: 'transparent',
+          tickLength: 10,
+          tickWidth: 5,
+          minorTickInterval: null,
+          labels: {
+            enabled: false
+          },
+          plotBands: [{
+            from: refill1 - 2,
+            to: refill1 + 2,
+            color: '#d26761', // maroon
+            thickness: 10
+          }]
+        },],
 
         series: [{
           name: 'Average',
