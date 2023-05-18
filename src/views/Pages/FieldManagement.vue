@@ -480,8 +480,16 @@ export default {
 
     chartOptionsTemp() {
 
+      var smTempuom = this.field_model.temp_uom;
+
+      var tt = smTempuom != '0' ? smTempuom : '°';
+
+      // var smTemp = parseFloat(this.soil_temp.avg_M1);
+      // smTemp = parseFloat(smTemp.toFixed(2));
+
       var fields_smTemp = this.field_model.temp_avg;
-      //console.log(this.field_model.temp_uom);
+      fields_smTemp = parseFloat(fields_smTemp);
+      //console.log(fields_smTemp);
 
       return {
         tooltip: {
@@ -549,7 +557,7 @@ export default {
           name: 'Temperature',
           data: [fields_smTemp],
           dataLabels: {
-            format: 'Temp Avg {y}',
+            format: 'Temp Avg {y}' + tt,
             borderWidth: 0,
             color: '#333333',
             style: {
