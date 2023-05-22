@@ -652,6 +652,7 @@ class GraphController extends Controller
                 ];
 
                 $series = [['name' => 'Average', 'color' => 'black', 'type' => 'spline', 'data' => $ave]];
+                // $series = [['name' => 'Status', 'color' => 'orange', 'type' => 'spline', 'data' => $rec]];
 
                 if ($has_cultivars) {
                     $series[] = ['name' => 'Stages', 'type' => 'areasplinerange', 'data' => $stages];

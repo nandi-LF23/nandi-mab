@@ -392,10 +392,12 @@ class FieldMapController extends Controller
                         );
 
                         $data['status'] = $result['status'];
+                        $data['upper_value'] = $result['upper_value'];
+                        $data['lower_value'] = $result['lower_value'];
                         $data['sm_avg'] = Calculations::getLatestNodeAvgSM($node);
                         $data['sm_gauge'] = ($data['status'] * 1.8) - 90;
                         $data['temp_avg'] = Calculations::getLatestNodeAvgTemp($node);
-                        
+
                         $user = Auth::user();
 
                         if ($user->unit_of_measure == 2) {

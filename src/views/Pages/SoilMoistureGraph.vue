@@ -311,18 +311,19 @@ export default {
           split: true,
           distance: 30,
           padding: 5,
-          formatter() {
-            let s = "";
-            s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
-            this.points.forEach(function (point) {
-              console.log(point);
-              s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
-              // if (this.series.name == 'Average' && this.status) {
-              //   s += '<span style="color:black;">●</span> Status: <strong>' + this.status + '%</strong><br>';
-              // }
-            });
-            return s;
-          },
+          // formatter() {
+          //   // let s = "";
+          //   // s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
+          //   // this.points.forEach(function (point) {
+          //   //   console.log(point);
+          //   //   s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
+          //   //   // if (this.series.name == 'Average' && this.status) {
+          //   //   //   s += '<span style="color:black;">●</span> Status: <strong>' + this.status + '%</strong><br>';
+          //   //   // }
+          //   // });
+          //   // return s;
+          //   formatTooltip()
+          // },
           shared: true,
         },
         plotOptions: this.plotOptions,
@@ -518,7 +519,8 @@ export default {
 
           if (this.graph_type == 'ave') {
             this.showPlotLines();
-            this.setupCustomTooltip();
+            this.formatTooltip();
+            // this.setupCustomTooltip();
           } else {
             this.hidePlotLines();
             this.removeCustomTooltip();
@@ -745,6 +747,38 @@ export default {
       this.seriesAdjusted = false;
       return this.loadGraphData();
     },
+
+    formatTooltip() {
+        // let s = "";
+        // s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
+        // this.points.forEach(function (point) {
+        //   console.log(point);
+        //   s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
+        //   if (point.series.name == 'Average' && point.status) {
+        //     s += '<span style="color:black;">●</span> Status: <strong>' + point.status + '%</strong><br>';
+        //   }
+        // });
+        // return s;
+        for (var i = 0; i < this.series.length; i++) {
+        if (this.series[i].name == 'Average') {
+          console.log(this.series[i]);
+          this.series[i].tooltip = {
+            pointFormatter: function () {
+              //let str = '<span style="color:' + this.series.color + ';">●</span> ' + this.series.name + ': <b>' + this.y + '</b><br>';
+              let str = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
+              str += '<span style="color:' + this.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + this.series.name + ': </span><span style="color:firebrick;">' + this.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
+
+              if (this.series.name == 'Average' && this.status) {
+                //str += '<span style="color:orange;">●</span> Status: <strong>' + this.status + '%</strong><br>';
+              str += '<span style="color:orange; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">Status : </span><span style="color:firebrick;">' + this.status ;
+              }
+              return str;
+            }
+          };
+        }
+      }
+      },
+    
 
     setupCustomTooltip() {
       for (var i = 0; i < this.series.length; i++) {

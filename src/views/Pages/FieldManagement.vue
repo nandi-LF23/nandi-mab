@@ -63,6 +63,7 @@
               <!-- the gauge. -->
               <highcharts class="hc" :options="chartOptionsSM" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
+              <h1>Status: {{ (field_model.status) }}%</h1>
             </div>
           </b-col>
 
@@ -330,7 +331,9 @@ export default {
         N03_avg: '',
         temp_uom: '',
         full: 0,
-        refill: 0
+        refill: 0,
+        upper_value: 0,
+        lower_value: 0,
       },
 
       bv: 0,
@@ -387,6 +390,22 @@ export default {
 
       var refill1 = parseFloat(this.field_model.refill);
       var full1 = parseFloat(this.field_model.full);
+      var upper_value1 = parseFloat(this.field_model.upper_value);
+      var lower_value1 = parseFloat(this.field_model.lower_value);
+
+      var x = (lower_value1 * 30) / 100;
+      var xx = parseFloat(lower_value1 - x);
+
+      var y = (upper_value1 * 30) / 100;
+      var yy = parseFloat(upper_value1 + y);
+
+      console.log('xx: ' + xx);
+      console.log('refill: '+refill1);
+      console.log('lower_val: '+lower_value1);
+
+      console.log('yy: '+yy);
+      console.log('full: '+full1);
+      console.log('upper_val: '+upper_value1);
 
       return {
         tooltip: {
@@ -414,12 +433,12 @@ export default {
           endAngle: 90,
           background: null,
           center: ['50%', '50%'],
-          size: '80%',
+          size: '80%'
         },
 
         yAxis: [{
-          min: 0,
-          max: 100,
+          min: xx,
+          max: yy,
           tickPixelInterval: 10,
           tickPosition: 'inside',
           tickColor: '#000000',
@@ -433,26 +452,26 @@ export default {
             }
           },
           plotBands: [{
-            from: 0,
-            to: 40,
-            color: '#DF5353', // green
-            thickness: 10
+            from: xx,
+            to: refill1,
+            color: '#DF5353', // red
+            thickness: 6
           }, {
-            from: 40,
-            to: 70,
-            color: '#DDDF0D', // yellow
-            thickness: 10
+            from: refill1,
+            to: full1,
+            color: '#55BF3B', // yellow
+            thickness: 6
           }, {
-            from: 70,
-            to: 100,
-            color: '#55BF3B', // red
-            thickness: 10
+            from: full1,
+            to: yy,
+            color: 'blue', // green
+            thickness: 6
           }]
         },
 
         {
-          min: 0,
-          max: 100,
+          min: xx,
+          max: yy,
           //tickPixelInterval: 30,
           tickPosition: 'inside',
           tickColor: 'transparent',
@@ -464,17 +483,17 @@ export default {
             enabled: false
           },
           plotBands: [{
-            from: full1 - 2,
-            to: full1 + 2,
-            color: '#0000ff', // blue
-            thickness: 10
+            from: full1 - 0.5,
+            to: full1,
+            color: 'black', // blue
+            thickness: 6
           }]
         },
         {
-          min: 0,
-          max: 100,
+          min: xx,
+          max: yy,
           //tickPixelInterval: 30,
-          tickPosition: 'outside',
+          tickPosition: 'inside',
           tickColor: 'transparent',
           tickLength: 10,
           tickWidth: 5,
@@ -483,12 +502,13 @@ export default {
             enabled: false
           },
           plotBands: [{
-            from: refill1 - 2,
-            to: refill1 + 2,
-            color: '#d26761', // maroon
-            thickness: 10
+            from: refill1 - 0.5,
+            to: refill1,
+            color: 'black', // maroon
+            thickness: 6
           }]
-        },],
+        },
+      ],
 
         series: [{
           name: 'Average',
@@ -502,10 +522,11 @@ export default {
             }
           },
           dial: {
-            radius: '80%',
+            radius: "100%",
+            rearLength: "-25%",
             backgroundColor: 'black',
-            baseWidth: 12,
-            baseLength: '0%',
+            // baseWidth: 12,
+            baseLength: '50%',
             rearLength: '0%'
           },
           pivot: {
@@ -581,17 +602,17 @@ export default {
             from: 0,
             to: 40,
             color: '#DF5353', // green
-            thickness: 10
+            thickness: 6
           }, {
             from: 40,
             to: 70,
             color: '#DDDF0D', // yellow
-            thickness: 10
+            thickness: 6
           }, {
             from: 70,
             to: 100,
             color: '#55BF3B', // red
-            thickness: 10
+            thickness: 6
           }]
         },
 
@@ -607,10 +628,11 @@ export default {
             }
           },
           dial: {
-            radius: '80%',
+            radius: "100%",
+            rearLength: "-25%",
             backgroundColor: 'black',
-            baseWidth: 12,
-            baseLength: '0%',
+            // baseWidth: 12,
+            baseLength: '50%',
             rearLength: '0%'
           },
           pivot: {
@@ -678,17 +700,17 @@ export default {
             from: 0,
             to: 40,
             color: '#DF5353', // green
-            thickness: 10
+            thickness: 6
           }, {
             from: 40,
             to: 70,
             color: '#DDDF0D', // yellow
-            thickness: 10
+            thickness: 6
           }, {
             from: 70,
             to: 100,
             color: '#55BF3B', // red
-            thickness: 10
+            thickness: 6
           }]
         },
 
@@ -704,10 +726,11 @@ export default {
             }
           },
           dial: {
-            radius: '80%',
+            radius: "100%",
+            rearLength: "-25%",
             backgroundColor: 'black',
-            baseWidth: 12,
-            baseLength: '0%',
+            // baseWidth: 12,
+            baseLength: '50%',
             rearLength: '0%'
           },
           pivot: {
@@ -774,17 +797,17 @@ export default {
             from: 0,
             to: 40,
             color: '#DF5353', // green
-            thickness: 10
+            thickness: 6
           }, {
             from: 40,
             to: 70,
             color: '#DDDF0D', // yellow
-            thickness: 10
+            thickness: 6
           }, {
             from: 70,
             to: 100,
             color: '#55BF3B', // red
-            thickness: 10
+            thickness: 6
           }]
         },
 
@@ -800,10 +823,11 @@ export default {
             }
           },
           dial: {
-            radius: '80%',
+            radius: "100%",
+            rearLength: "-25%",
             backgroundColor: 'black',
-            baseWidth: 12,
-            baseLength: '0%',
+            // baseWidth: 12,
+            baseLength: '50%',
             rearLength: '0%'
           },
           pivot: {
@@ -1221,6 +1245,8 @@ export default {
               'status': item.status,
               'full': item.full,
               'refill': item.refill,
+              'upper_value': item.upper_value,
+              'lower_value': item.lower_value,
 
               'color_sm_status': item.color_sm_status,
               'color_ppm_avg': item.color_ppm_avg,
