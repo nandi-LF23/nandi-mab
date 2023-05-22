@@ -402,6 +402,7 @@ class FieldMapController extends Controller
 
                         if ($user->unit_of_measure == 2) {
                             $data['temp_avg'] = number_format((float)($data['temp_avg'] * (9 / 5) + 32), 1, '.', '');
+                            //dd($data['temp_avg']);
                             $data['temp_uom'] = ' °F';
                         } else if ($user->unit_of_measure == 1) {
                             $data['temp_avg'] = number_format((float)($data['temp_avg']), 1, '.', '');

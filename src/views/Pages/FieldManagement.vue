@@ -63,7 +63,7 @@
               <!-- the gauge. -->
               <highcharts class="hc" :options="chartOptionsSM" :update-args="chartUpdateArgs" ref="hchart">
               </highcharts>
-              <h1>Status: {{ (field_model.status) }}%</h1>
+              <span class="status-text">Status: {{ (field_model.status) }}%</span>
             </div>
           </b-col>
 
@@ -393,19 +393,21 @@ export default {
       var upper_value1 = parseFloat(this.field_model.upper_value);
       var lower_value1 = parseFloat(this.field_model.lower_value);
 
+      var status1 = this.field_model.status;
+
       var x = (lower_value1 * 30) / 100;
       var xx = parseFloat(lower_value1 - x);
 
       var y = (upper_value1 * 30) / 100;
       var yy = parseFloat(upper_value1 + y);
 
-      console.log('xx: ' + xx);
-      console.log('refill: '+refill1);
-      console.log('lower_val: '+lower_value1);
+      // console.log('xx: ' + xx);
+      // console.log('refill: ' + refill1);
+      // console.log('lower_val: ' + lower_value1);
 
-      console.log('yy: '+yy);
-      console.log('full: '+full1);
-      console.log('upper_val: '+upper_value1);
+      // console.log('yy: ' + yy);
+      // console.log('full: ' + full1);
+      // console.log('upper_val: ' + upper_value1);
 
       return {
         tooltip: {
@@ -508,7 +510,7 @@ export default {
             thickness: 6
           }]
         },
-      ],
+        ],
 
         series: [{
           name: 'Average',
@@ -552,7 +554,7 @@ export default {
 
       var fields_smTemp = this.field_model.temp_avg;
       fields_smTemp = parseFloat(fields_smTemp);
-      //console.log(fields_smTemp);
+      console.log(this.field_model.temp_gauge);
 
       return {
         tooltip: {
@@ -1745,6 +1747,17 @@ ul {
 
 .legend_modal .legend_box .green {
   color: green;
+}
+
+.status-text {
+  display: block;
+  margin: auto;
+  width: 100%;
+  text-align: center;
+  margin-top: -60px !important;
+  z-index: 99999999;
+  position: relative;
+  font-size: 13px;
 }
 </style>
 

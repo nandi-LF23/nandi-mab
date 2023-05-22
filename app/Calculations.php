@@ -500,27 +500,34 @@ class Calculations
 
     $user = Auth::user();
 
+
+    //test
     if ($node_type == 'Soil Moisture') {
       $temps = DB::connection('mysql')->table('node_data')
-        ->select(['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15'])
-        ->where('probe_id', $node_address)
+      ->select(['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15'])
+      ->where('probe_id', $node_address)
         ->orderBy('id', 'desc')
         ->limit(1)
-        ->get()
-        ->toArray();
+        ->first();
       $tot = 0;
       $ctr = 0;
       if ($temps) {
         for ($i = 1; $i <= 15; $i++) {
-          $k = "t$i";
-          if (!empty($temps[$k]) && $temps[$k] > 0) {
-            $tot += (float) $temps[$k];
+          $k = "t" . $i;
+
+          //skips the next code 
+          if (!(empty($temps->{$k})) && ($temps->{$k} > 0)) {
+            $tot += $temps->{$k};
             $ctr++;
           }
         }
-        $val = number_format($ctr < 1 ? $tot : ($tot / $ctr), 1, '.', '');;
+        $val = number_format($ctr < 1 ? $tot : ($tot / $ctr), 1, '.', '');
       }
-    } else if ($node_type == 'Nutrients') {
+    } 
+
+
+    //works
+    else if ($node_type == 'Nutrients') {
       $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address', $node_address)->orderBy('id', 'DESC')->Limit(1)->get();
       $val = 0;
       $counter = 0;
@@ -540,11 +547,11 @@ class Calculations
       }
     }
 
-    if ($user->unit_of_measure == 2) {
-      return $val = number_format((float)($val * (9 / 5) + 32), 1, '.', '');
-    } else if ($user->unit_of_measure  == 1) {
-      return number_format((float)($val), 1, '.', '');
-    }
-    //return number_format((float)($val), 1, '.', '');
+    // if ($user->unit_of_measure == 2) {
+    //   return $val = number_format((float)($val * (9 / 5) + 32), 1, '.', '');
+    // } else if ($user->unit_of_measure  == 1) {
+    //   return number_format((float)($val), 1, '.', '');
+    // }
+    return number_format((float)($val), 1, '.', '');
   }
 }
