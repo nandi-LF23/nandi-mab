@@ -158,11 +158,12 @@ class DataImportController extends Controller
                   //  $bp   = !empty($field["AnalogueData"]['1']) ? ( ( 3300 - (float) $field["AnalogueData"]['1'] ) / 4100  )*100 : 0; // Batt.Percentage.
                   $range = 4700 - 6200;
         $delta = $bv - 4700;
-        if ($delta <= 0) $delta = 0;
+       // if ($delta <= 0) $delta = 0;
         $level = ($delta / $range) * 100;
-        $bp = $level < 0 ? 0 : ($level > 100 ? 100 : $level);
+                    $bp = $level;
+            //$bp = $level < 0 ? 0 : ($level > 100 ? 100 : $level);
                     // backfill
-                    if(!empty($m_items) && is_array($m_items) && count($m_items) > 0){
+                  /*  if(!empty($m_items) && is_array($m_items) && count($m_items) > 0){
                         foreach($m_items as &$m){
                             if(is_object($m)){
                                 if($bv){ $m->bv = $bv; }
@@ -179,7 +180,7 @@ class DataImportController extends Controller
                                 if($bp){ $n->bp = $bp; }
                             }
                         }
-                    }
+                    }*/
                 }
 
             } // end for Fields
@@ -195,8 +196,8 @@ class DataImportController extends Controller
                 $item->average = $m_values['average'];
                 $item->rg = 0; 
 
-                $item->bv = $item->bv ?: $bv;
-                $item->bp = $item->bp ?: $bp;
+                $item->bv = $bv;
+                $item->bp = $bp;
 
                 $item->latt = $item->latt ?: $latt; $item->lng = $item->lng ?: $lng;
 

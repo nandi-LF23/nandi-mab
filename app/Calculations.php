@@ -501,7 +501,6 @@ class Calculations
     $user = Auth::user();
 
 
-    //test
     if ($node_type == 'Soil Moisture') {
       $temps = DB::connection('mysql')->table('node_data')
       ->select(['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't13', 't14', 't15'])
@@ -514,8 +513,6 @@ class Calculations
       if ($temps) {
         for ($i = 1; $i <= 15; $i++) {
           $k = "t" . $i;
-
-          //skips the next code 
           if (!(empty($temps->{$k})) && ($temps->{$k} > 0)) {
             $tot += $temps->{$k};
             $ctr++;
@@ -524,9 +521,6 @@ class Calculations
         $val = number_format($ctr < 1 ? $tot : ($tot / $ctr), 1, '.', '');
       }
     } 
-
-
-    //works
     else if ($node_type == 'Nutrients') {
       $dataset = DB::connection('mysql')->table('nutri_data')->where('node_address', $node_address)->orderBy('id', 'DESC')->Limit(1)->get();
       $val = 0;
