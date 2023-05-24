@@ -92,6 +92,7 @@
                     class="btn"
                     variant="outline-primary"
                     size="sm"
+                    v-b-tooltip.hover.top title="Navigate to Node's graphing screen"
                     icon>
                     Graph
                     </b-button>
@@ -101,6 +102,7 @@
                     class="btn"
                     variant="outline-primary"
                     size="sm"
+                    v-b-tooltip.hover.top title="Essential information related to a Soil Moisture node"
                     icon>
                     Manage
                     </b-button>

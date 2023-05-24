@@ -36,7 +36,8 @@
               <b-row>
                 <!-- <b-col md="6"> -->
                 <b-col md="4" v-if="related_nodes.length > 1">
-                  <base-input label="Current Node">
+                  <base-input label="Current Node" v-b-tooltip.hover.top
+                  title="The Node Address to which this data record applies to">
                     <el-select v-model="current_node" :disabled="loading">
                       <template v-for="(node, index) in related_nodes">
                         <el-option :key="index" :label="node" :value="node"
@@ -48,7 +49,7 @@
 
                 <b-col md="4">
                   <base-input label="Graph Type">
-                    <el-select v-model="graph_type" :disabled="loading">
+                    <el-select v-model="graph_type" :disabled="loading" v-b-tooltip.hover.top title="The graph type used when viewing a probe's graph">
                       <el-option label="Separate Levels" value='sm' selected></el-option>
                       <el-option label="Stacked Graph" value='stack'></el-option>
                       <el-option label="Sum" value='sum'></el-option>
@@ -903,7 +904,7 @@ export default {
   background-color: transparent;
   right: 8px !important;
   /* margin: 0 auto!important; */
-  top: -18px !important;
+  top: -5px !important;
   text-align: center;
   border-radius: 2px;
 }

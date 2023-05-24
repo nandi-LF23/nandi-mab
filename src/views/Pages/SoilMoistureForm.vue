@@ -18,26 +18,38 @@
             <template slot="header">
               <b-row>
                 <b-col>
-                  <base-button 
-                    :disabled="!node_id || !userCan('Graph', 'Soil Moisture', node_id, 'O') || loading"
-                    @click.native="goToGraph()"
-                    class="btn"
-                    type="primary"
-                    size="sm"
-                    v-b-tooltip.hover.top title="Navigate to node's graphing screen."
-                    icon>
+                  <base-button :disabled="!node_id || !userCan('Graph', 'Soil Moisture', node_id, 'O') || loading"
+                    @click.native="goToGraph()" class="btn" type="primary" size="sm" v-b-tooltip.hover.top
+                    title="Navigate to node's graphing screen." icon>
                     Graph
                   </base-button>
-                  <base-button 
-                    :disabled="!cm_id || !userCan('View', 'Cultivars', cm_id, 'O') || loading"
-                    @click.native="goToManageCultivars"
-                    class="btn"
-                    type="primary"
-                    size="sm"
-                    v-b-tooltip.hover.top title="Manage the node's associated cultivar growth stages"
-                    icon>
+                  <base-button :disabled="!cm_id || !userCan('View', 'Cultivars', cm_id, 'O') || loading"
+                    @click.native="goToManageCultivars" class="btn" type="primary" size="sm" v-b-tooltip.hover.top
+                    title="Manage the node's associated cultivar growth stages" icon>
                     Manage Cultivar
                   </base-button>
+                  <b-button v-b-modal.modal-1 size="sm" variant="primary" class="btn">
+                    <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                  </b-button>
+                  <b-modal id="modal-1" title="Soil Moisture Management">
+                     <p>The Soil Moisture Management screen displays the essential information related to a Soil Moisture
+                        node.
+                        It also allows one to configure agronomic variables that will influence the Soil Moisture Status.
+
+                        This screen also provides access to the Node's Soil Moisture Graphing as well as the Cultivar
+                        Configuration Screen via the top toolbar buttons.
+
+                        Moreover, this screen allows one to set the node's Default Graph Type and Graph Start Date.</p>
+
+                    <p class="my-4">Node Address</p>
+
+                    <p class="my-4">Last date of the reading of the node</p>
+                    <p class="my-4">Power State (Device Specific) (Charging or Not)</p>
+                    <p class="my-4">Field configuration</p>
+                    <p class="my-4">Full: The Full value that applies to the field</p>
+                    <p class="my-4">Refill: The Refill value that applies to the field</p>
+                   
+                  </b-modal>
                 </b-col>
               </b-row>
             </template>
@@ -83,13 +95,16 @@
               <div class="card-body">
                 <b-row align-v="center">
                   <b-col md>
-                    <base-input @change="syncFields" name="full" :rules="{ required:true, regex:/^-?\d+(\.\d{1,2})?$/ }" label='Full' placeholder="Full" vid="full" v-model="model.full"></base-input>
+                    <base-input @change="syncFields" name="full" :rules="{ required: true, regex: /^-?\d+(\.\d{1,2})?$/ }"
+                      label='Full' placeholder="Full" vid="full" v-model="model.full"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input @change="syncFields" name="refill" :rules="{ required:true, regex:/^-?\d+(\.\d{1,2})?$/ }" label='Refill' placeholder="Refill" vid="refill" v-model="model.refill"></base-input>
+                    <base-input @change="syncFields" name="refill"
+                      :rules="{ required: true, regex: /^-?\d+(\.\d{1,2})?$/ }" label='Refill' placeholder="Refill"
+                      vid="refill" v-model="model.refill"></base-input>
                   </b-col>
                 </b-row>
-                
+
                 <!-- <b-row align-v="center">
                   <b-col md>
                     <base-input @change="syncFields" name="ni" :rules="{ required:true, regex:/^-?\d+(\.\d{1,2})?$/ }" label='NI' placeholder="NI" vid="ni" v-model="model.ni"></base-input>
@@ -118,13 +133,9 @@
                   </b-col>
                   <b-col md>
                     <base-input label="Graph Start Date" name="start date" vid="graph_start_date">
-                      <flat-picker slot-scope="{focus, blur}"
-                        @on-open="focus"
-                        @on-close="blur"
-                        @on-change="syncFields"
-                        placeholder="Graph Start Date"
-                        class="form-control datepicker"
-                        v-model="model.graph_start_date" :config="flatPickrConfig">
+                      <flat-picker slot-scope="{focus, blur}" @on-open="focus" @on-close="blur" @on-change="syncFields"
+                        placeholder="Graph Start Date" class="form-control datepicker" v-model="model.graph_start_date"
+                        :config="flatPickrConfig">
                       </flat-picker>
                     </base-input>
                   </b-col>
@@ -147,14 +158,14 @@ import mab_utils from '../../util/mab-utils';
 
 export default {
 
-  mixins: [ mab_utils ],
+  mixins: [mab_utils],
 
   components: {
     [Select.name]: Select,
     [Option.name]: Option,
     flatPicker
   },
-  
+
   data() {
     return {
       initial: true,
@@ -181,130 +192,124 @@ export default {
   },
 
   computed: {
-    flatPickrConfig: function() {
+    flatPickrConfig: function () {
       return { maxDate: this.date_now }
     }
   },
 
   methods: {
 
-    loadSoilMoistures()
-    {
+    loadSoilMoistures() {
       this.loading = true;
       this.$axios.get("/api/ManageSM/" + this.$route.params.node_address)
-      .then((resp) => {
-        
-        this.loading = false;
-        let data = resp.data;
-        
-        if(data){
+        .then((resp) => {
 
-          if(data.fields){
-            this.model.node_id = data.fields.node_id; /* node_address */
-            this.model.full = data.fields.full;
-            this.model.refill = data.fields.refill;
-            // this.model.ni = data.fields.ni;
-            // this.model.nr = data.fields.nr;
+          this.loading = false;
+          let data = resp.data;
 
-            this.status = data.fields.status + '%';
-            this.date_time = data.fields.date_time;
-            this.cm_id = data.cm_id;
-            this.field_id = data.fields.id;
-            this.field_name = data.fields.field_name;
+          if (data) {
 
-            this.node_id = data.node_id; /* actual PK value of node */
+            if (data.fields) {
+              this.model.node_id = data.fields.node_id; /* node_address */
+              this.model.full = data.fields.full;
+              this.model.refill = data.fields.refill;
+              // this.model.ni = data.fields.ni;
+              // this.model.nr = data.fields.nr;
 
-            if(this.initial){
-              this.model.graph_type = data.fields.graph_type;
-              this.model.graph_start_date = data.fields.graph_start_date;
+              this.status = data.fields.status + '%';
+              this.date_time = data.fields.date_time;
+              this.cm_id = data.cm_id;
+              this.field_id = data.fields.id;
+              this.field_name = data.fields.field_name;
+
+              this.node_id = data.node_id; /* actual PK value of node */
+
+              if (this.initial) {
+                this.model.graph_type = data.fields.graph_type;
+                this.model.graph_start_date = data.fields.graph_start_date;
+              }
+
+              // nasty fix for a nasty datepicker
+              setTimeout(() => { this.initial = false; }, 1000);
             }
 
-            // nasty fix for a nasty datepicker
-            setTimeout(() => { this.initial = false; }, 1000);
-          }
+            this.power_state = data.power_state;
+            this.date_now = resp.data.date_now;
 
-          this.power_state = data.power_state;
-          this.date_now = resp.data.date_now;
-          
-        }
-      });
-    },
-
-    syncFields()
-    {
-      if(this.initial) return;
-
-      this.$refs.form.validate()
-      .then(success => {
-
-        if (!success) { 
-          this.$notify({
-            title: 'Required',
-            message: 'Please fill in all fields',
-            type: 'danger',
-            verticalAlign: 'top',
-            horizontalAlign: 'right',
-            duration:1000,
-            clean:true
-          });
-          return;
-        }
-
-        this.loading = true;
-        this.$axios.post("/api/ManageSave", { model: this.model })
-        .then((resp) => {
-          this.loading = false;
-          if(resp.data.message == 'field_updated'){
-            this.$notify({
-              title: 'Saved',
-              message: 'Changes were saved',
-              type: 'success',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
-            });
-          } else if(resp.data.message == 'nonexistent'){
-            this.$notify({
-              title: 'Error',
-              message: 'Node not found (might have been removed)',
-              type: 'danger',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
-            });
-          }
-
-          this.$refs.form.reset();
-
-        }).catch(err => {
-          this.loading = false;
-          if(err.response.data.errors){
-            this.$refs.form.setErrors(err.response.data.errors);
           }
         });
-      });
     },
 
-    goToManageCultivars()
-    {
+    syncFields() {
+      if (this.initial) return;
+
+      this.$refs.form.validate()
+        .then(success => {
+
+          if (!success) {
+            this.$notify({
+              title: 'Required',
+              message: 'Please fill in all fields',
+              type: 'danger',
+              verticalAlign: 'top',
+              horizontalAlign: 'right',
+              duration: 1000,
+              clean: true
+            });
+            return;
+          }
+
+          this.loading = true;
+          this.$axios.post("/api/ManageSave", { model: this.model })
+            .then((resp) => {
+              this.loading = false;
+              if (resp.data.message == 'field_updated') {
+                this.$notify({
+                  title: 'Saved',
+                  message: 'Changes were saved',
+                  type: 'success',
+                  verticalAlign: 'top',
+                  horizontalAlign: 'right'
+                });
+              } else if (resp.data.message == 'nonexistent') {
+                this.$notify({
+                  title: 'Error',
+                  message: 'Node not found (might have been removed)',
+                  type: 'danger',
+                  verticalAlign: 'top',
+                  horizontalAlign: 'right'
+                });
+              }
+
+              this.$refs.form.reset();
+
+            }).catch(err => {
+              this.loading = false;
+              if (err.response.data.errors) {
+                this.$refs.form.setErrors(err.response.data.errors);
+              }
+            });
+        });
+    },
+
+    goToManageCultivars() {
       this.$router.push({
         name: "cultivars",
-        params:{ field_id: this.field_id }
+        params: { field_id: this.field_id }
       });
     },
 
-    goToGraph()
-    {
+    goToGraph() {
       this.$router.push({
         name: "soil_moisture_graph",
-        params:{ node_address: this.$route.params.node_address }
+        params: { node_address: this.$route.params.node_address }
       });
     }
   },
 
-  created()
-  {
+  created() {
     this.loadSoilMoistures();
   }
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -44,7 +44,7 @@ class DataImportController extends Controller
                 ->post("https://sandbox.myagbuddy.com/api/dmtimport/{$imei}");
             }
         }
-       
+
         $moisture_probe_models = [ 'ACHSDI', 'ACCSDI' ];
         $nutrient_probe_models = [ 'EC1VER', 'EC2VER' ];
 
@@ -90,7 +90,7 @@ class DataImportController extends Controller
 
             // skip incomplete nutrient readings
             if( !empty($row['Fields'][0]['FType']) && $row['Fields'][0]['FType'] == 4 &&
-                !empty($row['Fields'][0]['DevId']) && 
+                !empty($row['Fields'][0]['DevId']) &&
                     (
                         strpos($row['Fields'][0]['DevId'], 'EC1VER') !== false ||
                         strpos($row['Fields'][0]['DevId'], 'EC2VER') !== false
@@ -101,22 +101,23 @@ class DataImportController extends Controller
             {
                 $type = (int) $field['FType'];
 
-           //     if($type == 0){ // gps
+                if($type == 0){ // gps
                     if(!empty($field['Lat']) && !empty($field['Long'])){
                         $latt = (float) $field['Lat']; $lng = (float) $field['Long'];
                         $hw = hardware_config::where('node_address', 'like' ,$imei.'%')->first();
-                        
-                            
-                        
-                            $hw->latt = $latt; 
+
+
+
+                            $hw->latt = $latt;
                             $hw->lng  = $lng;
-                            
+
                             $hw->date_time = $field['GpsUTC'];
                             $hw->save();
-                        
+
+                    //    $hw = hardware_config::where('node_address', 'like', $imei . '%')->first();
 
                     }
-              //  }
+                }
 
                 if($type == 4){ // sdi
                     $probe_address = (int) chr($field['DevAddr']);
@@ -127,7 +128,7 @@ class DataImportController extends Controller
 
                     if($model = $array_find($field['DevId'], $moisture_probe_models)){
                         $is_moisture_data = true; // Detect Soil Moisture Probes
-                    } 
+                    }
                      if($model = $array_find($field['DevId'], $nutrient_probe_models)){
                         $is_nutrient_data = true; // Detect Nutrient Probes
                     }
@@ -156,14 +157,21 @@ class DataImportController extends Controller
                     $bv   = !empty($field["AnalogueData"]['1']) ? (   (float) $field["AnalogueData"]['1'] )          : 0; // Batt.Volts.
                     $temp = !empty($field["AnalogueData"]['3']) ? ( ( (float) $field["AnalogueData"]['3'] ) / 100  ) : 0; // Ambient Temperature (Deg C * 100)
                   //  $bp   = !empty($field["AnalogueData"]['1']) ? ( ( 3300 - (float) $field["AnalogueData"]['1'] ) / 4100  )*100 : 0; // Batt.Percentage.
-                  $range = 4700 - 6200;
-        $delta = $bv - 4700;
-       // if ($delta <= 0) $delta = 0;
-        $level = ($delta / $range) * 100;
-                    $bp = $level;
-            //$bp = $level < 0 ? 0 : ($level > 100 ? 100 : $level);
+
                     // backfill
-                  /*  if(!empty($m_items) && is_array($m_items) && count($m_items) > 0){
+
+
+
+                    $range = 6200 - 4700;
+                    $delta = $item->bv - 4700;
+                    if ($delta <= 0)
+                        $delta = 0;
+                    $level = ($delta / $range) * 100;
+
+                    $bp = $level < 0 ? 0 : ($level > 100 ? 100 : $level);
+
+
+                    if(!empty($m_items) && is_array($m_items) && count($m_items) > 0){
                         foreach($m_items as &$m){
                             if(is_object($m)){
                                 if($bv){ $m->bv = $bv; }
@@ -172,15 +180,21 @@ class DataImportController extends Controller
                             }
                         }
                     }
-                    if(!empty($n_items) && is_array($n_items) && count($n_items) > 0){
-                        foreach($n_items as &$n){
-                            if(is_object($n)){
-                                if($bv){ $n->bv = $bv; }
-                                if($temp){ $n->ambient_temp = $temp; }
-                                if($bp){ $n->bp = $bp; }
+                    if (!empty($n_items) && is_array($n_items) && count($n_items) > 0) {
+                        foreach ($n_items as &$n) {
+                            if (is_object($n)) {
+                                if ($bv) {
+                                    $n->bv = $bv;
+                                }
+                                if ($temp) {
+                                    $n->ambient_temp = $temp;
+                                }
+                                if ($bp) {
+                                    $n->bp = $bp;
+                                }
                             }
                         }
-                    }*/
+                    }
                 }
 
             } // end for Fields
@@ -194,17 +208,16 @@ class DataImportController extends Controller
                 foreach($t_values as $key => $val){ $item->{$key} = $val; }
                 $item->accumulative = $m_values['accumulative'];
                 $item->average = $m_values['average'];
-                $item->rg = 0; 
+                $item->rg = 0;
 
-                $item->bv = $bv;
-                $item->bp = $bp;
 
-                $item->latt = $item->latt ?: $latt; $item->lng = $item->lng ?: $lng;
+                $item->latt = $item->latt ? $latt: $latt;
+                $item->lng = $item->lng ? $lng : $lng;
 
                 $item->ambient_temp = $item->ambient_temp ?: $temp;
 
                 $item->message_id_1 = "dmt"; $item->message_id_2 = "dmt_{$node_address}_{$date_sampled}";
-
+                $item->save();
                 // Prevent storing entries with all zero values
                 if($item->accumulative != 0){
                     $m_items[] = $item;
@@ -215,10 +228,10 @@ class DataImportController extends Controller
             }
 
             if(!empty($n_values)){
-                
+
 
                     $item = new nutri_data();
-                    
+
                     $item->node_address = $node_address; $item->probe_serial = $probe_serial;
                     $item->vendor_model_fw = $vendor_model_fw; $item->ver = $node_ver;
                     foreach($n_values as $key => $val){
@@ -229,9 +242,9 @@ class DataImportController extends Controller
                     $item->bv = $item->bv ?: $bv;
                     $item->bp = $item->bp ?: $bp;
 
-                    $item->latt = $item->latt ?: $latt;
-                    $item->lng = $item->lng ?: $lng;
-                    
+                    $item->latt = $item->latt ? $latt: $latt;
+                    $item->lng = $item->lng ? $lng: $lng;
+
                     $item->ambient_temp = $item->ambient_temp ?: $temp;
 
                     $item->message_id = 'dmt_'.$node_address .'_' . $date_sampled;
@@ -239,7 +252,7 @@ class DataImportController extends Controller
                     $n_items[] = $item;
 
                     $hw_items[$node_address] = [ 'latitude'  => $latt, 'longitude' => $lng, 'date_time' => $date_sampled ];
-                
+
 
                     Log::info(print_r($item));
                     $item->save();
@@ -280,7 +293,7 @@ class DataImportController extends Controller
                         $latt = $item['latitude']; $lng  = $item['longitude'];
                         // GPS DRIFT PREVENTION
                         if(($latt && (abs($latt - $hw->latt) > $gps_epsilon)) || ($lng && (abs($lng - $hw->lng) > $gps_epsilon))){
-                            $hw->latt = $latt; 
+                            $hw->latt = $latt;
                             $hw->lng  = $lng;
                         }
                     }
@@ -312,7 +325,7 @@ class DataImportController extends Controller
         // SAVE RAW DATA
 
         // PROBESCHEDULE PUSH
-        // if(empty($request->no_raw_save) && in_array($imei, ['354679096319994', '354679096314318', '354679096314458', '354679096319879', '354679096314151'])){ 
+        // if(empty($request->no_raw_save) && in_array($imei, ['354679096319994', '354679096314318', '354679096314458', '354679096319879', '354679096314151'])){
         //     Http::withBody($raw_data, 'application/json')->post('https://gateway.probeschedule.co.za/gateway/liquidfibre');
         // }
 
@@ -333,7 +346,7 @@ class DataImportController extends Controller
         $data = json_decode($raw_data, true);
 
         // FAIL IF DATA FAULTY OR MISSING IMEI
-        if(!$data || !$imei){ 
+        if(!$data || !$imei){
             if(!$data){ $return_data['status'] = 'ERROR: ' . json_last_error_msg(); }
             else if(!$imei){ $return_data['status'] = 'ERROR: NO IMEI'; }
             return response()->json($return_data, 422)->withHeaders($return_header);
@@ -452,7 +465,7 @@ class DataImportController extends Controller
                                 $node_address = "{$imei}-{$sensor_address}";
 
                                 $n_item = new nutri_data();
-                                
+
                                 $n_item->node_address    = $node_address;
                                 $n_item->probe_serial    = !empty($item['sensorSerial']) ? $item['sensorSerial'] : "";
                                 $n_item->vendor_model_fw = !empty($item['msgId']) ? $item['msgId'] : "";
@@ -460,7 +473,7 @@ class DataImportController extends Controller
                                 for($i = 1; $i <= $sensor_count; $i++){
 
                                     if(!empty($item['val'][$i-1])){
-        
+
                                         $n_item->{$message_type .'_'. $i} = (float) $item['val'][$i-1]; // [Measurement Type][Address]_[nr] (e.g M0_1, M0_2)
 
                                     }
@@ -485,7 +498,7 @@ class DataImportController extends Controller
                                     'longitude' => (float) !empty($item['lon']) ? $item['lon'] : 0,
                                     'date_time' => $n_item->date_sampled
                                 ];
-                          
+
                     }
                 }
             } // END FOREACH
@@ -608,7 +621,7 @@ class DataImportController extends Controller
 
         $item->average = $sensor_count ? $item->accumulative / $sensor_count : 0;
         if(!is_float($item->average)){ $item->average = 0; }
-        
+
         $item->rg = 0;
         $item->bv = ((float) $data['batteryV']) * 1000;
         $item->bp = (float) bcdiv((((((float)$data['batteryV']) * 1000) - 5000) / 2200) * 100, 1, 2); // ~7.2 max
@@ -654,7 +667,7 @@ class DataImportController extends Controller
                 }
             }
 
-        } else { 
+        } else {
             $status = 'Out of Range';
         }
 
@@ -752,7 +765,7 @@ class DataImportController extends Controller
                     continue;
                 }
 
-                $item->sm7  = 0; $item->sm8  = 0; $item->sm9  = 0; $item->sm10 = 0; 
+                $item->sm7  = 0; $item->sm8  = 0; $item->sm9  = 0; $item->sm10 = 0;
                 $item->sm11 = 0; $item->sm12 = 0; $item->sm13 = 0; $item->sm14 = 0;
                 $item->sm15 = 0;
 
@@ -812,7 +825,7 @@ class DataImportController extends Controller
         } else if($request->isMethod('post')){
 
             $rawBody = $request->getContent();
-            
+
             // ensure simplexml_load_string can parse the XML by escaping the invalid contents of the <log> tags
             if($rawBody && strpos($rawBody, '![CDATA') === false){
                 $rawBody = str_replace('&', '&amp;', $rawBody);
@@ -840,7 +853,7 @@ class DataImportController extends Controller
 
                 // SAVE RAW DATA
                 if(empty($request->no_raw_save)){
-                    
+
                     $raw = new raw_data_banner();
                     $raw->device_id = $site_id;
                     if(!empty($input)){

@@ -61,7 +61,7 @@
 
               <template #cell(field_name)="data">
                 <strong>
-                  <router-link v-if="userCan('Graph', convertNodeTypeToSubsystem(data.item.node_type), data.item.id, 'O')"
+                  <router-link v-b-tooltip.hover.top title="Go to this field's graph data" v-if="userCan('Graph', convertNodeTypeToSubsystem(data.item.node_type), data.item.id, 'O')"
                     :to="{ 
                       name: convertNodeTypeToGraphRouteName(data.item.node_type), // meters_graph, well_controls_graph
                       params: { node_address: data.item.node_address }
