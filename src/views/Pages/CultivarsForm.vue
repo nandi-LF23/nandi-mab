@@ -28,53 +28,31 @@
               </b-form-select>
             </b-col>
             <b-col md></b-col>
-            <b-col> 
-              <base-input v-model="filterText"
-                prepend-icon="fas fa-search"
-                placeholder="Search...">
+            <b-col>
+              <base-input v-model="filterText" prepend-icon="fas fa-search" placeholder="Search...">
               </base-input>
             </b-col>
           </b-row>
 
           <b-row>
             <b-col md>
-              <b-table
-                striped
-                bordered
-                outlined
-                small
-                stacked="md"
-                responsive
-                show-empty
-                primary-key="id"
-                :per-page="perPage"
-                :current-page="currentPage"
-                :filter="filterText"
-                :fields="templateTableColumns"
-                :items="loadedTemplates"
-                :busy.sync="loading">
+              <b-table striped bordered outlined small stacked="md" responsive show-empty primary-key="id"
+                :per-page="perPage" :current-page="currentPage" :filter="filterText" :fields="templateTableColumns"
+                :items="loadedTemplates" :busy.sync="loading">
 
                 <template #cell()="data">{{ data.value }}</template>
 
                 <template #cell(actions)="data">
                   <div class="d-flex justify-content-center">
-                    <b-button
-                      :disabled="!userCan('Edit','Cultivar Stages', data.item.id, 'O') || loading"
-                      @click="activateCultivarTemplate(data.index, data.item)"
-                      class="btn"
-                      variant="outline-primary"
-                      size="sm"
-                      icon>
-                    Load
+                    <b-button :disabled="!userCan('Edit', 'Cultivar Stages', data.item.id, 'O') || loading"
+                      @click="activateCultivarTemplate(data.index, data.item)" class="btn" variant="outline-primary"
+                      size="sm" icon>
+                      Load
                     </b-button>
-                    <b-button
-                      :disabled="!userCan('Delete', 'Cultivar Templates', data.item.id, 'O') || loading"
-                      @click="removeCultivarTemplate(data.index, data.item)"
-                      class="btn"
-                      variant="outline-primary"
-                      size="sm"
-                      icon>
-                    Remove
+                    <b-button :disabled="!userCan('Delete', 'Cultivar Templates', data.item.id, 'O') || loading"
+                      @click="removeCultivarTemplate(data.index, data.item)" class="btn" variant="outline-primary"
+                      size="sm" icon>
+                      Remove
                     </b-button>
                   </div>
                 </template>
@@ -97,10 +75,13 @@
 
           <b-row>
             <b-col md>
-              Showing {{ Math.min(1 + (perPage * (currentPage-1)), totalRows) }} to {{ Math.min((perPage*(currentPage-1)) + perPage, totalRows)  }} of {{ totalRows }} templates
+              Showing {{ Math.min(1 + (perPage * (currentPage - 1)), totalRows) }} to {{ Math.min((perPage * (currentPage
+                - 1))
+                + perPage, totalRows) }} of {{ totalRows }} templates
             </b-col>
             <b-col md>
-              <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right"></b-pagination>
+              <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage"
+                align="right"></b-pagination>
             </b-col>
           </b-row>
 
@@ -119,11 +100,12 @@
         </template>
         <template #default="{ hide }">
           <validation-observer ref='savetpl' slim>
-            <base-input label="Template Name" v-model="saveTemplateName" name="Template Name" rules="required" vid='template_name' placeholder='Template Name'></base-input>
+            <base-input label="Template Name" v-model="saveTemplateName" name="Template Name" rules="required"
+              vid='template_name' placeholder='Template Name'></base-input>
           </validation-observer>
           <b-row>
             <b-col>
-            {{ templateSaveStatus }}
+              {{ templateSaveStatus }}
             </b-col>
           </b-row>
         </template>
@@ -138,14 +120,15 @@
       </b-modal>
 
       <!-- The Cultivar Visual Editor Dialog -->
-      <b-modal v-model="visualEditorModalVisible" modal-class="modal-fullscreen" centered no-close-on-esc no-close-on-backdrop hide-footer>
+      <b-modal v-model="visualEditorModalVisible" modal-class="modal-fullscreen" centered no-close-on-esc
+        no-close-on-backdrop hide-footer>
         <template #modal-header="{ close }">
           <h6 class="modal-title">{{ visualEditorTitle }}</h6>
           <button aria-label="Close" class='close' @click="confirmVisualEditorClose">×</button>
         </template>
 
         <template #default="{ hide }">
-          
+
           <b-overlay :show="loading" rounded="sm" variant="white" opacity="0.5" blur="1px">
             <highcharts class="hc" :options="chartOptions" :updateArgs="chartUpdateArgs" ref="hchart"></highcharts>
             <validation-observer ref='plotterstage' slim>
@@ -155,9 +138,11 @@
                   <b-row>
                     <b-col>
                       <base-input>
-                        <el-select @change="visualEditorStageSelected" v-model="selectedStageIndex" placeholder="Stage" :disabled="!stageSeriesData.length">
+                        <el-select @change="visualEditorStageSelected" v-model="selectedStageIndex" placeholder="Stage"
+                          :disabled="!stageSeriesData.length">
                           <template v-for="(item, index) in stageSeriesData">
-                            <el-option v-if="index < stageSeriesData.length-1" :key="item.index" :label="item.name" :value="item.index"></el-option>
+                            <el-option v-if="index < stageSeriesData.length - 1" :key="item.index" :label="item.name"
+                              :value="item.index"></el-option>
                           </template>
                         </el-select>
                       </base-input>
@@ -167,7 +152,8 @@
                     <b-col>
                       <base-input name="stage name" rules="required" vid='stage_name'>
                         <b-input-group prepend="Name">
-                          <b-form-input v-model="currentSelectedStage.name" placeholder="Stage Name" :disabled="!stageSeriesData.length"></b-form-input>
+                          <b-form-input v-model="currentSelectedStage.name" placeholder="Stage Name"
+                            :disabled="!stageSeriesData.length"></b-form-input>
                         </b-input-group>
                       </base-input>
                     </b-col>
@@ -177,9 +163,10 @@
                 <b-col cols="6" md="6" lg="3">
                   <b-row>
                     <b-col>
-                      <base-input name="upper" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" vid='stage_upper'>
+                      <base-input name="upper" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }" vid='stage_upper'>
                         <b-input-group prepend="Upper %" :append="getEffectiveUpper">
-                          <b-form-input v-model="currentSelectedStage.upper" placeholder="Upper %" :disabled="!stageSeriesData.length"></b-form-input>
+                          <b-form-input v-model="currentSelectedStage.upper" placeholder="Upper %"
+                            :disabled="!stageSeriesData.length"></b-form-input>
                         </b-input-group>
                       </base-input>
                     </b-col>
@@ -187,9 +174,10 @@
 
                   <b-row>
                     <b-col>
-                      <base-input name="lower" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" vid='stage_lower'>
+                      <base-input name="lower" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }" vid='stage_lower'>
                         <b-input-group prepend="Lower %" :append="getEffectiveLower">
-                          <b-form-input v-model="currentSelectedStage.lower" placeholder="Lower %" :disabled="!stageSeriesData.length"></b-form-input>
+                          <b-form-input v-model="currentSelectedStage.lower" placeholder="Lower %"
+                            :disabled="!stageSeriesData.length"></b-form-input>
                         </b-input-group>
                       </base-input>
                     </b-col>
@@ -201,23 +189,17 @@
                     <b-col cols="6" sm="12" md="12" lg="12">
                       <base-input name="duration" rules="required|integer|min_value:1">
                         <b-input-group prepend="Days">
-                          <b-form-input v-model="currentSelectedStage.duration" type="number" min="1" placeholder="Duration" :disabled="!stageSeriesData.length"></b-form-input>
+                          <b-form-input v-model="currentSelectedStage.duration" type="number" min="1"
+                            placeholder="Duration" :disabled="!stageSeriesData.length"></b-form-input>
                         </b-input-group>
                       </base-input>
                     </b-col>
                     <b-col cols="6" sm="12" md="12" lg="12">
                       <base-input name="start date" rules="required">
-                        <flat-picker
-                          slot-scope="{focus, blur}"
-                          @on-open="focus"
-                          @on-close="blur"
-                          :config="{
-                            minDate: calcMinDate(currentSelectedStage ? currentSelectedStage.index : null),
-                            maxDate: calcMaxDate(currentSelectedStage ? currentSelectedStage.index : null)
-                          }"
-                          class="form-control datepicker"
-                          placeholder="Start Date"
-                          :disabled="!stageSeriesData.length"
+                        <flat-picker slot-scope="{focus, blur}" @on-open="focus" @on-close="blur" :config="{
+                          minDate: calcMinDate(currentSelectedStage ? currentSelectedStage.index : null),
+                          maxDate: calcMaxDate(currentSelectedStage ? currentSelectedStage.index : null)
+                        }" class="form-control datepicker" placeholder="Start Date" :disabled="!stageSeriesData.length"
                           v-model="currentSelectedStage.x">
                         </flat-picker>
                       </base-input>
@@ -229,20 +211,24 @@
                   <b-row>
                     <b-col cols="6" sm="12" md="12" lg="12">
                       <b-button-group class='mb-lg-4 mb-md-2 mb-sm-2 mb-2'>
-                        <b-button variant="outline-primary" @click="visualEditorUpdateStage" :disabled="!stageSeriesData.length || !userCan('Edit', 'Cultivar Stages')">
+                        <b-button variant="outline-primary" @click="visualEditorUpdateStage"
+                          :disabled="!stageSeriesData.length || !userCan('Edit', 'Cultivar Stages')">
                           Update
                         </b-button>
-                        <b-button variant="primary" @click="applyGraphDataToStages" :disabled="!stageSeriesData.length || !userCan('Edit', 'Cultivar Stages')">
+                        <b-button variant="primary" @click="applyGraphDataToStages"
+                          :disabled="!stageSeriesData.length || !userCan('Edit', 'Cultivar Stages')">
                           Apply
                         </b-button>
                       </b-button-group>
                     </b-col>
                     <b-col cols="6" sm="12" md="12" lg="12">
                       <b-button-group class='mb-lg-4 mb-md-2 mb-sm-2 mb-2'>
-                        <b-button variant="outline-primary" @click="showBrowseTemplatesModal" :disabled="!userCan('View', 'Cultivar Templates')">
+                        <b-button variant="outline-primary" @click="showBrowseTemplatesModal"
+                          :disabled="!userCan('View', 'Cultivar Templates')">
                           Load Template
                         </b-button>
-                        <b-button variant="outline-primary" @click="showSaveTemplatesModal" :disabled="!stageSeriesData.length || !userCan('Add', 'Cultivar Templates')">
+                        <b-button variant="outline-primary" @click="showSaveTemplatesModal"
+                          :disabled="!stageSeriesData.length || !userCan('Add', 'Cultivar Templates')">
                           Save Template
                         </b-button>
                       </b-button-group>
@@ -262,20 +248,33 @@
             <card body-classes="px-0 py-0">
               <template slot="header">
                 <h3 class="mb-2">Cultivar Configuration</h3>
-                <base-button 
-                  :disabled="!userCan('Graph', 'Soil Moisture')"
-                  @click.native="goToGraph"
-                  class="btn"
-                  type="primary"
-                  size="sm"
-                  icon>
+                <base-button :disabled="!userCan('Graph', 'Soil Moisture')" @click.native="goToGraph" class="btn"
+                  type="primary" size="sm" v-b-tooltip.hover.top title="Navigate to node's graphing screen." icon>
                   Graph
                 </base-button>
+                <b-button v-b-modal.modal-1 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                  title="Read More">
+                  <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                </b-button>
+                <b-modal id="modal-1" title="Cultivar Configuration">
+                  <p>The Cultivar Configuration screen facilitates the configuration of Cultivar Specific Growth Stages on
+                    a per Node basis.</p>
+                  <p><b>Cultivar Name:</b> Informational Crop Name Field </p>
+                  <p><b>Cultivar Type: </b>Informational Irrigation Type field</p>
+
+                  <p><b>NI: </b>Norm Irrigation Value</p>
+                  <p><b>NR: </b>Norm Reaction Value</p>
+                  <p><b>Full:</b> The Full value that applies to the field</p>
+                  <p><b>Refill:</b> The Refill value that applies to the field</p>
+                  <p><b>Irrigation Type:</b> Informational Irrigation Type field</p>
+                  <p><b>Graph Model: </b>Select Average or Sum graph to display</p>
+                </b-modal>
               </template>
               <div class="card-body">
                 <b-row align-v="center">
                   <b-col md>
-                    <base-input @change="syncFields" name="cultivar name" rules="required" label='Cultivar Name' placeholder="Cultivar Name" vid="crop_name" v-model="model.crop_name"></base-input>
+                    <base-input @change="syncFields" name="cultivar name" rules="required" label='Cultivar Name'
+                      placeholder="Cultivar Name" vid="crop_name" v-model="model.crop_name"></base-input>
                   </b-col>
                   <b-col md>
                     <base-input label="Cultivar Type" name="cultivar type" rules="required" vid="crop_type">
@@ -289,25 +288,30 @@
 
                 <b-row align-v="center">
                   <b-col md>
-                    <base-input @change="syncFields" name="ni" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" label='NI' placeholder="NI" vid="ni" v-model="model.ni"></base-input>
+                    <base-input @change="syncFields" name="ni" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }"
+                      label='NI' placeholder="NI" vid="ni" v-model="model.ni"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input @change="syncFields" name="nr" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" label='NR' placeholder="NR" vid="nr" v-model="model.nr"></base-input>
-                  </b-col>
-                </b-row>
-                
-                <b-row align-v="center">
-                  <b-col md>
-                    <base-input @change="syncFields" name="full" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" label='Full' placeholder="100" vid="full" v-model="model.full"></base-input>
-                  </b-col>
-                  <b-col md>
-                    <base-input @change="syncFields" name="refill" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" label='Refill' placeholder="100" vid="refill" v-model="model.refill"></base-input>
+                    <base-input @change="syncFields" name="nr" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }"
+                      label='NR' placeholder="NR" vid="nr" v-model="model.nr"></base-input>
                   </b-col>
                 </b-row>
-                
+
                 <b-row align-v="center">
                   <b-col md>
-                    <base-input @change="syncFields" name="irrigation type" rules="required" label='Irrigation Type' placeholder="Irrigation Type" vid="irrigation_type" v-model="model.irrigation_type"></base-input>
+                    <base-input @change="syncFields" name="full" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }"
+                      label='Full' placeholder="100" vid="full" v-model="model.full"></base-input>
+                  </b-col>
+                  <b-col md>
+                    <base-input @change="syncFields" name="refill" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }"
+                      label='Refill' placeholder="100" vid="refill" v-model="model.refill"></base-input>
+                  </b-col>
+                </b-row>
+
+                <b-row align-v="center">
+                  <b-col md>
+                    <base-input @change="syncFields" name="irrigation type" rules="required" label='Irrigation Type'
+                      placeholder="Irrigation Type" vid="irrigation_type" v-model="model.irrigation_type"></base-input>
                   </b-col>
                   <b-col md>
                     <base-input label="Graph Model" name="graph model" rules="required" vid="graph_model">
@@ -327,14 +331,22 @@
               <h3 class="mb-2">Cultivar Growth Stages</h3>
               <b-row>
                 <b-col md>
-                  <base-button @click.native="openVisualEditor()"
-                    class="btn"
-                    type="primary"
-                    size="sm"
-                    v-b-tooltip.hover.top title="Manage the cultivar's stages visually."
-                    icon>
+                  <base-button @click.native="openVisualEditor()" class="btn" type="primary" size="sm"
+                    v-b-tooltip.hover.top title="Manage the cultivar's stages visually." icon>
                     Visual Editor
                   </base-button>
+                  <b-button v-b-modal.modal-2 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                    title="Read More">
+                    <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                  </b-button>
+                  <b-modal id="modal-2" title="Cultivar Growth Stages">
+                    <p>Represents a cultivar growth stage record.</p>
+                    <p><b>Stage Name: </b>The growth stage's name.</p>
+                    <p><b>Start Date: </b>The growth stage's start date.</p>
+                    <p><b>Duration: </b>The duration (in days) of the growth stage.</p>
+                    <p><b>Lower: </b>The growth stage's lower value	(%).</p>
+                    <p><b>Upper: </b>The growth stage's upper value	(%).</p>
+                  </b-modal>
                 </b-col>
               </b-row>
             </template>
@@ -342,40 +354,34 @@
               <validation-observer ref='updatestage' slim>
                 <b-row align-v="center" v-for="(stage, index) in stages" :key="stage.id">
                   <b-col md>
-                    <base-input name="stage name" rules="required" label='Stage Name' v-model="stage.stage_name"></base-input>
+                    <base-input name="stage name" rules="required" label='Stage Name'
+                      v-model="stage.stage_name"></base-input>
                   </b-col>
                   <b-col md>
                     <base-input label="Start Date" name="start date" rules="required" vid="stage_start_date">
-                      <flat-picker slot-scope="{focus, blur}"
-                        @on-open="focus"
-                        @on-close="blur"
-                        :config="{
-                          minDate: calcMinDate(index),
-                          maxDate: calcMaxDate(index)
-                        }"
-                        class="form-control datepicker"
-                        v-model="stage.stage_start_date">
+                      <flat-picker slot-scope="{focus, blur}" @on-open="focus" @on-close="blur" :config="{
+                        minDate: calcMinDate(index),
+                        maxDate: calcMaxDate(index)
+                      }" class="form-control datepicker" v-model="stage.stage_start_date">
                       </flat-picker>
                     </base-input>
                   </b-col>
                   <b-col md>
-                    <base-input name="duration" rules="required|integer" label='Duration' placeholder="" vid="duration" v-model.number="stage.duration"></base-input>
+                    <base-input name="duration" rules="required|integer" label='Duration' placeholder="" vid="duration"
+                      v-model.number="stage.duration"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input name="lower" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" label='Lower %' placeholder="0" vid="lower" v-model.number="stage.lower"></base-input>
+                    <base-input name="lower" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }" label='Lower %'
+                      placeholder="0" vid="lower" v-model.number="stage.lower"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input name="upper" :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }" label='Upper %' placeholder="100" vid="upper" v-model.number="stage.upper"></base-input>
+                    <base-input name="upper" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }" label='Upper %'
+                      placeholder="100" vid="upper" v-model.number="stage.upper"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-button 
-                      :disabled="!userCan('Edit', 'Cultivar Stages', stage.id, 'O')"
-                      @click.native="updateStage(stage)"
-                      class="btn"
-                      type="primary"
-                      size="sm"
-                      v-b-tooltip.hover.top title="Save/update the existing stage's values."
-                      icon>
+                    <base-button :disabled="!userCan('Edit', 'Cultivar Stages', stage.id, 'O')"
+                      @click.native="updateStage(stage)" class="btn" type="primary" size="sm" v-b-tooltip.hover.top
+                      title="Save/update the existing stage's values." icon>
                       Update
                     </base-button>
                   </b-col>
@@ -385,84 +391,48 @@
               <validation-observer ref='addstage' slim>
                 <b-row align-v="center">
                   <b-col md>
-                    <base-input
-                      name="stage name"
-                      rules="required"
-                      label='Stage Name'
-                      vid="stage_name"
+                    <base-input name="stage name" rules="required" label='Stage Name' vid="stage_name"
                       v-b-tooltip.hover.top title="A descriptive name for the stage."
                       v-model="new_stage.stage_name"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input
-                      name="start date"
-                      rules="required"
-                      label="Start Date"
-                      v-b-tooltip.hover.top title="Date at which the stage starts."
-                      vid="start_date">
-                      <flat-picker slot-scope="{focus, blur}"
-                        @on-open="focus"
-                        @on-close="blur"
-                        :config="{ minDate: calcNewMinDate() }"
-                        class="form-control datepicker"
+                    <base-input name="start date" rules="required" label="Start Date" v-b-tooltip.hover.top
+                      title="Date at which the stage starts." vid="start_date">
+                      <flat-picker slot-scope="{focus, blur}" @on-open="focus" @on-close="blur"
+                        :config="{ minDate: calcNewMinDate() }" class="form-control datepicker"
                         v-model="new_stage.start_date">
                       </flat-picker>
                     </base-input>
                   </b-col>
                   <b-col md>
-                    <base-input
-                      name="duration"
-                      rules="required|integer"
-                      label='Duration'
-                      placeholder=""
-                      vid="duration"
+                    <base-input name="duration" rules="required|integer" label='Duration' placeholder="" vid="duration"
                       v-b-tooltip.hover.top title="The stage length (in days)."
                       v-model.number="new_stage.duration"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input
-                      name="lower"
-                      :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }"
-                      label='Lower %'
-                      placeholder="0"
-                      vid="lower"
-                      v-b-tooltip.hover.top title="The stage's lower value."
+                    <base-input name="lower" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }" label='Lower %'
+                      placeholder="0" vid="lower" v-b-tooltip.hover.top title="The stage's lower value."
                       v-model.number="new_stage.lower"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-input
-                      name="upper"
-                      :rules="{ required:true, regex:/^\d+(\.\d{1,2})?$/ }"
-                      label='Upper %'
-                      placeholder="100"
-                      vid="upper"
-                      v-b-tooltip.hover.top title="The stage's upper value."
+                    <base-input name="upper" :rules="{ required: true, regex: /^\d+(\.\d{1,2})?$/ }" label='Upper %'
+                      placeholder="100" vid="upper" v-b-tooltip.hover.top title="The stage's upper value."
                       v-model.number="new_stage.upper"></base-input>
                   </b-col>
                   <b-col md>
-                    <base-button
-                      :disabled="!userCan('Add', 'Cultivar Stages')"
-                      @click.native="addStage()"
-                      class="btn"
-                      type="primary"
-                      size="sm"
-                      v-b-tooltip.hover.top title="Add a new cultivar stage onto the end of the list."
-                      icon>
+                    <base-button :disabled="!userCan('Add', 'Cultivar Stages')" @click.native="addStage()" class="btn"
+                      type="primary" size="sm" v-b-tooltip.hover.top
+                      title="Add a new cultivar stage onto the end of the list." icon>
                       Add Stage
                     </base-button>
                   </b-col>
                 </b-row>
                 <b-row>
                   <b-col md>
-                    <base-button
-                      :disabled="!userCan('Delete', 'Cultivar Stages')"
-                      @click.native="deleteLastStage()"
-                      class="btn"
-                      type="primary"
-                      size="sm"
-                      v-b-tooltip.hover.top title="Removes the most recently added cultivar stage"
-                      icon>
-                    Delete Last Stage
+                    <base-button :disabled="!userCan('Delete', 'Cultivar Stages')" @click.native="deleteLastStage()"
+                      class="btn" type="primary" size="sm" v-b-tooltip.hover.top
+                      title="Removes the most recently added cultivar stage" icon>
+                      Delete Last Stage
                     </base-button>
                   </b-col>
                 </b-row>
@@ -490,7 +460,7 @@ import mab_utils from '../../util/mab-utils';
 
 export default {
 
-  mixins: [ mab_utils ],
+  mixins: [mab_utils],
   components: {
     flatPicker,
     [Select.name]: Select,
@@ -509,7 +479,7 @@ export default {
         irrigation_type: '',
         graph_model: 'ave',
         node_address: '',
-        
+
         field_id: this.$route.params.field_id,
         ni: '',
         nr: '',
@@ -526,7 +496,7 @@ export default {
         lower: 0,
         upper: 100
       },
-      
+
       visualEditorStartDate: null,
       visualEditorModalVisible: false,
 
@@ -567,7 +537,7 @@ export default {
       pendingChanges: false,
 
       // Visual Editor Chart Config
-      chartUpdateArgs: [ true, true, { duration: 1000 } ],
+      chartUpdateArgs: [true, true, { duration: 1000 }],
 
       averageSeriesData: [],
       graphYMax: 100,
@@ -596,13 +566,13 @@ export default {
   },
 
   computed: {
-    chartOptions(){
+    chartOptions() {
       return {
-        credits:{ enabled:false },
+        credits: { enabled: false },
         chart: {
-          zoomType:'x',
-          panning:true,
-          panKey:'shift'
+          zoomType: 'x',
+          panning: true,
+          panKey: 'shift'
         },
         series: [
           {
@@ -610,12 +580,12 @@ export default {
             name: 'Stages',
             dataLabels: {
               enabled: true,
-              formatter: function(){
+              formatter: function () {
                 // this.point.upper and this.point.lower available
-                if(this.y == this.point.high){
-                  return Highcharts.numberFormat(this.y,2);
-                } else if(this.y == this.point.low){
-                  return Highcharts.numberFormat(this.y,2);
+                if (this.y == this.point.high) {
+                  return Highcharts.numberFormat(this.y, 2);
+                } else if (this.y == this.point.low) {
+                  return Highcharts.numberFormat(this.y, 2);
                 }
               }
             },
@@ -629,8 +599,8 @@ export default {
                   //console.log("updating currentSelectedStage from e.target");
                   this.setStageObjectValues(this.currentSelectedStage, e.target);
 
-                  this.prevSelectedStage = typeof this.stageSeriesData[idx-1] !== 'undefined' ? this.stageSeriesData[idx-1] : null;
-                  this.nextSelectedStage = typeof this.stageSeriesData[idx+1] !== 'undefined' ? this.stageSeriesData[idx+1] : null;
+                  this.prevSelectedStage = typeof this.stageSeriesData[idx - 1] !== 'undefined' ? this.stageSeriesData[idx - 1] : null;
+                  this.nextSelectedStage = typeof this.stageSeriesData[idx + 1] !== 'undefined' ? this.stageSeriesData[idx + 1] : null;
                 },
                 unselect: (e) => { return false; }
               }
@@ -642,8 +612,8 @@ export default {
             fillColor: {
               linearGradient: [0, 0, 0, 300],
               stops: [
-                [ 0, Highcharts.getOptions().colors[0] ],
-                [ 1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba') ]
+                [0, Highcharts.getOptions().colors[0]],
+                [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
               ]
             },
           },
@@ -655,9 +625,9 @@ export default {
           },
         ],
         tooltip: {
-          formatter: function (tooltip){
-            if(this.series){
-              if(this.series.name == 'Stages'){
+          formatter: function (tooltip) {
+            if (this.series) {
+              if (this.series.name == 'Stages') {
                 let tooltip = '<div>';
                 tooltip += 'Stage: <strong>' + this.point.name + '</strong><br>';
                 tooltip += 'Start: <strong>' + format(new Date(this.point.x), 'yyyy-MM-dd') + '</strong><br>';
@@ -666,12 +636,12 @@ export default {
                 tooltip += 'Lower %: <strong>' + this.point.lower + '</strong><br>';
                 tooltip += '</div>';
                 return tooltip;
-              } else if(this.series.name == 'Average'){
+              } else if (this.series.name == 'Average') {
                 let tooltip = '<div>';
 
                 let status = 'N/A';
 
-                if(this.point.stage && this.point.model){
+                if (this.point.stage && this.point.model) {
                   let volume = this.point.model.full - this.point.model.refill;
                   let upper_value = this.point.model.refill + (volume * this.point.stage.upper / 100);
                   let lower_value = this.point.model.refill + (volume * this.point.stage.lower / 100);
@@ -695,10 +665,10 @@ export default {
           type: 'datetime',
           softMin: this.xAxisSoftMin,
           crosshair: true,
-          tickInterval:1
+          tickInterval: 1
         },
         yAxis: {
-          tickInterval:1,
+          tickInterval: 1,
           title: { text: '' },
           min: this.graphYMin,
           max: this.graphYMax,
@@ -710,8 +680,8 @@ export default {
               color: '#00F',
               width: 2,
               label: {
-                x:0,
-                align:'right',
+                x: 0,
+                align: 'right',
                 formatter: () => { return 'Full: ' + this.model.full; }
               }
             },
@@ -720,8 +690,8 @@ export default {
               color: '#D26761',
               width: 2,
               label: {
-                x:0,
-                align:'right',
+                x: 0,
+                align: 'right',
                 formatter: () => { return 'Refill: ' + this.model.refill; }
               }
             }
@@ -735,7 +705,7 @@ export default {
         },
         plotOptions: {
           series: {
-            keys: [ 'id', 'name', 'x', 'low', 'high', 'lower', 'upper', 'duration', 'stage' ],
+            keys: ['id', 'name', 'x', 'low', 'high', 'lower', 'upper', 'duration', 'stage'],
             // prevent fading
             states: { inactive: { opacity: 1 } },
             allowPointSelect: false,
@@ -748,63 +718,63 @@ export default {
       };
     },
 
-    visualEditorTitle: function(){
+    visualEditorTitle: function () {
       let title = 'Cultivar Visual Editor';
-      if(this.loadedTemplateName){ title += ': ' + this.loadedTemplateName; }
-      if(this.pendingChanges){ title += "*"; }
+      if (this.loadedTemplateName) { title += ': ' + this.loadedTemplateName; }
+      if (this.pendingChanges) { title += "*"; }
       return title;
     },
 
-    getEffectiveUpper: function(){
-      if(this.model && this.currentSelectedStage){
+    getEffectiveUpper: function () {
+      if (this.model && this.currentSelectedStage) {
         let volume = this.model.full - this.model.refill;
-        return volume ? '(' + Highcharts.numberFormat(this.model.refill + (volume * (this.currentSelectedStage.upper/100)), 2) + ')' : '';
+        return volume ? '(' + Highcharts.numberFormat(this.model.refill + (volume * (this.currentSelectedStage.upper / 100)), 2) + ')' : '';
       } else return '';
     },
 
-    getEffectiveLower: function(){
-      if(this.model && this.currentSelectedStage){
+    getEffectiveLower: function () {
+      if (this.model && this.currentSelectedStage) {
         let volume = this.model.full - this.model.refill;
-        return volume ? '(' + Highcharts.numberFormat(this.model.refill + (volume * (this.currentSelectedStage.lower/100)), 2) + ')' : '';
+        return volume ? '(' + Highcharts.numberFormat(this.model.refill + (volume * (this.currentSelectedStage.lower / 100)), 2) + ')' : '';
       } else return '';
     }
   },
 
   watch: {
     stageSeriesData: {
-      handler: function(val){
+      handler: function (val) {
         this.chartOptions.series[0].data = val;
       },
       deep: true
     },
     averageSeriesData: {
-      handler: function(val){
+      handler: function (val) {
         this.chartOptions.series[1].data = val;
         this.$refs.hchart.chart.redraw();
       },
       deep: true
     },
     graphYMin: {
-      handler: function(val){
+      handler: function (val) {
         this.chartOptions.yAxis.min = parseFloat(val);
       },
       deep: true
     },
     graphYMax: {
-      handler: function(val){
+      handler: function (val) {
         this.chartOptions.yAxis.max = parseFloat(val);
       },
       deep: true
     },
 
     saveTemplateName: {
-      handler: function(val){
+      handler: function (val) {
         this.templateSaveStatus = this.loadedTemplateName != val ? 'A new template will be created.' : 'Existing template will be updated.';
       }
     },
 
     visualEditorStartDate: {
-      handler: function(val){
+      handler: function (val) {
         let dt = parse(val, 'yyyy-MM-dd', new Date());
         dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
         this.xAxisSoftMin = dt.getTime();
@@ -813,8 +783,7 @@ export default {
     },
   },
 
-  mounted()
-  {
+  mounted() {
     this.loadCultivarData();
   },
 
@@ -823,43 +792,40 @@ export default {
     /* Data loaders */
 
     /* Loads the main cultivars_management row + stages */
-    loadCultivarData()
-    {
+    loadCultivarData() {
       this.loading = true;
       this.$axios.get("/api/ManageCultivars/" + this.$route.params.field_id)
-      .then((resp) => {
-        this.loading = false;
-        this.model = resp.data.fields;
-        this.stages = resp.data.stages;
-        this.setNextStageStartDate();
-      });
+        .then((resp) => {
+          this.loading = false;
+          this.model = resp.data.fields;
+          this.stages = resp.data.stages;
+          this.setNextStageStartDate();
+        });
     },
 
     /* Load Saved Cultivar Templates */
-    loadCultivarStageTemplates()
-    {
+    loadCultivarStageTemplates() {
       this.loading = true;
       this.$axios.get("/api/loadCultiTemplates/" + this.model.company_id)
-      .then((resp) => {
-        this.loading = false;
-        this.loadedTemplates = resp.data.templates;
-        this.totalRows = this.loadedTemplates.length;
-      });
+        .then((resp) => {
+          this.loading = false;
+          this.loadedTemplates = resp.data.templates;
+          this.totalRows = this.loadedTemplates.length;
+        });
     },
 
     /* VISUAL EDITOR OPEN & CLOSE */
 
-    openVisualEditor()
-    {
+    openVisualEditor() {
       this.visualEditorModalVisible = true;
       this.visualEditorSetStartDate();
     },
 
-    confirmVisualEditorClose(e){
-      if(e){
+    confirmVisualEditorClose(e) {
+      if (e) {
         e.preventDefault();
       }
-      if(this.pendingChanges){
+      if (this.pendingChanges) {
         swal.fire({
           title: 'Close Editor?',
           text: 'Please confirm',
@@ -880,8 +846,7 @@ export default {
       }
     },
 
-    closeVisualEditor()
-    {
+    closeVisualEditor() {
       this.pendingChanges = false;
       this.templateLoaded = false;
       this.loadedTemplateName = '';
@@ -896,9 +861,8 @@ export default {
     },
 
     /* GET GRAPH DATA */
-    visualEditorLoadGraphData()
-    {
-      if(this.visualEditorStartDate){
+    visualEditorLoadGraphData() {
+      if (this.visualEditorStartDate) {
         this.loading = true;
         this.$axios.post("/api/Graph", {
           unit_of_measure: this.$store.state.user_obj.unit_of_measure,
@@ -910,12 +874,12 @@ export default {
           this.loading = false;
 
           // 1. set stages series (if stages exist)
-          if(this.stages.length){
+          if (this.stages.length) {
             this.visualEditorSetGraphStageData(this.stages);
           }
 
           // 2. set average series (if data exists) (dependant on 1.)
-          if(resp.data){
+          if (resp.data) {
             this.visualEditorSetAverageStageData(resp.data.graph.series[0].data);
           }
 
@@ -924,9 +888,8 @@ export default {
     },
 
     /* MAB Average Data -> HighCharts */
-    visualEditorSetAverageStageData(averageData)
-    {
-      if(averageData.length && this.stageSeriesData.length){
+    visualEditorSetAverageStageData(averageData) {
+      if (averageData.length && this.stageSeriesData.length) {
 
         this.averageSeriesData = [];
 
@@ -938,7 +901,7 @@ export default {
           let _stage = null;
 
           this.stageSeriesData.every(stageItem => {
-            if(avgItem.x >= stageItem.x && avgItem.x <= (stageItem.x + (stageItem.duration * 24 * 3600 * 1000))){
+            if (avgItem.x >= stageItem.x && avgItem.x <= (stageItem.x + (stageItem.duration * 24 * 3600 * 1000))) {
               _stage = stageItem;
               return false;
             }
@@ -956,20 +919,19 @@ export default {
         });
 
         // fit graph
-        this.graphYMax = parseFloat(yMax)+1;
-        this.graphYMin = parseFloat(yMin)-1;
+        this.graphYMax = parseFloat(yMax) + 1;
+        this.graphYMin = parseFloat(yMin) - 1;
 
       }
       return averageData;
     },
 
     /* MAB Stage Data -> HighCharts */
-    visualEditorSetGraphStageData(stageData)
-    {
+    visualEditorSetGraphStageData(stageData) {
       // stage series data
-      if(stageData.length && this.visualEditorStartDate){
+      if (stageData.length && this.visualEditorStartDate) {
 
-        let last_item = stageData[stageData.length-1];
+        let last_item = stageData[stageData.length - 1];
         let dt = parse(this.visualEditorStartDate, 'yyyy-MM-dd', new Date());
         dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
         let xVal = dt.getTime();
@@ -982,14 +944,14 @@ export default {
         let volume = full - refill;
 
         this.stageSeriesData = [];
-        
+
         stageData.forEach((item, index) => {
 
           //let low  = parseFloat(full * (item.lower/100));
           //let high = parseFloat(full * (item.upper/100));
 
-          let low  = parseFloat(refill + (volume * (item.lower/100)));
-          let high = parseFloat(refill + (volume * (item.upper/100)));
+          let low = parseFloat(refill + (volume * (item.lower / 100)));
+          let high = parseFloat(refill + (volume * (item.upper / 100)));
 
           this.stageSeriesData.push({
             index: index,
@@ -1016,8 +978,8 @@ export default {
           index: this.stageSeriesData.length, /* Yes, this works, don't add -1 */
           name: last_item.stage_name + ' End',
           x: xVal,
-          low:   parseFloat(refill + (volume * (last_item.lower/100))),
-          high:  parseFloat(refill + (volume * (last_item.upper/100))),
+          low: parseFloat(refill + (volume * (last_item.lower / 100))),
+          high: parseFloat(refill + (volume * (last_item.upper / 100))),
           lower: parseFloat(last_item.lower),
           upper: parseFloat(last_item.upper),
           duration: 0,
@@ -1030,8 +992,8 @@ export default {
         yMin = refill < yMin ? refill : yMin;
         yMax = full > yMax ? full : yMax;
 
-        this.graphYMax = parseFloat(yMax)+1;
-        this.graphYMin = parseFloat(yMin)-1;
+        this.graphYMax = parseFloat(yMax) + 1;
+        this.graphYMin = parseFloat(yMin) - 1;
 
         // select first stage by default
         this.stageSeriesData[0].selected = true;
@@ -1047,13 +1009,12 @@ export default {
     },
 
     /* MAB Stage Data <- HighCharts */
-    visualEditorGetGraphStageData()
-    {
+    visualEditorGetGraphStageData() {
       let series = this.$refs.hchart.chart.series[0];
       let new_stages = [];
       let current_date = this.visualEditorStartDate;
 
-      if(series.data.length > 0 && current_date.length){
+      if (series.data.length > 0 && current_date.length) {
         // convert points to MAB stages
         series.data.forEach((item, index) => {
           new_stages.push({
@@ -1076,86 +1037,85 @@ export default {
 
     /* VISUAL EDITOR CRUD */
 
-    visualEditorStageSelected(idx)
-    {
+    visualEditorStageSelected(idx) {
       let series = this.$refs.hchart.chart.series[0];
-      if(series.data.length){
-        series.data.forEach( item => {
-          if(item.index == idx){
+      if (series.data.length) {
+        series.data.forEach(item => {
+          if (item.index == idx) {
             item.select(true, false);
           }
         });
       }
     },
 
-    visualEditorUpdateStage(){
+    visualEditorUpdateStage() {
       this.$refs.plotterstage.validate().then(success => {
         if (!success) { return; }
 
         let yMax = this.graphYMax;
         let yMin = this.graphYMin;
 
-        let full   = parseFloat(this.model.full);
+        let full = parseFloat(this.model.full);
         let refill = parseFloat(this.model.refill);
         let volume = full - refill;
-        
+
         this.stageSeriesData.forEach((item, index) => {
-          if(this.currentSelectedStage.index == index){
+          if (this.currentSelectedStage.index == index) {
 
             this.pendingChanges = true;
 
-            let curr_stage      = this.stageSeriesData[index];
-            let prev_stage      = typeof this.stageSeriesData[index-1] !== 'undefined' ? this.stageSeriesData[index-1] : null;
-            let next_stage      = typeof this.stageSeriesData[index+1] !== 'undefined' ? this.stageSeriesData[index+1] : curr_stage;
+            let curr_stage = this.stageSeriesData[index];
+            let prev_stage = typeof this.stageSeriesData[index - 1] !== 'undefined' ? this.stageSeriesData[index - 1] : null;
+            let next_stage = typeof this.stageSeriesData[index + 1] !== 'undefined' ? this.stageSeriesData[index + 1] : curr_stage;
 
-            let curr_x          = new Date(this.currentSelectedStage.x).getTime();
-            let old_x           = parseInt(item.x);
-            let diff_x          = curr_x-old_x;
+            let curr_x = new Date(this.currentSelectedStage.x).getTime();
+            let old_x = parseInt(item.x);
+            let diff_x = curr_x - old_x;
 
-            let curr_d          = parseInt(this.currentSelectedStage.duration);
-            let old_d           = parseInt(item.duration);
-            let diff_d          = curr_d-old_d;
+            let curr_d = parseInt(this.currentSelectedStage.duration);
+            let old_d = parseInt(item.duration);
+            let diff_d = curr_d - old_d;
 
-            curr_stage.name     = this.currentSelectedStage.name;
+            curr_stage.name = this.currentSelectedStage.name;
             //curr_stage.high     = parseFloat(full * (this.currentSelectedStage.upper/100));
             //curr_stage.low      = parseFloat(full * (this.currentSelectedStage.lower/100));
-            curr_stage.high     = parseFloat(refill + (volume * (this.currentSelectedStage.upper / 100)));
-            curr_stage.low      = parseFloat(refill + (volume * (this.currentSelectedStage.lower / 100)));
-            curr_stage.upper    = parseFloat(this.currentSelectedStage.upper);
-            curr_stage.lower    = parseFloat(this.currentSelectedStage.lower);
+            curr_stage.high = parseFloat(refill + (volume * (this.currentSelectedStage.upper / 100)));
+            curr_stage.low = parseFloat(refill + (volume * (this.currentSelectedStage.lower / 100)));
+            curr_stage.upper = parseFloat(this.currentSelectedStage.upper);
+            curr_stage.lower = parseFloat(this.currentSelectedStage.lower);
             curr_stage.duration = parseInt(this.currentSelectedStage.duration);
-            curr_stage.x        = new Date(this.currentSelectedStage.x).getTime();
+            curr_stage.x = new Date(this.currentSelectedStage.x).getTime();
 
             // calculate minimums/maximums
             yMin = curr_stage.low < yMin ? curr_stage.low : yMin;
             yMax = curr_stage.high > yMax ? curr_stage.high : yMax;
 
             // Ensure duration stage (last point) has identical lower/upper/low/high values. 
-            if(curr_stage.index == this.stageSeriesData.length-2){
-              let last_index = this.stageSeriesData.length-1;
+            if (curr_stage.index == this.stageSeriesData.length - 2) {
+              let last_index = this.stageSeriesData.length - 1;
               this.stageSeriesData[last_index].low = curr_stage.low;
               this.stageSeriesData[last_index].high = curr_stage.high;
               this.stageSeriesData[last_index].upper = curr_stage.upper;
               this.stageSeriesData[last_index].lower = curr_stage.lower;
             }
-            
-            for(var i = 0; i < this.stageSeriesData.length; i++){ this.stageSeriesData[i].selected = false; }
+
+            for (var i = 0; i < this.stageSeriesData.length; i++) { this.stageSeriesData[i].selected = false; }
             curr_stage.selected = true;
 
             // adjust x-values (duration difference)
-            if(diff_d){
+            if (diff_d) {
               diff_d *= 86400000; // (24 * 3600 * 1000)
-              for(var i = this.currentSelectedStage.index+1; i < this.stageSeriesData.length; i++){
+              for (var i = this.currentSelectedStage.index + 1; i < this.stageSeriesData.length; i++) {
                 this.stageSeriesData[i].x += diff_d;
               }
             }
             // adjust x-values (date difference)
-            if(diff_x){
-              for(var i = this.currentSelectedStage.index+1; i < this.stageSeriesData.length; i++){
+            if (diff_x) {
+              for (var i = this.currentSelectedStage.index + 1; i < this.stageSeriesData.length; i++) {
                 this.stageSeriesData[i].x += diff_x;
               }
               // adjust previous stage's duration
-              if(prev_stage){
+              if (prev_stage) {
                 let days = Math.floor(diff_x / 86400000); // (24 / 3600 / 1000)
                 prev_stage.duration += days;
               }
@@ -1167,30 +1127,28 @@ export default {
         yMin = refill < yMin ? refill : yMin;
         yMax = full > yMax ? full : yMax;
 
-        this.graphYMax = parseFloat(yMax)+1;
-        this.graphYMin = parseFloat(yMin)-1;
+        this.graphYMax = parseFloat(yMax) + 1;
+        this.graphYMin = parseFloat(yMin) - 1;
 
       });
     },
 
     /* LOAD & SAVE CULTIVAR TEMPLATE */
 
-    showBrowseTemplatesModal()
-    {
+    showBrowseTemplatesModal() {
       this.loadCultivarStageTemplates();
       this.browseTemplatesModalVisible = true;
     },
 
     /* Load a selected template from the list into the chart */
-    activateCultivarTemplate(index, item)
-    {
+    activateCultivarTemplate(index, item) {
       let newStages = null;
       try {
         newStages = JSON.parse(item.template);
       } catch (e) {
         console.log(e.name + ':' + e.message);
       }
-      if(newStages){
+      if (newStages) {
         this.visualEditorSetGraphStageData(newStages);
         this.closeBrowseTemplatesModal();
         this.templateLoaded = true;
@@ -1199,8 +1157,7 @@ export default {
       }
     },
 
-    removeCultivarTemplate(index, item)
-    {
+    removeCultivarTemplate(index, item) {
       swal.fire({
         title: 'Remove Template?',
         text: 'Template will be permanently deleted',
@@ -1214,48 +1171,45 @@ export default {
       }).then(result => {
         if (result.value) {
           this.loading = true;
-          this.$axios.post("/api/removeCultiTemplate", {id: item.id})
-          .then((resp) => {
-            this.loading = false;
-            if(resp.data.status == 'template_removed'){
+          this.$axios.post("/api/removeCultiTemplate", { id: item.id })
+            .then((resp) => {
+              this.loading = false;
+              if (resp.data.status == 'template_removed') {
 
-              /* Update table to reflect deletion */
-              let indexToDelete = this.loadedTemplates.findIndex(row => row.id === item.id);
-              if (indexToDelete >= 0) { this.loadedTemplates.splice(indexToDelete, 1); }
+                /* Update table to reflect deletion */
+                let indexToDelete = this.loadedTemplates.findIndex(row => row.id === item.id);
+                if (indexToDelete >= 0) { this.loadedTemplates.splice(indexToDelete, 1); }
 
-              this.$notify({
-                title: 'Success',
-                message: 'Template Removed',
-                type: 'success',
-                verticalAlign: 'top',
-                horizontalAlign: 'right'
-              });
-            }
-          });
+                this.$notify({
+                  title: 'Success',
+                  message: 'Template Removed',
+                  type: 'success',
+                  verticalAlign: 'top',
+                  horizontalAlign: 'right'
+                });
+              }
+            });
         }
       });
     },
 
-    closeBrowseTemplatesModal()
-    {
+    closeBrowseTemplatesModal() {
       this.browseTemplatesModalVisible = false;
     },
 
-    showSaveTemplatesModal()
-    {
+    showSaveTemplatesModal() {
       this.saveTemplatesModalVisible = true;
       this.saveTemplateName = this.loadedTemplateName;
     },
 
-    saveCultivarTemplate()
-    {
+    saveCultivarTemplate() {
       this.$refs.savetpl.validate().then(success => {
         if (!success) { return; }
 
         let new_stages = this.visualEditorGetGraphStageData();
-        new_stages.forEach( (i) => { i.stage_start_date = null; i.id = null; } );
+        new_stages.forEach((i) => { i.stage_start_date = null; i.id = null; });
         this.loading = true;
-        this.$axios.post("/api/saveCultiTemplate", { 
+        this.$axios.post("/api/saveCultiTemplate", {
           template_name: this.saveTemplateName,
           stages: JSON.stringify(new_stages),
           new: this.saveTemplateName != this.loadedTemplateName ? 'yes' : 'no',
@@ -1263,7 +1217,7 @@ export default {
           id: this.loadedTemplateId
         }).then((resp) => {
           this.loading = false;
-          if(resp.data.status == 'template_saved'){
+          if (resp.data.status == 'template_saved') {
             this.pendingChanges = false;
             this.closeSaveTemplatesModal();
             // REFRESH TEMPLATES
@@ -1275,7 +1229,7 @@ export default {
               verticalAlign: 'top',
               horizontalAlign: 'right'
             });
-          } else if(resp.data.status == 'template_save_error'){
+          } else if (resp.data.status == 'template_save_error') {
             this.closeSaveTemplatesModal();
             this.$notify({
               title: 'Failed',
@@ -1289,15 +1243,13 @@ export default {
       });
     },
 
-    closeSaveTemplatesModal()
-    {
+    closeSaveTemplatesModal() {
       this.saveTemplatesModalVisible = false;
     },
 
     /* APPLY */
 
-    applyGraphDataToStages()
-    {
+    applyGraphDataToStages() {
       swal.fire({
         title: 'Apply Changes?',
         text: 'Current growth stages will be completely replaced.',
@@ -1327,13 +1279,12 @@ export default {
 
     /* DB */
 
-    updateOrCreateCultivarStages(stages_data)
-    {
-      if(stages_data.length){
+    updateOrCreateCultivarStages(stages_data) {
+      if (stages_data.length) {
         let b_new_stages = (this.templateLoaded || this.stages.length == 0) ? 'yes' : 'no';
-        let b_replace_stages = (this.templateLoaded && this.stages.length >  0) ? 'yes' : 'no';
+        let b_replace_stages = (this.templateLoaded && this.stages.length > 0) ? 'yes' : 'no';
         this.loading = true;
-        this.$axios.post("/api/stagesSet", { 
+        this.$axios.post("/api/stagesSet", {
           cm_id: this.model.cm_id,
           company_id: this.model.company_id,
           stages: stages_data,
@@ -1342,36 +1293,34 @@ export default {
         }).then((resp) => {
           this.loading = false;
           // SET NEW START DATE (SERVER SIDE WITH TIMEZONE)
-          if(resp.data.status == 'stages_set'){
+          if (resp.data.status == 'stages_set') {
             // REFRESH DATA
             this.loading = true;
             this.$axios.get("/api/ManageCultivars/" + this.$route.params.field_id)
-            .then(resp => {
-              this.loading = false;
-              this.stages = resp.data.stages;
-              this.$notify({
-                title: 'Success',
-                message: 'Stages Applied',
-                type: 'success',
-                verticalAlign: 'top',
-                horizontalAlign: 'right'
+              .then(resp => {
+                this.loading = false;
+                this.stages = resp.data.stages;
+                this.$notify({
+                  title: 'Success',
+                  message: 'Stages Applied',
+                  type: 'success',
+                  verticalAlign: 'top',
+                  horizontalAlign: 'right'
+                });
               });
-            });
           }
         });
       }
     },
 
-    visualEditorSetStartDate()
-    {
-      this.visualEditorStartDate = 
+    visualEditorSetStartDate() {
+      this.visualEditorStartDate =
         this.stages.length && this.stages[0].stage_start_date ?
-        this.stages[0].stage_start_date : format(new Date(), 'yyyy-MM-dd');
+          this.stages[0].stage_start_date : format(new Date(), 'yyyy-MM-dd');
     },
 
-    calcMinDate(index)
-    {
-      if(index && typeof this.stages[index] !== 'undefined'){
+    calcMinDate(index) {
+      if (index && typeof this.stages[index] !== 'undefined') {
         // middle stage's min date is it's initial date
         let dt = parse(this.stages[index].stage_start_date, 'yyyy-MM-dd', new Date());
         return dt.getTime();
@@ -1381,13 +1330,12 @@ export default {
       }
     },
 
-    calcMaxDate(index)
-    {
-      if(index && typeof this.stages[index] !== 'undefined'){
+    calcMaxDate(index) {
+      if (index && typeof this.stages[index] !== 'undefined') {
         // last stage has no maximum date
-        if(index == this.stages.length-1){ return null; }
+        if (index == this.stages.length - 1) { return null; }
         // middle stage's max date is it's next stage's start date
-        let dt = parse(this.stages[index+1].stage_start_date, 'yyyy-MM-dd', new Date());
+        let dt = parse(this.stages[index + 1].stage_start_date, 'yyyy-MM-dd', new Date());
         return dt.getTime();
       } else {
         // first stage has no maximum date
@@ -1395,20 +1343,18 @@ export default {
       }
     },
 
-    calcNewMinDate(index)
-    {
-      if(this.stages.length){
-        let dt = parse(this.stages[this.stages.length-1].stage_start_date, 'yyyy-MM-dd', new Date());
-        dt = add(dt, { days: parseInt(this.stages[this.stages.length-1].duration) });
+    calcNewMinDate(index) {
+      if (this.stages.length) {
+        let dt = parse(this.stages[this.stages.length - 1].stage_start_date, 'yyyy-MM-dd', new Date());
+        dt = add(dt, { days: parseInt(this.stages[this.stages.length - 1].duration) });
         return format(dt, 'yyyy-MM-dd');
       } else return null;
     },
 
-    setNextStageStartDate()
-    {
-      if(this.stages.length){
-        let dt = parse(this.stages[this.stages.length-1].stage_start_date, 'yyyy-MM-dd', new Date());
-        dt = add(dt, { days: parseInt(this.stages[this.stages.length-1].duration) });
+    setNextStageStartDate() {
+      if (this.stages.length) {
+        let dt = parse(this.stages[this.stages.length - 1].stage_start_date, 'yyyy-MM-dd', new Date());
+        dt = add(dt, { days: parseInt(this.stages[this.stages.length - 1].duration) });
         this.new_stage.start_date = format(dt, 'yyyy-MM-dd');
       } else {
         this.new_stage.start_date = format(new Date(), 'yyyy-MM-dd');
@@ -1417,8 +1363,7 @@ export default {
 
     /* REPEATER CRUD METHODS */
 
-    addStage()
-    {
+    addStage() {
       this.$refs.addstage.validate().then(success => {
         if (!success) { return; }
 
@@ -1434,7 +1379,7 @@ export default {
         }).then((resp) => {
           this.loading = false;
           // SET NEW START DATE (SERVER SIDE WITH TIMEZONE)
-          if(resp.data.status == 'stage_added'){
+          if (resp.data.status == 'stage_added') {
             this.$notify({
               title: 'Success',
               message: 'New stage added',
@@ -1446,15 +1391,14 @@ export default {
           }
         }).catch(err => {
           this.loading = false;
-          if(err.response.data.errors){
+          if (err.response.data.errors) {
             this.$refs.form.setErrors(err.response.data.errors);
           }
         });
       });
     },
 
-    updateStage(stage)
-    {
+    updateStage(stage) {
       this.$refs.updatestage.validate().then(success => {
         if (!success) { return; }
 
@@ -1464,73 +1408,71 @@ export default {
           stages: this.stages,
           company_id: this.model.company_id
         })
-        .then((resp) => {
-          this.loading = false;
-          if(resp.data.status == 'stages_updated'){
-            this.$notify({
-              title: 'Updated',
-              message: 'Stage was updated',
-              type: 'success',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
-            });
-            this.refreshStages();
-          }
-        }).catch(err => {
-          this.loading = false;
-          if(err.response.data.errors){
-            this.$refs.form.setErrors(err.response.data.errors);
-          }
-        });
+          .then((resp) => {
+            this.loading = false;
+            if (resp.data.status == 'stages_updated') {
+              this.$notify({
+                title: 'Updated',
+                message: 'Stage was updated',
+                type: 'success',
+                verticalAlign: 'top',
+                horizontalAlign: 'right'
+              });
+              this.refreshStages();
+            }
+          }).catch(err => {
+            this.loading = false;
+            if (err.response.data.errors) {
+              this.$refs.form.setErrors(err.response.data.errors);
+            }
+          });
       });
     },
 
-    deleteLastStage()
-    {
+    deleteLastStage() {
       this.loading = true;
       // ensure non-empty stages
-      if(this.stages.length){
+      if (this.stages.length) {
         this.$axios.post("/api/stageDeleteLast", { cm_id: this.model.cm_id })
-        .then(resp => {
-          this.loading = false;
-          if(resp.data.status == 'stage_deleted'){
-            this.$notify({
-              title: 'Deleted',
-              message: 'Last stage was deleted',
-              type: 'success',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
-            });
-            this.refreshStages();
-          }
-        }).catch(err => {
-          this.loading = false;
-          if(err.response.data.errors){
-            this.$refs.form.setErrors(err.response.data.errors);
-          }
-        });
+          .then(resp => {
+            this.loading = false;
+            if (resp.data.status == 'stage_deleted') {
+              this.$notify({
+                title: 'Deleted',
+                message: 'Last stage was deleted',
+                type: 'success',
+                verticalAlign: 'top',
+                horizontalAlign: 'right'
+              });
+              this.refreshStages();
+            }
+          }).catch(err => {
+            this.loading = false;
+            if (err.response.data.errors) {
+              this.$refs.form.setErrors(err.response.data.errors);
+            }
+          });
       }
     },
 
-    refreshStages()
-    {
+    refreshStages() {
       // REFRESH DATA
       this.loading = true;
       this.$axios.get("/api/ManageCultivars/" + this.$route.params.field_id)
-      .then(resp => {
-        this.loading = false;
-        this.stages = resp.data.stages;
-        this.setNextStageStartDate();
-      });
+        .then(resp => {
+          this.loading = false;
+          this.stages = resp.data.stages;
+          this.setNextStageStartDate();
+        });
     },
 
-    setStageObjectValues(targetObject, sourceObject){
-      targetObject.index    = sourceObject.index;
-      targetObject.name     = sourceObject.name;
-      targetObject.lower    = sourceObject.lower;
-      targetObject.upper    = sourceObject.upper;
+    setStageObjectValues(targetObject, sourceObject) {
+      targetObject.index = sourceObject.index;
+      targetObject.name = sourceObject.name;
+      targetObject.lower = sourceObject.lower;
+      targetObject.upper = sourceObject.upper;
       targetObject.duration = sourceObject.duration;
-      targetObject.x        = sourceObject.x;
+      targetObject.x = sourceObject.x;
       // console.log('    index -> ' + sourceObject.index);
       // console.log('    name  -> ' + sourceObject.name);
       // console.log('    lower -> ' + sourceObject.lower);
@@ -1539,50 +1481,48 @@ export default {
       // console.log('    x     -> ' + sourceObject.x);
     },
 
-    syncFields()
-    {
+    syncFields() {
       this.$refs.form.validate().then(success => {
 
-        if (!success) { 
+        if (!success) {
           this.$notify({
             title: 'Required',
             message: 'Please fill in all fields',
             type: 'danger',
             verticalAlign: 'top',
             horizontalAlign: 'right',
-            duration:1000,
-            clean:true
+            duration: 1000,
+            clean: true
           });
           return;
         }
 
         this.loading = true;
         this.$axios.post("/api/CultivarSave", this.model)
-        .then((resp) => {
-          this.loading = false;
-          if(resp.data && resp.data.message == 'cultivar_updated'){
-            this.$notify({
-              title: 'Saved',
-              message: 'Changes were saved',
-              type: 'success',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
-            });
-          }
-        }).catch(err => {
-          this.loading = false;
-          if(err.response.data.errors){
-            this.$refs.form.setErrors(err.response.data.errors);
-          }
-        });
+          .then((resp) => {
+            this.loading = false;
+            if (resp.data && resp.data.message == 'cultivar_updated') {
+              this.$notify({
+                title: 'Saved',
+                message: 'Changes were saved',
+                type: 'success',
+                verticalAlign: 'top',
+                horizontalAlign: 'right'
+              });
+            }
+          }).catch(err => {
+            this.loading = false;
+            if (err.response.data.errors) {
+              this.$refs.form.setErrors(err.response.data.errors);
+            }
+          });
       });
     },
 
-    goToGraph()
-    {
+    goToGraph() {
       this.$router.push({
         name: "soil_moisture_graph",
-        params:{ node_address: this.model.node_address }
+        params: { node_address: this.model.node_address }
       });
     },
 
@@ -1590,17 +1530,19 @@ export default {
 };
 </script>
 <style>
-
 .modal-fullscreen .modal-dialog {
-    max-width: 90%;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    display: flex;
-    position: fixed;
+  max-width: 90%;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  display: flex;
+  position: fixed;
 }
 
+.modal-body {
+  padding-top: 0;
+}
 </style>

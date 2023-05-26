@@ -50,8 +50,8 @@
 
               <b-row v-if="upload_model.log">
                 <b-col md>
-                  <b-form-textarea class="importlog" ref="importlog" v-model="upload_model.log"
-                    placeholder="Log output.." readonly plaintext rows="10" max-rows="10">
+                  <b-form-textarea class="importlog" ref="importlog" v-model="upload_model.log" placeholder="Log output.."
+                    readonly plaintext rows="10" max-rows="10">
                   </b-form-textarea>
                 </b-col>
               </b-row>
@@ -158,10 +158,9 @@
                         autocomplete="off">
                         <template v-if="model.node_type && Object.values(companies).length">
                           <template v-for="company in companies">
-                            <el-option v-if="
-                              userCan('Edit', 'Node Config', company.id, 'C') ||
+                            <el-option v-if="userCan('Edit', 'Node Config', company.id, 'C') ||
                               userCan('Edit', convertNodeTypeToSubsystem(model.node_type), company.id, 'C')
-                            " :key="company.id" :label="company.company_name" :value="company.id">
+                              " :key="company.id" :label="company.company_name" :value="company.id">
                               <span>{{ company.company_name }}</span>
                             </el-option>
                           </template>
@@ -180,7 +179,7 @@
                           :value="device.id">
                           <span style="float: left">{{ device.device_make }}</span>
                           <span style="float: right; color: #8492a6; font-size: 13px; margin-right:1em">{{
-                              device.company_name
+                            device.company_name
                           }}</span>
                         </el-option>
                       </el-select>
@@ -245,7 +244,7 @@
                           :value="device.id">
                           <span style="float: left">{{ device.device_make }}</span>
                           <span style="float: right; color: #8492a6; font-size: 13px; margin-right:1em">{{
-                              device.company_name
+                            device.company_name
                           }}</span>
                         </el-option>
                       </el-select>
@@ -282,8 +281,8 @@
 
                 <b-col>
                   <div>
-                    <base-input label="Probe Address" vid="probe_address" name="probe_address"
-                      placeholder="Probe Address" v-model="probe_address_edit"></base-input>
+                    <base-input label="Probe Address" vid="probe_address" name="probe_address" placeholder="Probe Address"
+                      v-model="probe_address_edit"></base-input>
                   </div>
                 </b-col>
               </b-row>
@@ -304,8 +303,8 @@
               <template slot="header">
 
                 <base-button v-if="model.node_type == 'Soil Moisture' || model.node_type == 'Nutrients'"
-                  :disabled="!userCan('Edit', 'Node Config') || loading" @click.native="openSetPerimeterModal"
-                  class="btn" size="sm" type="primary" icon>
+                  :disabled="!userCan('Edit', 'Node Config') || loading" @click.native="openSetPerimeterModal" class="btn"
+                  size="sm" type="primary" icon>
                   Set Perimeter &amp; Zones
                 </base-button>
 
@@ -329,6 +328,17 @@
 
                   <b-col md>
                     <div>
+                      <base-input label="Node Make">
+                        <b-input-group>
+                          <b-form-input type="text" v-model="model.node_make" placeholder="Node Make" readonly>
+                          </b-form-input>
+                        </b-input-group>
+                      </base-input>
+                    </div>
+                  </b-col>
+
+                  <b-col md>
+                    <div>
                       <base-input label="Node Type">
                         <b-input-group>
                           <b-form-input type="text" v-model="model.node_type" placeholder="Node Type" readonly>
@@ -339,12 +349,6 @@
                           </b-input-group-append>
                         </b-input-group>
                       </base-input>
-                    </div>
-                  </b-col>
-
-                  <b-col md>
-                    <div>
-                      <base-input label="Commissioning Date" v-model="model.commissioning_date" disabled></base-input>
                     </div>
                   </b-col>
                 </b-row>
@@ -376,8 +380,8 @@
                     <div>
                       <base-input label=" " v-b-tooltip.hover.top
                         title="Locking the coordinates will prevent them from being overridden by device updates.">
-                        <b-form-checkbox size="lg" @change="syncFields" v-model="model.coords_locked"
-                          :unchecked-value="0" :value="1">
+                        <b-form-checkbox size="lg" @change="syncFields" v-model="model.coords_locked" :unchecked-value="0"
+                          :value="1">
                           Lock Coordinates?
                         </b-form-checkbox>
                       </base-input>
@@ -414,6 +418,11 @@
                           </b-input-group-append>
                         </b-input-group>
                       </base-input>
+                    </div>
+                  </b-col>
+                  <b-col md>
+                    <div>
+                      <base-input label="Commissioning Date" v-model="model.commissioning_date" disabled></base-input>
                     </div>
                   </b-col>
                 </b-row>
@@ -453,7 +462,7 @@
                             :value="device.id">
                             <span style="float: left">{{ device.device_make }}</span>
                             <span style="float: right; color: #8492a6; font-size: 13px; margin-right:1em">{{
-                                device.company_name
+                              device.company_name
                             }}</span>
                           </el-option>
                         </el-select>
@@ -543,6 +552,7 @@ export default {
         zone: '',
         coords_locked: 0,
         node_make: null,
+        node_type: null,
         hardware_management_id: '',
         node_serial_number: null,
         device_serial_number: null,
@@ -1131,6 +1141,4 @@ export default {
   }
 };
 </script>
-<style>
-
-</style>
+<style></style>

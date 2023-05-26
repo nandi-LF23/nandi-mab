@@ -28,27 +28,23 @@
                     title="Manage the node's associated cultivar growth stages" icon>
                     Manage Cultivar
                   </base-button>
-                  <b-button v-b-modal.modal-1 size="sm" variant="primary" class="btn">
+                  <b-button v-b-modal.modal-1 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                    title="Read More">
                     <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
                   </b-button>
                   <b-modal id="modal-1" title="Soil Moisture Management">
-                     <p>The Soil Moisture Management screen displays the essential information related to a Soil Moisture
-                        node.
-                        It also allows one to configure agronomic variables that will influence the Soil Moisture Status.
-
-                        This screen also provides access to the Node's Soil Moisture Graphing as well as the Cultivar
-                        Configuration Screen via the top toolbar buttons.
-
-                        Moreover, this screen allows one to set the node's Default Graph Type and Graph Start Date.</p>
-
-                    <p class="my-4">Node Address</p>
-
-                    <p class="my-4">Last date of the reading of the node</p>
-                    <p class="my-4">Power State (Device Specific) (Charging or Not)</p>
-                    <p class="my-4">Field configuration</p>
-                    <p class="my-4">Full: The Full value that applies to the field</p>
-                    <p class="my-4">Refill: The Refill value that applies to the field</p>
-                   
+                    <p>The Soil Moisture Management screen displays the essential information related to a Soil Moisture
+                      node.</p>
+                    <p>It also allows one to configure agronomic variables that will influence the Soil Moisture Status.
+                    </p>
+                    <p>The <b>Status</b> calculation is dependent on whether a field has growth stages defined and whether
+                      the current date falls within the active growth stage's range (start date + duration).</p>
+                    <p><b>Power State: </b> Charging or not (Device Specific)</p>
+                    <p><b>Full:</b> The Full value that applies to the field</p>
+                    <p><b>Refill:</b> The Refill value that applies to the field</p>
+                    <p>Moreover, this screen allows one to set the node's Default Graph Type and Graph Start Date.</p>
+                    <p>This screen also provides access to the Node's Soil Moisture Graphing as well as the Cultivar
+                      Configuration Screen via the top toolbar buttons.</p>
                   </b-modal>
                 </b-col>
               </b-row>
@@ -312,4 +308,8 @@ export default {
   }
 };
 </script>
-<style></style>
+<style>
+.modal-body {
+  padding-top: 0;
+}
+</style>

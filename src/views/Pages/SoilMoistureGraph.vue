@@ -312,19 +312,17 @@ export default {
           split: true,
           distance: 30,
           padding: 5,
-          // formatter() {
-          //   // let s = "";
-          //   // s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
-          //   // this.points.forEach(function (point) {
-          //   //   console.log(point);
-          //   //   s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
-          //   //   // if (this.series.name == 'Average' && this.status) {
-          //   //   //   s += '<span style="color:black;">●</span> Status: <strong>' + this.status + '%</strong><br>';
-          //   //   // }
-          //   // });
-          //   // return s;
-          //   formatTooltip()
-          // },
+          formatter() {
+            let s = "";
+            s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
+            this.points.forEach(function (point) {
+              s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
+              if (point.series.name == 'Average' && point.point.status) {
+                s += '<span style="color:orange;">●</span> Status: <strong>' + point.point.status + '%</strong><br>';
+              }
+            });
+            return s;
+          },
           shared: true,
         },
         plotOptions: this.plotOptions,
@@ -520,8 +518,8 @@ export default {
 
           if (this.graph_type == 'ave') {
             this.showPlotLines();
-            this.formatTooltip();
-            // this.setupCustomTooltip();
+            //this.formatTooltip();
+            this.setupCustomTooltip();
           } else {
             this.hidePlotLines();
             this.removeCustomTooltip();
@@ -529,6 +527,7 @@ export default {
 
           this.related_nodes = resp.data.related_nodes;
           this.$refs.hchart.chart.reflow();
+
         }
         setTimeout(() => { this.in_progress = false; this.bInitialQuery = false; }, 1);
         return resp;
@@ -752,16 +751,16 @@ export default {
     formatTooltip() {
         // let s = "";
         // s = '<span class="date_of_reading" style="color:#444;">' + Highcharts.dateFormat('%A, %b %e %Y, %H:%M:%S', new Date(this.x)) + '</span><br>';
-        // this.points.forEach(function (point) {
+        // this.series.forEach(function (point) {
         //   console.log(point);
-        //   s += '<span style="color:' + point.series.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.series.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
-        //   if (point.series.name == 'Average' && point.status) {
+        //   s += '<span style="color:' + point.color + '; font-size:13px;">●</span> <span style="color:#444;font-size:13px;font-weight:bold">' + point.name + ': </span><span style="color:firebrick;">' + point.y + '</span> <img src="https://img.icons8.com/ios-filled/15/000000/vertical-line.png"/> ';
+        //   if (point.name == 'Average' && point.status) {
         //     s += '<span style="color:black;">●</span> Status: <strong>' + point.status + '%</strong><br>';
         //   }
         // });
         // return s;
         for (var i = 0; i < this.series.length; i++) {
-        if (this.series[i].name == 'Average') {
+        // if (this.series[i].name == 'Average') {
           console.log(this.series[i]);
           this.series[i].tooltip = {
             pointFormatter: function () {
@@ -776,7 +775,7 @@ export default {
               return str;
             }
           };
-        }
+        // }
       }
       },
     

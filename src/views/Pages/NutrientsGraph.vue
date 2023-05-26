@@ -54,6 +54,160 @@
                         @click="exportGraphCSVmodal">Export CSV</button>
                     </template>
                   </b-modal>
+
+                  <b-button v-b-modal.modal-2 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                    title="Read More">
+                    <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                  </b-button>
+                  <b-modal id="modal-2" title="Nutrients Graph Types">
+                    <div class="accordion" role="tablist">
+                      <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                          <b-button block v-b-toggle.accordion-1 variant="text-left"
+                            class="light text-left acc-btn">Nutrients (RAW)</b-button>
+                        </b-card-header>
+                        <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
+                          <b-card-body>
+                            <b-card-text>Sensor Level Readings.</b-card-text>
+                            <p>M0.x are Soil Moisture sensors</p>
+                            <p>M1.x are Temperature sensors</p>
+                            <p>N03 are Nitrate sensors. The following are the nitrate sensors:</p>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Nitrate (4''/100mm)</th>
+                                  <th scope="col">Nitrate (12''/300mm)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>M3.1</td>
+                                  <td>M3.3</td>
+                                </tr>
+                                <tr>
+                                  <td>M4.1</td>
+                                  <td>M4.3</td>
+                                </tr>
+                                <tr>
+                                  <td>M5.1</td>
+                                  <td>M5.3</td>
+                                </tr>
+                                <tr>
+                                  <td>M6.1</td>
+                                  <td>M6.3</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <p>NH4 are Ammonia sensors. The following are the nitrate sensors:</p>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Ammonia (8''/200mm)</th>
+                                  <th scope="col">Ammonia (16''/400mm)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>M3.2</td>
+                                  <td>M3.4</td>
+                                </tr>
+                                <tr>
+                                  <td>M4.2</td>
+                                  <td>M4.4</td>
+                                </tr>
+                                <tr>
+                                  <td>M5.2</td>
+                                  <td>M5.4</td>
+                                </tr>
+                                <tr>
+                                  <td>M6.2</td>
+                                  <td>M6.4</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </b-card-body>
+                        </b-collapse>
+                      </b-card>
+                      <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                          <b-button block v-b-toggle.accordion-2 variant="text-left"
+                            class="light text-left acc-btn">Nutrients (depth in inches/mm)</b-button>
+                        </b-card-header>
+                        <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
+                          <b-card-body>
+                            <b-card-text>Sensor Level Readings.</b-card-text>
+                            <p><b>N03</b> are Nitrate sensors. The following are the nitrate sensors:</p>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Nitrate (4''/100mm)</th>
+                                  <th scope="col">Nitrate (12''/300mm)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>M3.1</td>
+                                  <td>M3.3</td>
+                                </tr>
+                                <tr>
+                                  <td>M4.1</td>
+                                  <td>M4.3</td>
+                                </tr>
+                                <tr>
+                                  <td>M5.1</td>
+                                  <td>M5.3</td>
+                                </tr>
+                                <tr>
+                                  <td>M6.1</td>
+                                  <td>M6.3</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <p><b>NH4</b> are Ammonia sensors. The following are the nitrate sensors:</p>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Ammonia (8''/200mm)</th>
+                                  <th scope="col">Ammonia (16''/400mm)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>M3.2</td>
+                                  <td>M3.4</td>
+                                </tr>
+                                <tr>
+                                  <td>M4.2</td>
+                                  <td>M4.4</td>
+                                </tr>
+                                <tr>
+                                  <td>M5.2</td>
+                                  <td>M5.4</td>
+                                </tr>
+                                <tr>
+                                  <td>M6.2</td>
+                                  <td>M6.4</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </b-card-body>
+                        </b-collapse>
+                      </b-card>
+                      <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                          <b-button block v-b-toggle.accordion-3 variant="text-left"
+                            class="light text-left acc-btn">Nutrients Type Average</b-button>
+                        </b-card-header>
+                        <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
+                          <b-card-body>
+                            <b-card-text>Average Nitrate (N03) reading as per specific time.</b-card-text>
+                            <b-card-text>Average Ammonia (NH4) reading as per specific time.</b-card-text>
+                          </b-card-body>
+                        </b-collapse>
+                      </b-card>
+                    </div>
+
+                  </b-modal>
                 </div>
               </div>
             </template>

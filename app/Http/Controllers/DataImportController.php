@@ -97,73 +97,91 @@ class DataImportController extends Controller
                     )
                 && count($row['Fields']) < 11 ){ continue; }
 
-            foreach($row['Fields'] as $field)
-            {
+            foreach ($row['Fields'] as $field) {
                 $type = (int) $field['FType'];
 
-                if($type == 0){ // gps
-                    if(!empty($field['Lat']) && !empty($field['Long'])){
-                        $latt = (float) $field['Lat']; $lng = (float) $field['Long'];
-                        $hw = hardware_config::where('node_address', 'like' ,$imei.'%')->first();
+                if ($type == 0) { // gps
+                    if (!empty($field['Lat']) && !empty($field['Long'])) {
+                        $latt = (float) $field['Lat'];
+                        $lng = (float) $field['Long'];
+                        $hw = hardware_config::where('node_address', 'like', $imei . '%')->first();
 
 
 
-                            $hw->latt = $latt;
-                            $hw->lng  = $lng;
+                        $hw->latt = $latt;
+                        $hw->lng = $lng;
 
-                            $hw->date_time = $field['GpsUTC'];
-                            $hw->save();
+                        $hw->date_time = $field['GpsUTC'];
+                        $hw->save();
 
-                    //    $hw = hardware_config::where('node_address', 'like', $imei . '%')->first();
+                        //    $hw = hardware_config::where('node_address', 'like', $imei . '%')->first();
 
                     }
                 }
 
-                if($type == 4){ // sdi
+                if ($type == 4) { // sdi
                     $probe_address = (int) chr($field['DevAddr']);
-                    $node_address  = trim($imei) . '-' . $probe_address;
+                    $node_address = trim($imei) . '-' . $probe_address;
 
                     $ss = $parse_aquacheck_string($field['DevId']);
-                    $vendor = $ss['ven']; $firmware_ver = $ss['ver']; $probe_serial = $ss['ser'];
+                    $vendor = $ss['ven'];
+                    $firmware_ver = $ss['ver'];
+                    $probe_serial = $ss['ser'];
 
-                    if($model = $array_find($field['DevId'], $moisture_probe_models)){
+                    if ($model = $array_find($field['DevId'], $moisture_probe_models)) {
                         $is_moisture_data = true; // Detect Soil Moisture Probes
                     }
-                     if($model = $array_find($field['DevId'], $nutrient_probe_models)){
+                    if ($model = $array_find($field['DevId'], $nutrient_probe_models)) {
                         $is_nutrient_data = true; // Detect Nutrient Probes
                     }
-                    if($model){ $vendor_model_fw = "{$vendor}.{$model}.{$firmware_ver}"; }
+                    if ($model) {
+                        $vendor_model_fw = "{$vendor}.{$model}.{$firmware_ver}";
+                    }
                 }
 
-                if($type == 5){ // measurements
+                if ($type == 5) { // measurements
                     $count = count($field['Ms']);
-                    if($count > 0){
+                    if ($count > 0) {
                         $mt = (int) $field['MType'];
-                        if($is_moisture_data){ // SMs / Temps
-                            if($mt == 0){ // M0 == SM
+                        if ($is_moisture_data) { // SMs / Temps
+                            if ($mt == 0) { // M0 == SM
                                 $total = 0;
-                                for($s = 1; $s <= $count; $s++){ $val = $field['Ms'][$s-1] / 1000; $total += $val; $m_values["sm{$s}"] = $val; }
-                                $m_values['accumulative'] = $total; $m_values['average'] = $total / $count;
-                            } else if($mt == 1){ // M1 == Temp
-                                for($t = 1; $t <= $count; $t++){ $t_values["t{$t}"] = $field['Ms'][$t-1] / 1000; }
+                                for ($s = 1; $s <= $count; $s++) {
+                                    $val = $field['Ms'][$s - 1] / 1000;
+                                    $total += $val;
+                                    $m_values["sm{$s}"] = $val;
+                                }
+                                $m_values['accumulative'] = $total;
+                                $m_values['average'] = $total / $count;
+                            } else if ($mt == 1) { // M1 == Temp
+                                for ($t = 1; $t <= $count; $t++) {
+                                    $t_values["t{$t}"] = $field['Ms'][$t - 1] / 1000;
+                                }
                             }
-                        } else if($is_nutrient_data){
-                            for($n = 1; $n <= $count; $n++){ $n_values["M" . $mt . "_" . $n] = $field['Ms'][$n-1] / 1000; }
+                        } else if ($is_nutrient_data) {
+                            for ($n = 1; $n <= $count; $n++) {
+                                $n_values["M" . $mt . "_" . $n] = $field['Ms'][$n - 1] / 1000;
+                            }
                         }
                     }
                 }
 
-                if($type == 6){ // analog
-                    $bv   = !empty($field["AnalogueData"]['1']) ? (   (float) $field["AnalogueData"]['1'] )          : 0; // Batt.Volts.
-                    $temp = !empty($field["AnalogueData"]['3']) ? ( ( (float) $field["AnalogueData"]['3'] ) / 100  ) : 0; // Ambient Temperature (Deg C * 100)
-                  //  $bp   = !empty($field["AnalogueData"]['1']) ? ( ( 3300 - (float) $field["AnalogueData"]['1'] ) / 4100  )*100 : 0; // Batt.Percentage.
+                if ($type == 6) { // analog
+                    $bv = !empty($field["AnalogueData"]['1']) ? ((float) $field["AnalogueData"]['1']) : 0; // Batt.Volts.
+                    $temp = !empty($field["AnalogueData"]['3']) ? (((float) $field["AnalogueData"]['3']) / 100) : 0; // Ambient Temperature (Deg C * 100)
+                    //  $bp   = !empty($field["AnalogueData"]['1']) ? ( ( 3300 - (float) $field["AnalogueData"]['1'] ) / 4100  )*100 : 0; // Batt.Percentage.
 
                     // backfill
 
 
 
+                    /*
+                    * Eagles are 6.2v on the high side and 4.7
+                    */
+
+
                     $range = 6200 - 4700;
-                    $delta = $item->bv - 4700;
+                    $delta = $bv - 4700;
                     if ($delta <= 0)
                         $delta = 0;
                     $level = ($delta / $range) * 100;
@@ -171,12 +189,18 @@ class DataImportController extends Controller
                     $bp = $level < 0 ? 0 : ($level > 100 ? 100 : $level);
 
 
-                    if(!empty($m_items) && is_array($m_items) && count($m_items) > 0){
-                        foreach($m_items as &$m){
-                            if(is_object($m)){
-                                if($bv){ $m->bv = $bv; }
-                                if($temp){ $m->ambient_temp = $temp; }
-                                if($bp){ $m->bp = $bp; }
+                    if (!empty($m_items) && is_array($m_items) && count($m_items) > 0) {
+                        foreach ($m_items as &$m) {
+                            if (is_object($m)) {
+                                if ($bv) {
+                                    $m->bv = $bv;
+                                }
+                                if ($temp) {
+                                    $m->ambient_temp = $temp;
+                                }
+                                if ($bp) {
+                                    $m->bp = $bp;
+                                }
                             }
                         }
                     }
@@ -209,7 +233,8 @@ class DataImportController extends Controller
                 $item->accumulative = $m_values['accumulative'];
                 $item->average = $m_values['average'];
                 $item->rg = 0;
-
+                $item->bv = $item->bv ?: $bv;
+                $item->bp = $item->bp ?: $bp;
 
                 $item->latt = $item->latt ? $latt: $latt;
                 $item->lng = $item->lng ? $lng : $lng;
@@ -254,8 +279,8 @@ class DataImportController extends Controller
                     $hw_items[$node_address] = [ 'latitude'  => $latt, 'longitude' => $lng, 'date_time' => $date_sampled ];
 
 
-                    Log::info(print_r($item));
-                    $item->save();
+                   // Log::info(print_r($item));
+                   // $item->save();
             }
 
         } // end for Records
@@ -264,23 +289,50 @@ class DataImportController extends Controller
             foreach($m_items as &$m_item){
                 if(!node_data::where('message_id_2', $m_item->message_id_2)->exists()){
                     $m_item->save();
-                } else if(!empty($request->update_existing)){
+                } else {
                     $existing = node_data::where('message_id_2', $m_item->message_id_2)->first();
                     if($existing){
                         $existing->update([
                             'ambient_temp' => $m_item->ambient_temp,
                             'bv' => $m_item->bv,
-                            'bp' => $m_item->bp
+                            'bp' => $m_item->bp,
+                            'latt' => $latt,
+                            'lng' => $lng
                         ]);
                     }
                 }
             }
         }
-        if($n_items){
-            foreach($n_items as &$n_item){
-                if(is_object($n_item)){
-                    if(!nutri_data::where('message_id', $n_item->message_id)->exists()){
+        if ($n_items) {
+            foreach ($n_items as &$n_item) {
+                if (is_object($n_item)) {
+                    if (!nutri_data::where('message_id', $n_item->message_id)->exists()) {
                         $n_item->save();
+                    }
+                }
+                if (is_object($n_item)) {
+                    $existing = nutri_data::where('message_id', $n_item->message_id)->first();
+                    if ($existing) {
+                        $existing->update([
+                            'ambient_temp' => $n_item->ambient_temp,
+                            'bv' => $n_item->bv,
+                            'bp' => $n_item->bp,
+                            'latt' => $latt,
+                            'lng' => $lng
+                        ]);
+                    }
+
+                }
+                if (is_array($n_item)) {
+                    $existing = nutri_data::where('message_id', $n_item['message_id'])->first();
+                    if ($existing) {
+                        $existing->update([
+                            'ambient_temp' => $n_item['ambient_temp'],
+                            'bv' => $n_item['bv'],
+                            'bp' => $n_item['bp'],
+                            'latt' => $latt,
+                            'lng' => $lng
+                        ]);
                     }
                 }
             }

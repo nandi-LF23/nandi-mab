@@ -19,7 +19,7 @@
       </template>
 
       <template v-for="(     marker, index     ) in      markers     ">
-        <div :key="nodeFilterType + index" v-if="marker.visible" class='field_record' @click=" focusMarker(marker)">
+        <div :key="nodeFilterType + index" v-if="marker.visible" class='field_record' @click=" showFieldModal(marker.node_address)">
           <div class='field_name'>{{ marker.field_name }}</div>
           <div class='node_address'>{{ marker.node_address }}</div>
           <div class='last_reading_date' :style="'color:' + calcLastReadingColor(marker)">{{ marker.date_time }}</div>

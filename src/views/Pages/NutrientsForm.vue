@@ -668,6 +668,10 @@
                     title="Navigate to node's graphing screen." icon>
                     Graph
                   </base-button>
+                  <b-button v-b-modal.modal-2 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                      title="Read More">
+                      <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                    </b-button>
                 </b-col>
               </b-row>
             </template>
@@ -1123,14 +1127,14 @@
                     </template>
                     <div class="card-body">
                       <b-row>
-                        <b-col md>
+                        <b-col sm="6">
 
                           <!-- the gauge. -->
                           <highcharts class="hc" :options="m3ChartOptions" :update-args="chartUpdateArgs" ref="hchart">
                           </highcharts>
 
                         </b-col>
-                        <b-col md>
+                        <b-col sm="6">
 
                           <!-- the gauge. -->
                           <highcharts class="hc" :options="m4ChartOptions" :update-args="chartUpdateArgs" ref="hchart">
@@ -1139,14 +1143,14 @@
                         </b-col>
                       </b-row>
                       <b-row>
-                        <b-col md>
+                        <b-col sm="6">
 
                           <!-- the gauge. -->
                           <highcharts class="hc" :options="m5ChartOptions" :update-args="chartUpdateArgs" ref="hchart">
                           </highcharts>
 
                         </b-col>
-                        <b-col md>
+                        <b-col sm="6">
 
                           <!-- the gauge. -->
                           <highcharts class="hc" :options="m6ChartOptions" :update-args="chartUpdateArgs" ref="hchart">
@@ -1174,8 +1178,8 @@
                     <base-input label="Graph Type" name="graph type" rules="required" vid="graph_type">
                       <el-select @change="syncFields" v-model="model.graph_type" filterable placeholder="Graph Type">
                         <el-option label="Nutrients (RAW)" value='nutrient'></el-option>
-                        <el-option label="Nutrients (PPM)" value='nutrient_ppm'></el-option>
-                        <el-option label="Nutrients (PPM Average)" value='nutrient_ppm_avg'></el-option>
+                        <el-option label="Nutrients (depth in inches/mm)" value='nutrient_ppm'></el-option>
+                        <el-option label="Nutrients Type Average" value='nutrient_ppm_avg'></el-option>
                       </el-select>
                     </base-input>
                   </b-col>
@@ -2612,6 +2616,7 @@ export default {
             this.date_now = resp.data.date_now;
 
             let temp_data = JSON.parse(this.loadedTemplateCurrent);
+            console.log(temp_data);
 
             // this.col1_avg = (parseFloat(((this.ppm.M3_1) * (temp_data.poly1)) + (temp_data.poly2)) + parseFloat(((this.ppm.M4_1) * (temp_data.poly1)) + (temp_data.poly2)) + parseFloat(((this.ppm.M5_1) * (temp_data.poly1)) + (temp_data.poly2)) + parseFloat(((this.ppm.M6_1) * (temp_data.poly1)) + (temp_data.poly2)) / 4).to Fixed(2);
             this.col1_avg = (parseFloat(this.ppm.M3_1)) + (parseFloat(this.ppm.M4_1)) + (parseFloat(this.ppm.M5_1)) + (parseFloat(this.ppm.M6_1));
