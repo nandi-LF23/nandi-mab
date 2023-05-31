@@ -1,5 +1,6 @@
 <template>
   <div class='map_container'>
+
     <FocusMenu @focusMenuChanged="toggleBurger" ref='focusmenu'>
 
       <template #header>
@@ -7,7 +8,9 @@
           <b-form-input :disabled="!visibleMarkers" v-model="fieldNameSearch" @input="doTextSearch()"
             class="form-control-flush fields_search" placeholder="Search...">
           </b-form-input>
-          <div v-show="fieldNameSearch" class='fields_search_clear_btn' @click="fieldNameSearch = ''; filterFields();"></div>
+
+          <div v-show="fieldNameSearch" class='fields_search_clear_btn' @click="fieldNameSearch = ''; filterFields();">
+          </div>
         </div>
 
         <b-form-group class='type_filter_menu'>
@@ -16,6 +19,28 @@
           </b-form-checkbox-group>
         </b-form-group>
       </template>
+      <b-button style="margin-left: 8px !important" v-b-modal.modal-4 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top title="Read More">
+        <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+      </b-button>
+      <b-modal id="modal-4" title="Map">
+        <p>The Map screen allows you to visually manage all of your installed nodes.
+          Features include:</p>
+        <h3>Visual Text Search</h3>
+        <p>Simply type in the search query (Field Names / Node Addresses) and see
+          the results filter through (as well as visually focus).</p>
+        <h3>Filtering by Node Type</h3>
+        <p>Clicking on a node type button will only display nodes of that type and
+          hide the others.</p>
+        <h3>Detail display of each node</h3>
+        <p>Clicking on a Node map marker will bring up a popup with various
+          information related to the node type.</p>
+        <h3>Detail filtering</h3>
+        <p>Further filter buttons located on the top right part of the map allow you
+          to filter the details of each node's detail popup display.</p>
+        <h3>Map Legends</h3>
+        <p>A map legend dialog can be shown by clicking on the Question Mark Button
+          on the lower right corner of the map.</p>
+      </b-modal>
 
       <template v-for="(marker, index) in markers">
         <div :key="nodeFilterType.join('') + infoFilterType.join('') + index" v-if="marker.visible" class='field_record'
@@ -58,7 +83,7 @@
                 <svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible"
                   width="100%" height="100%" viewBox="0 0 165 187.5">
                   <path stroke-width="0"
-                    d="M.001 187.5v-7.499h7.484v-52.499h7.482v-7.501h7.482V67.5H7.484v-7.499h14.965V39.002L7.484 45.001H0V30h7.484v.001l74.829-30 74.83 30h7.483v15.001h-7.484l-.001-.001-14.964-5.998.001 20.998h7.857v-.002h7.482V75H165v7.499h-7.483v.001h-7.482v-15h-7.857v52.501h7.482v7.501h7.483v52.499h7.482v7.499H.001zm119.728-59.998v-7.501h7.482V67.5h-14.967v7.501h-26.04v15h18.558l-7.484 30h-29.93l-7.483-30h18.857v-15h-26.34V67.5H37.416v52.501h7.482v7.501h74.831zM52.382 60.001v-7.499h59.862v7.499h14.967V33.002L82.313 15.001l-44.897 18v27h14.966z"
+                    d="M.001 187.5v-7.499h7.484v-52.499h7.482v-7.501h7.482V67.5H7.484v-7.499h14.965V39.002L7.484 45.001H0V30h7.484v.001l74.829-30 74.83 30h7.483v15.001h-7.484l-.001-.001-14.964-5.998.001 20.998h7.857v-.002h7.482V75H165v7.499h-7.483v.001h-7.482v-15h-7.857v52.501h7.482v7.501h7.483v52.499h7.482v7.499H.001zm119.728-59.998v-7.501h7.482V67.5h-14.967v7.501h-26.04v15h18.558l-7.484 30h-29.93l-7.483-30h18.857v-15h-26.34V67.5H37.416v52.501h7.482v7.501h74.831zM52.382 60.001v-7.499h39.862v7.499h14.967V33.002L82.313 15.001l-44.897 18v27h14.966z"
                     fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16" />
                 </svg>
               </template>
@@ -75,7 +100,7 @@
                   overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5">
                   <g stroke-linecap="round" stroke="none" fill="none" font-size="16">
                     <path
-                      d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499H59.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z"
+                      d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499h39.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z"
                       fill="currentColor" />
                     <path
                       d="m7.177 124.653 15.222-1.48c.916 5.109 2.776 8.861 5.576 11.258 2.801 2.396 6.579 3.595 11.338 3.595 5.038 0 8.835-1.066 11.39-3.198 2.554-2.132 3.83-4.625 3.832-7.48-.002-1.831-.538-3.39-1.613-4.677-1.074-1.285-2.95-2.404-5.629-3.355-1.831-.635-6.008-1.762-12.527-3.383-8.386-2.079-14.27-4.635-17.653-7.665-4.757-4.263-7.135-9.461-7.135-15.592 0-3.946 1.119-7.637 3.356-11.072 2.237-3.437 5.462-6.053 9.673-7.85 4.211-1.796 9.294-2.695 15.247-2.695 9.726 0 17.046 2.132 21.962 6.395 4.915 4.264 7.496 9.954 7.743 17.072l-15.645.687c-.669-3.981-2.104-6.844-4.307-8.588-2.202-1.744-5.506-2.617-9.911-2.617-4.544 0-8.104.935-10.677 2.802-1.657 1.198-2.483 2.801-2.483 4.81 0 1.832.774 3.4 2.325 4.704 1.973 1.655 6.766 3.381 14.376 5.179 7.612 1.797 13.241 3.656 16.888 5.576 3.647 1.922 6.501 4.547 8.562 7.875 2.061 3.33 3.092 7.444 3.092 12.342 0 4.439-1.232 8.598-3.699 12.474-2.466 3.877-5.956 6.757-10.466 8.641-4.51 1.885-10.13 2.828-16.861 2.828-9.796 0-17.319-2.264-22.569-6.792-5.25-4.527-8.386-11.126-9.407-19.794Z"
@@ -90,10 +115,10 @@
                   overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5">
                   <g stroke-linecap="round" stroke="none" fill="none" font-size="16">
                     <path
-                      d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499H59.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z"
+                      d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499h39.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z"
                       fill="currentColor" />
                     <path
-                      d="M9.001 147.09V75.155h14.132l29.441 48.039V75.155h13.493v71.935H51.494l-28.999-46.909v46.909H9.001Z"
+                      d="M9.001 147.09V75.155h14.132l29.441 48.039V75.155h13.493v71.935h31.494l-28.999-46.909v46.909H9.001Z"
                       fill-rule="nonzero" stroke-linejoin="round" stroke-width=".375" fill="#fff"
                       stroke-miterlimit="79.84" />
                   </g>
@@ -126,13 +151,12 @@
 
               <div v-if="marker.node_type == 'sm'" class='sm_control'>
                 <template v-for="(inner, idx) in markers">
-                  <div v-if="
-                    inner.base_node_address == marker.base_node_address &&
+                  <div v-if="inner.base_node_address == marker.base_node_address &&
                     inner.node_type == 'sm' &&
                     inner.date_time != '1970-01-01 00:00:00' &&
                     (Math.abs(inner.latt - marker.latt) < 0.00001) &&
                     (Math.abs(inner.lng - marker.lng) < 0.00001)
-                  " :key="idx" class='sm_control_item'
+                    " :key="idx" class='sm_control_item'
                     :class="inner.node_address == selectedNode ? 'selected_node' : ''">
                     <div class='field_name'>{{ inner.field_name }}</div>
                     <div class='node_address'>{{ inner.node_address }}</div>
@@ -163,13 +187,12 @@
 
               <div v-if="marker.node_type == 'nut'" class='sm_control'>
                 <template v-for="(inner, idx) in markers">
-                  <div v-if="
-                    inner.base_node_address == marker.base_node_address &&
+                  <div v-if="inner.base_node_address == marker.base_node_address &&
                     inner.node_type == 'nut' &&
                     inner.date_time != '1970-01-01 00:00:00' &&
                     (Math.abs(inner.latt - marker.latt) < 0.0001) &&
                     (Math.abs(inner.lng - marker.lng) < 0.0001)
-                  " :key="idx" class='sm_control_item'
+                    " :key="idx" class='sm_control_item'
                     :class="inner.node_address == selectedNode ? 'selected_node' : ''">
                     <div class='field_name'>{{ inner.field_name }}</div>
                     <div class='node_address'>{{ inner.node_address }}</div>
@@ -546,16 +569,16 @@ export default {
               // 'battVoltage': item.bv,
               'pump_status': false,
               'visible': true,
-              'sm1': item.sm1,
-              'sm2': item.sm2,
-              'sm3': item.sm3,
-              'sm4': item.sm4,
-              'sm5': item.sm5,
-              'sm6': item.sm6,
-              'sm7': item.sm7,
-              'sm8': item.sm8,
-              'sm9': item.sm9,
-              'sm10': item.sm10,
+              'sm1': parseFloat(item.sm1).toFixed(2),
+              'sm2': parseFloat(item.sm2).toFixed(2),
+              'sm3': parseFloat(item.sm3).toFixed(2),
+              'sm4': parseFloat(item.sm4).toFixed(2),
+              'sm5': parseFloat(item.sm5).toFixed(2),
+              'sm6': parseFloat(item.sm6).toFixed(2),
+              'sm7': parseFloat(item.sm7).toFixed(2),
+              'sm8': parseFloat(item.sm8).toFixed(2),
+              'sm9': parseFloat(item.sm9).toFixed(2),
+              'sm10': parseFloat(item.sm10).toFixed(2),
               'sm11': item.sm11,
               'sm12': item.sm12,
               'sm13': item.sm13,
@@ -742,15 +765,15 @@ export default {
 
     renderSvgIcon(type) {
       if (type == 'well') {
-        return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 165 187.5"><path stroke-width="0" d="M.001 187.5v-7.499h7.484v-52.499h7.482v-7.501h7.482V67.5H7.484v-7.499h14.965V39.002L7.484 45.001H0V30h7.484v.001l74.829-30 74.83 30h7.483v15.001h-7.484l-.001-.001-14.964-5.998.001 20.998h7.857v-.002h7.482V75H165v7.499h-7.483v.001h-7.482v-15h-7.857v52.501h7.482v7.501h7.483v52.499h7.482v7.499H.001zm119.728-59.998v-7.501h7.482V67.5h-14.967v7.501h-26.04v15h18.558l-7.484 30h-29.93l-7.483-30h18.857v-15h-26.34V67.5H37.416v52.501h7.482v7.501h74.831zM52.382 60.001v-7.499h59.862v7.499h14.967V33.002L82.313 15.001l-44.897 18v27h14.966z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
+        return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 165 187.5"><path stroke-width="0" d="M.001 187.5v-7.499h7.484v-52.499h7.482v-7.501h7.482V67.5H7.484v-7.499h14.965V39.002L7.484 45.001H0V30h7.484v.001l74.829-30 74.83 30h7.483v15.001h-7.484l-.001-.001-14.964-5.998.001 20.998h7.857v-.002h7.482V75H165v7.499h-7.483v.001h-7.482v-15h-7.857v52.501h7.482v7.501h7.483v52.499h7.482v7.499H.001zm119.728-59.998v-7.501h7.482V67.5h-14.967v7.501h-26.04v15h18.558l-7.484 30h-29.93l-7.483-30h18.857v-15h-26.34V67.5H37.416v52.501h7.482v7.501h74.831zM52.382 60.001v-7.499h39.862v7.499h14.967V33.002L82.313 15.001l-44.897 18v27h14.966z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
       }
       if (type == 'sm') {
-        // return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><path stroke-width="0" d="M37.499 187.5l-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499H59.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
-        return '<svg stroke-width=".501" stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><g stroke-linecap="round" stroke="none" fill="none" font-size="16"><path d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499H59.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z" fill="currentColor"/><path d="m7.177 124.653 15.222-1.48c.916 5.109 2.776 8.861 5.576 11.258 2.801 2.396 6.579 3.595 11.338 3.595 5.038 0 8.835-1.066 11.39-3.198 2.554-2.132 3.83-4.625 3.832-7.48-.002-1.831-.538-3.39-1.613-4.677-1.074-1.285-2.95-2.404-5.629-3.355-1.831-.635-6.008-1.762-12.527-3.383-8.386-2.079-14.27-4.635-17.653-7.665-4.757-4.263-7.135-9.461-7.135-15.592 0-3.946 1.119-7.637 3.356-11.072 2.237-3.437 5.462-6.053 9.673-7.85 4.211-1.796 9.294-2.695 15.247-2.695 9.726 0 17.046 2.132 21.962 6.395 4.915 4.264 7.496 9.954 7.743 17.072l-15.645.687c-.669-3.981-2.104-6.844-4.307-8.588-2.202-1.744-5.506-2.617-9.911-2.617-4.544 0-8.104.935-10.677 2.802-1.657 1.198-2.483 2.801-2.483 4.81 0 1.832.774 3.4 2.325 4.704 1.973 1.655 6.766 3.381 14.376 5.179 7.612 1.797 13.241 3.656 16.888 5.576 3.647 1.922 6.501 4.547 8.562 7.875 2.061 3.33 3.092 7.444 3.092 12.342 0 4.439-1.232 8.598-3.699 12.474-2.466 3.877-5.956 6.757-10.466 8.641-4.51 1.885-10.13 2.828-16.861 2.828-9.796 0-17.319-2.264-22.569-6.792-5.25-4.527-8.386-11.126-9.407-19.794Z" fill-rule="nonzero" stroke-linejoin="round" stroke-width=".375" fill="#fff" stroke-miterlimit="79.84"/></g></svg>';
+        // return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><path stroke-width="0" d="M37.499 187.5l-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499h39.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
+        return '<svg stroke-width=".501" stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><g stroke-linecap="round" stroke="none" fill="none" font-size="16"><path d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499h39.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z" fill="currentColor"/><path d="m7.177 124.653 15.222-1.48c.916 5.109 2.776 8.861 5.576 11.258 2.801 2.396 6.579 3.595 11.338 3.595 5.038 0 8.835-1.066 11.39-3.198 2.554-2.132 3.83-4.625 3.832-7.48-.002-1.831-.538-3.39-1.613-4.677-1.074-1.285-2.95-2.404-5.629-3.355-1.831-.635-6.008-1.762-12.527-3.383-8.386-2.079-14.27-4.635-17.653-7.665-4.757-4.263-7.135-9.461-7.135-15.592 0-3.946 1.119-7.637 3.356-11.072 2.237-3.437 5.462-6.053 9.673-7.85 4.211-1.796 9.294-2.695 15.247-2.695 9.726 0 17.046 2.132 21.962 6.395 4.915 4.264 7.496 9.954 7.743 17.072l-15.645.687c-.669-3.981-2.104-6.844-4.307-8.588-2.202-1.744-5.506-2.617-9.911-2.617-4.544 0-8.104.935-10.677 2.802-1.657 1.198-2.483 2.801-2.483 4.81 0 1.832.774 3.4 2.325 4.704 1.973 1.655 6.766 3.381 14.376 5.179 7.612 1.797 13.241 3.656 16.888 5.576 3.647 1.922 6.501 4.547 8.562 7.875 2.061 3.33 3.092 7.444 3.092 12.342 0 4.439-1.232 8.598-3.699 12.474-2.466 3.877-5.956 6.757-10.466 8.641-4.51 1.885-10.13 2.828-16.861 2.828-9.796 0-17.319-2.264-22.569-6.792-5.25-4.527-8.386-11.126-9.407-19.794Z" fill-rule="nonzero" stroke-linejoin="round" stroke-width=".375" fill="#fff" stroke-miterlimit="79.84"/></g></svg>';
       }
       if (type == 'nut') {
-        // return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><path stroke-width="0" d="M37.499 187.5l-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499H59.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
-        return '<svg stroke-width=".501" stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><g stroke-linecap="round" stroke="none" fill="none" font-size="16"><path d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499H59.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z" fill="currentColor"/><path d="M9.001 147.09V75.155h14.132l29.441 48.039V75.155h13.493v71.935H51.494l-28.999-46.909v46.909H9.001Z" fill-rule="nonzero" stroke-linejoin="round" stroke-width=".375" fill="#fff" stroke-miterlimit="79.84"/></g></svg>';
+        // return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><path stroke-width="0" d="M37.499 187.5l-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499h39.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
+        return '<svg stroke-width=".501" stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 90 187.5"><g stroke-linecap="round" stroke="none" fill="none" font-size="16"><path d="m37.499 187.5-15-15V45l-7.5-7.5V7.499H0V0h74.999v7.499h39.998v7.502h22.5v-7.5h7.501V37.5h-7.501V30h-22.5l.001 7.5-7.5 7.5v127.5l-15 15Z" fill="currentColor"/><path d="M9.001 147.09V75.155h14.132l29.441 48.039V75.155h13.493v71.935h31.494l-28.999-46.909v46.909H9.001Z" fill-rule="nonzero" stroke-linejoin="round" stroke-width=".375" fill="#fff" stroke-miterlimit="79.84"/></g></svg>';
       }
       if (type == 'meter') {
         return '<svg stroke-linejoin="bevel" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" overflow="visible" width="100%" height="100%" viewBox="0 0 225 150"><path stroke-width="0" d="M43.746 105.001H22.499V120H0V29.999h22.499V45h21.246C55.326 18.519 81.762 0 112.498 0c30.735 0 57.171 18.519 68.752 45h21.249V29.999h22.499V120h-22.499v-14.999h-21.25C169.669 131.482 143.233 150 112.498 150c-30.736 0-57.172-18.518-68.752-44.999zM179.998 75c0-37.26-30.24-67.5-67.5-67.5-37.26 0-67.5 30.24-67.5 67.5 0 37.26 30.24 67.5 67.5 67.5 37.26 0 67.5-30.24 67.5-67.5zm-127.5 0c0-33.12 26.88-60 60-60 33.12 0 60 26.88 60 60 0 33.12-26.88 60-60 60-33.12 0-60-26.88-60-60zm37.5 22.5V82.501H74.999V97.5h14.999zm30-.001V82.5h-14.999v14.999h14.999zm30 0V82.5h-14.999v14.999h14.999zm.001-30V52.5H74.998v14.999h75.001z" fill="currentColor" stroke="white" font-family="Times New Roman" font-size="16"/></svg>';
@@ -1074,5 +1097,10 @@ export default {
 .legend_modal .legend_box .green {
   color: green;
 }
+
+.modal-title {
+  font-size: 2.0625rem;
+}
+
 </style>
 

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+// use Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\fields;
 use App\Models\node_data;
 use App\Models\nutri_data;
 use App\Models\nutrient_templates;
-use App\Models\node_data_meter;
+use App\Models\nutrient_template_data;
+use App\Models\node_data_metaer;
 use App\Models\hardware_config;
 use App\Models\hardware_management;
 use App\Models\cultivars_management;
@@ -187,7 +189,7 @@ class FieldsController extends Controller
 
         // defaults
         $data = [
-            'raw'    => ['M3_1' => 0, 'M3_2' => 0, 'M3_3' => 0, 'M3_4' => 0, 'avg_M3' => 0, 'M4_1' =>0, 'M4_2' =>0, 'M4_3' => 0, 'M4_4' => 0,'avg_M4' => 0, 'M5_1' => 0, 'M5_2' => 0, 'M5_3' => 0, 'M5_4' => 0, 'avg_M5' => 0, 'M6_1' => 0, 'M6_2' => 0, 'M6_3' => 0, 'M6_4' => 0,'avg_M3' => 0],
+            'raw'    => ['M3_1' => 0, 'M3_2' => 0, 'M3_3' => 0, 'M3_4' => 0, 'avg_M3' => 0, 'M4_1' => 0, 'M4_2' => 0, 'M4_3' => 0, 'M4_4' => 0, 'avg_M4' => 0, 'M5_1' => 0, 'M5_2' => 0, 'M5_3' => 0, 'M5_4' => 0, 'avg_M5' => 0, 'M6_1' => 0, 'M6_2' => 0, 'M6_3' => 0, 'M6_4' => 0, 'avg_M3' => 0],
             'ppm'    => ['M3_1' => 0, 'M3_2' => 0, 'M3_3' => 0, 'M3_4' => 0, 'avg_M3' => 0, 'M4_1' => 0, 'M4_2' => 0, 'M4_3' => 0, 'M4_4' => 0, 'avg_M4' => 0, 'M5_1' => 0, 'M5_2' => 0, 'M5_3' => 0, 'M5_4' => 0, 'avg_M5' => 0, 'M6_1' => 0, 'M6_2' => 0, 'M6_3' => 0, 'M6_4' => 0, 'avg_M3' => 0],
             'pounds' => ['M3_1' => 0, 'M3_2' => 0, 'M3_3' => 0, 'M3_4' => 0, 'avg_M3' => 0, 'M4_1' => 0, 'M4_2' => 0, 'M4_3' => 0, 'M4_4' => 0, 'avg_M4' => 0, 'M5_1' => 0, 'M5_2' => 0, 'M5_3' => 0, 'M5_4' => 0, 'avg_M5' => 0, 'M6_1' => 0, 'M6_2' => 0, 'M6_3' => 0, 'M6_4' => 0, 'avg_M3' => 0],
             'soil_moist' => ['M0_1' => 0, 'M0_2' => 0, 'M0_3' => 0, 'M0_4' => 0, 'avg_M0' => 0],
@@ -271,126 +273,146 @@ die;*/
 
                 $data['soil_moist']['avg_M0'] = number_format(($data['soil_moist']['M0_1'] + $data['soil_moist']['M0_2'] + $data['soil_moist']['M0_3'] + $data['soil_moist']['M0_4']) / 4, 2);
 
-                $data['temp']['M1_1']    = number_format($row[0]->M1_1, 2, '.', '');
-                $data['temp']['M1_2']    = number_format($row[0]->M1_2, 2, '.', '');
-                $data['temp']['M1_3']    = number_format($row[0]->M1_3, 2, '.', '');
-                $data['temp']['M1_4']    = number_format($row[0]->M1_4, 2, '.', '');
+                $data['temp']['M1_1']    = number_format($row[0]->M1_1, 1, '.', '');
+                $data['temp']['M1_2']    = number_format($row[0]->M1_2, 1, '.', '');
+                $data['temp']['M1_3']    = number_format($row[0]->M1_3, 1, '.', '');
+                $data['temp']['M1_4']    = number_format($row[0]->M1_4, 1, '.', '');
 
-                $data['temp']['avg_M1'] = number_format(($data['temp']['M1_1'] + $data['temp']['M1_2'] + $data['temp']['M1_3'] + $data['temp']['M1_4']) / 4, 2);
+                $data['temp']['avg_M1'] = number_format(($data['temp']['M1_1'] + $data['temp']['M1_2'] + $data['temp']['M1_3'] + $data['temp']['M1_4']) / 4, 1);
+
+                //$temp_avg = $data['temp']['avg_M1'];
+
+                $user = Auth::user();
+
+                    if ($user->unit_of_measure  == 2) {
+                        $data['temp']['avg_M1'] = ($data['temp']['avg_M1'] * (9 / 5) + 32);
+                        $data['temp_uom'] = ' °F';
+                    } else if ($user->unit_of_measure  == 1) {
+                        $data['temp']['avg_M1'] = $data['temp']['avg_M1'];
+                        $data['temp_uom'] = ' °C';
+                    }
+                    //$data['temp']['avg_M1'] = $temp_avg;
+
+
+                // $user = Auth::user();
+
+                // if (isset($data['temp']['avg_M1'])) {
+                //     if ($user->unit_of_measure  == 2) {
+                //         $data['temp']['avg_M1'] = ($data['temp']['avg_M1'] * (9 / 5) + 32) . ' °F';
+                //     } else if ($user->unit_of_measure  == 1) {
+                //         $data['temp']['avg_M1'] = $data['temp']['avg_M1'] . ' °C';
+                //     }
+                // }
+
 
                 // $data['ec']['M2_1']    = number_format($row[0]->M2_1, 2, '.', '');
                 // $data['ec']['M2_2']    = number_format($row[0]->M2_2, 2, '.', '');
                 // $data['ec']['M2_3']    = number_format($row[0]->M2_3, 2, '.', '');
                 // $data['ec']['M2_4']    = number_format($row[0]->M2_4, 2, '.', '');
 
-                $data['raw']['M3_1']    = number_format($row[0]->M3_1, 2, '.', '');
-                $data['raw']['M3_2']    = number_format($row[0]->M3_2, 2, '.', '');
-                $data['raw']['M3_3']    = number_format($row[0]->M3_3, 2, '.', '');
-                $data['raw']['M3_4']    = number_format($row[0]->M3_4, 2, '.', '');
+                $data['raw']['M3_1']    = number_format($row[0]->M3_1, 1, '.', '');
+                $data['raw']['M3_2']    = number_format($row[0]->M3_2, 1, '.', '');
+                $data['raw']['M3_3']    = number_format($row[0]->M3_3, 1, '.', '');
+                $data['raw']['M3_4']    = number_format($row[0]->M3_4, 1, '.', '');
 
-                $data['raw']['avg_M3'] = number_format(($data['raw']['M3_1'] + $data['raw']['M3_2'] + $data['raw']['M3_3'] + $data['raw']['M3_4']) / 4, 2);
+                $data['raw']['avg_M3'] = number_format(($data['raw']['M3_1'] + $data['raw']['M3_2'] + $data['raw']['M3_3'] + $data['raw']['M3_4']) / 4, 1);
 
-                $data['raw']['M4_1']    = number_format($row[0]->M4_1, 2, '.', '');
-                $data['raw']['M4_2']    = number_format($row[0]->M4_2, 2, '.', '');
-                $data['raw']['M4_3']    = number_format($row[0]->M4_3, 2, '.', '');
-                $data['raw']['M4_4']    = number_format($row[0]->M4_4, 2, '.', '');
+                $data['raw']['M4_1']    = number_format($row[0]->M4_1, 1, '.', '');
+                $data['raw']['M4_2']    = number_format($row[0]->M4_2, 1, '.', '');
+                $data['raw']['M4_3']    = number_format($row[0]->M4_3, 1, '.', '');
+                $data['raw']['M4_4']    = number_format($row[0]->M4_4, 1, '.', '');
 
-                $data['raw']['avg_M4'] = number_format(($data['raw']['M4_1'] + $data['raw']['M4_2'] + $data['raw']['M4_3'] + $data['raw']['M4_4']) / 4, 2);
+                $data['raw']['avg_M4'] = number_format(($data['raw']['M4_1'] + $data['raw']['M4_2'] + $data['raw']['M4_3'] + $data['raw']['M4_4']) / 4, 1);
 
-                $data['raw']['M5_1']    = number_format($row[0]->M5_1, 2, '.', '');
-                $data['raw']['M5_2']    = number_format($row[0]->M5_2, 2, '.', '');
-                $data['raw']['M5_3']    = number_format($row[0]->M5_3, 2, '.', '');
-                $data['raw']['M5_4']    = number_format($row[0]->M5_4, 2, '.', '');
+                $data['raw']['M5_1']    = number_format($row[0]->M5_1, 1, '.', '');
+                $data['raw']['M5_2']    = number_format($row[0]->M5_2, 1, '.', '');
+                $data['raw']['M5_3']    = number_format($row[0]->M5_3, 1, '.', '');
+                $data['raw']['M5_4']    = number_format($row[0]->M5_4, 1, '.', '');
 
-                $data['raw']['avg_M5'] = number_format(($data['raw']['M5_1'] + $data['raw']['M5_2'] + $data['raw']['M5_3'] + $data['raw']['M5_4']) / 4, 2);
+                $data['raw']['avg_M5'] = number_format(($data['raw']['M5_1'] + $data['raw']['M5_2'] + $data['raw']['M5_3'] + $data['raw']['M5_4']) / 4, 1);
 
-                $data['raw']['M6_1']    = number_format($row[0]->M6_1, 2, '.', '');
-                $data['raw']['M6_2']    = number_format($row[0]->M6_2, 2, '.', '');
-                $data['raw']['M6_3']    = number_format($row[0]->M6_3, 2, '.', '');
-                $data['raw']['M6_4']    = number_format($row[0]->M6_4, 2, '.', '');
+                $data['raw']['M6_1']    = number_format($row[0]->M6_1, 1, '.', '');
+                $data['raw']['M6_2']    = number_format($row[0]->M6_2, 1, '.', '');
+                $data['raw']['M6_3']    = number_format($row[0]->M6_3, 1, '.', '');
+                $data['raw']['M6_4']    = number_format($row[0]->M6_4, 1, '.', '');
 
-                $data['raw']['avg_M6'] = number_format(($data['raw']['M6_1'] + $data['raw']['M6_2'] + $data['raw']['M6_3'] + $data['raw']['M6_4']) / 4, 2);
+                $data['raw']['avg_M6'] = number_format(($data['raw']['M6_1'] + $data['raw']['M6_2'] + $data['raw']['M6_3'] + $data['raw']['M6_4']) / 4, 1);
 
-                $data['ppm']['M3_1']    = round(number_format((($row[0]->M3_1 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M3_2']    = round(number_format((($row[0]->M3_2 * $poly1) + $poly2), 2, '.', ''),1);
-                $data['ppm']['M3_3']    = round(number_format((($row[0]->M3_3 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M3_4']    = round(number_format((($row[0]->M3_4 * $poly1) + $poly2), 2, '.', ''), 1);
+                //just to apply each template's data (jp for loop)
+                for ($i = 3; $i <= 6; $i++) {
+                    // log::debug('inside first for loop (i)');
+                    for ($j = 1; $j <= 4; $j++) {
+                        // log::debug('inside second for loop (j)');
+                        $dataset_nutrient_template_data = nutrient_template_data::where('nutriprobe', $request->node_address)->limit(1)->get();
+                        if ($dataset_nutrient_template_data->count() > 0) {
 
-                $data['ppm']['avg_M3'] = round(number_format(($data['ppm']['M3_1'] + $data['ppm']['M3_2'] + $data['ppm']['M3_3'] + $data['ppm']['M3_4']) / 4, 2), 1);
+                            $datasetstring = 'M' . $i . '_' . $j;
+                            if (isset($row[0]->{$datasetstring})) {
 
-                $data['ppm']['M4_1']    = round(number_format((($row[0]->M4_1 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M4_2']    = round(number_format((($row[0]->M4_2 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M4_3']    = round(number_format((($row[0]->M4_3 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M4_4']    = round(number_format((($row[0]->M4_4 * $poly1) + $poly2), 2, '.', ''), 1);
 
-                $data['ppm']['avg_M4'] = round(number_format(($data['ppm']['M4_1'] + $data['ppm']['M4_2'] + $data['ppm']['M4_3'] + $data['ppm']['M4_4']) / 4, 2), 1);
+                                $dataset_nutrient_templates = nutrient_templates::where('id', $dataset_nutrient_template_data[0]->$datasetstring)->Limit(1)->get();
+                                if ($dataset_nutrient_templates->count() > 0) {
 
-                $data['ppm']['M5_1']    = round(number_format((($row[0]->M5_1 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M5_2']    = round(number_format((($row[0]->M5_2 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M5_3']    = round(number_format((($row[0]->M5_3 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M5_4']    = round(number_format((($row[0]->M5_4 * $poly1) + $poly2), 2, '.', ''), 1);
+                                    $template = json_decode($dataset_nutrient_templates[0]->template);
+                                    $data['ppm'][$datasetstring] = number_format(($row[0]->$datasetstring * $template->poly1) + $template->poly2, 1, '.', '');
+                                }
+                            }
+                        }
+                    }
+                }
 
-                $data['ppm']['avg_M4'] = round(number_format(($data['ppm']['M4_1'] + $data['ppm']['M4_2'] + $data['ppm']['M4_3'] + $data['ppm']['M4_4']) / 4, 2), 1);
+                $data['pounds']['M3_1'] = number_format((($row[0]->M3_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M3_2'] = number_format((($row[0]->M3_2 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M3_3'] = number_format((($row[0]->M3_3 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M3_4'] = number_format((($row[0]->M3_4 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
-                $data['ppm']['M6_1']    = round(number_format((($row[0]->M6_1 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M6_2']    = round(number_format((($row[0]->M6_2 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M6_3']    = round(number_format((($row[0]->M6_3 * $poly1) + $poly2), 2, '.', ''), 1);
-                $data['ppm']['M6_4']    = round(number_format((($row[0]->M6_4 * $poly1) + $poly2), 2, '.', ''), 1);
+                $data['pounds']['avg_M3'] = number_format(($data['pounds']['M3_1'] + $data['pounds']['M3_2'] + $data['pounds']['M3_3'] + $data['pounds']['M3_4']) / 4, 1);
 
-                $data['ppm']['avg_M6'] = round(number_format(($data['ppm']['M6_1'] + $data['ppm']['M6_2'] + $data['ppm']['M6_3'] + $data['ppm']['M6_4']) / 4, 2), 1);
+                $data['pounds']['M4_1'] = number_format((($row[0]->M4_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M4_2'] = number_format((($row[0]->M4_2 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M4_3'] = number_format((($row[0]->M4_3 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M4_4'] = number_format((($row[0]->M4_4 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
-                $data['pounds']['M3_1'] = number_format((($row[0]->M3_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M3_2'] = number_format((($row[0]->M3_2 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M3_3'] = number_format((($row[0]->M3_3 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M3_4'] = number_format((($row[0]->M3_4 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
+                $data['pounds']['avg_M4'] = number_format(($data['pounds']['M4_1'] + $data['pounds']['M4_2'] + $data['pounds']['M4_3'] + $data['pounds']['M4_4']) / 4, 1);
 
-                $data['pounds']['avg_M3'] = number_format(($data['pounds']['M3_1'] + $data['pounds']['M3_2'] + $data['pounds']['M3_3'] + $data['pounds']['M3_4']) / 4, 2);
+                $data['pounds']['M5_1'] = number_format((($row[0]->M5_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M5_2'] = number_format((($row[0]->M5_2 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M5_3'] = number_format((($row[0]->M5_3 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M5_4'] = number_format((($row[0]->M5_4 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
-                $data['pounds']['M4_1'] = number_format((($row[0]->M4_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M4_2'] = number_format((($row[0]->M4_2 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M4_3'] = number_format((($row[0]->M4_3 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M4_4'] = number_format((($row[0]->M4_4 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
+                $data['pounds']['avg_M5'] = number_format(($data['pounds']['M5_1'] + $data['pounds']['M5_2'] + $data['pounds']['M5_3'] + $data['pounds']['M5_4']) / 4, 1);
 
-                $data['pounds']['avg_M4'] = number_format(($data['pounds']['M4_1'] + $data['pounds']['M4_2'] + $data['pounds']['M4_3'] + $data['pounds']['M4_4']) / 4, 2);
+                $data['pounds']['M6_1'] = number_format((($row[0]->M6_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M6_2'] = number_format((($row[0]->M6_2 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M6_3'] = number_format((($row[0]->M6_3 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
+                $data['pounds']['M6_4'] = number_format((($row[0]->M6_4 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
-                $data['pounds']['M5_1'] = number_format((($row[0]->M5_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M5_2'] = number_format((($row[0]->M5_2 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M5_3'] = number_format((($row[0]->M5_3 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M5_4'] = number_format((($row[0]->M5_4 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-
-                $data['pounds']['avg_M5'] = number_format(($data['pounds']['M5_1'] + $data['pounds']['M5_2'] + $data['pounds']['M5_3'] + $data['pounds']['M5_4']) / 4, 2);
-
-                $data['pounds']['M6_1'] = number_format((($row[0]->M6_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M6_2'] = number_format((($row[0]->M6_2 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M6_3'] = number_format((($row[0]->M6_3 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-                $data['pounds']['M6_4'] = number_format((($row[0]->M6_4 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
-
-                $data['pounds']['avg_M6'] = number_format(($data['pounds']['M6_1'] + $data['pounds']['M6_2'] + $data['pounds']['M6_3'] + $data['pounds']['M6_4']) / 4, 2);
+                $data['pounds']['avg_M6'] = number_format(($data['pounds']['M6_1'] + $data['pounds']['M6_2'] + $data['pounds']['M6_3'] + $data['pounds']['M6_4']) / 4, 1);
 
 
                 ////////////////////////////////end/////////
 
 
-                $data['raw']['M4_1']    = number_format($row[0]->M4_1, 2, '.', '');
-                $data['ppm']['M4_1']    = number_format((($row[0]->M4_1 * $poly1) + $poly2), 2, '.', '');
-                $data['pounds']['M4_1'] = number_format((($row[0]->M4_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
+                $data['raw']['M4_1']    = number_format($row[0]->M4_1, 1, '.', '');
+             //   $data['ppm']['M4_1']    = number_format((($row[0]->M4_1 * $poly1) + $poly2), 1, '.', '');
+                $data['pounds']['M4_1'] = number_format((($row[0]->M4_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
-                $data['raw']['M5_1']    = number_format($row[0]->M5_1, 2, '.', '');
-                $data['ppm']['M5_1']    = number_format((($row[0]->M5_1 * $poly1) + $poly2), 2, '.', '');
-                $data['pounds']['M5_1'] = number_format((($row[0]->M5_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
+                $data['raw']['M5_1']    = number_format($row[0]->M5_1, 1, '.', '');
+             //   $data['ppm']['M5_1']    = number_format((($row[0]->M5_1 * $poly1) + $poly2), 1, '.', '');
+                $data['pounds']['M5_1'] = number_format((($row[0]->M5_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
-                $data['raw']['M6_1']    = number_format($row[0]->M6_1, 2, '.', '');
-                $data['ppm']['M6_1']    = number_format((($row[0]->M6_1 * $poly1) + $poly2), 2, '.', '');
-                $data['pounds']['M6_1'] = number_format((($row[0]->M6_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
+                $data['raw']['M6_1']    = number_format($row[0]->M6_1, 1, '.', '');
+              //  $data['ppm']['M6_1']    = number_format((($row[0]->M6_1 * $poly1) + $poly2), 1, '.', '');
+                $data['pounds']['M6_1'] = number_format((($row[0]->M6_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
 
                 /*print_r($data) . PHP_EOL;
 
 print_r($row) . PHP_EOL;
 die;*/
 
-                $raw_total    = number_format($row[0]->M3_1 + $row[0]->M4_1 + $row[0]->M5_1 + $row[0]->M6_1, 2, '.', '');
-                $ppm_total    = number_format((($row[0]->M3_1 * $poly1) + $poly2) + (($row[0]->M4_1 * $poly1) + $poly2) + (($row[0]->M5_1 * $poly1) + $poly2) + (($row[0]->M6_1 * $poly1) + $poly2), 2, '.', '');
-                $pounds_total = number_format((($row[0]->M3_1 * $poly1) + $poly2) * $pound_conv + (($row[0]->M4_1 * $poly1) + $poly2) * $pound_conv + (($row[0]->M5_1 * $poly1) + $poly2) * $pound_conv + (($row[0]->M6_1 * $poly1) + $poly2) * $pound_conv, 2, '.', '');
+                $raw_total    = number_format($row[0]->M3_1 + $row[0]->M4_1 + $row[0]->M5_1 + $row[0]->M6_1, 1, '.', '');
+                $ppm_total    = number_format((($row[0]->M3_1 * $poly1) + $poly2) + (($row[0]->M4_1 * $poly1) + $poly2) + (($row[0]->M5_1 * $poly1) + $poly2) + (($row[0]->M6_1 * $poly1) + $poly2), 1, '.', '');
+                $pounds_total = number_format((($row[0]->M3_1 * $poly1) + $poly2) * $pound_conv + (($row[0]->M4_1 * $poly1) + $poly2) * $pound_conv + (($row[0]->M5_1 * $poly1) + $poly2) * $pound_conv + (($row[0]->M6_1 * $poly1) + $poly2) * $pound_conv, 1, '.', '');
             }
 
             if ($raw_total) {
@@ -424,6 +446,16 @@ die;*/
                 $data['upper_limit']    = $upper_limit;
                 $data['nutrient_label'] = $nutrient_label;
                 $data['metric']         = $metric;
+
+                // $user = Auth::user();
+
+                // if (isset($data['temp']['avg_M1'])) {
+                //     if ($user->unit_of_measure  == 2) {
+                //         $data['temp']['avg_M1'] = ($data['temp']['avg_M1'] * (9 / 5) + 32) . ' °F';
+                //     } else if ($user->unit_of_measure  == 1) {
+                //         $data['temp']['avg_M1'] = $data['temp']['avg_M1'] . ' °C';
+                //     }
+                // }
 
                 // can if/else this later (based on chosen metric)
                 $average = $ppm_total / $count;

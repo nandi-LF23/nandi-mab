@@ -527,6 +527,94 @@
             Reporting
           </base-button>
 
+          <b-button v-b-modal.modal-4 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top title="Read More">
+            <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+          </b-button>
+          <b-modal id="modal-4" title="Managing Entities">
+            <p>In MAB, all objects belong to an Entity. An Entity is the highest level
+              organizing concept in MAB. An Entity represents a single business. Users, Roles, Groups, Nodes, Sensor
+              Types, etc. all belong to exactly one Entity at a time. This is to enable the compartmentalization of
+              objects.</p>
+            <p>To access the <strong>Entity Management</strong> screen, click on the
+              <strong>Entities</strong> menu item on the side menu.&nbsp;
+            </p>
+            <p>All of the Entities are listed in table format. A brief description of each
+              table column is given below:</p>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <td><strong>Column</strong></td>
+                    <td><strong>Description</strong></td>
+                    <td><strong>Additional Notes</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Parent Entity</td>
+                    <td>The Entity's Parent Entity</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Entity</td>
+                    <td>The Entity's Name</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Users</td>
+                    <td>The Entity's User Count</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Roles</td>
+                    <td>The Entity's Role Count</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Groups</td>
+                    <td>The Entity's Group Count</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Nodes</td>
+                    <td>The Entity's Node Count</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Distributor</td>
+                    <td>Whether the Entity has one or more users marked as a 'Distributor'</td>
+                    <td><br></td>
+                  </tr>
+                  <tr>
+                    <td>Actions</td>
+                    <td>Various Actionable Buttons</td>
+                    <td>Visibility depends on Permissions/Role</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>Adding a New Entity</h3>
+            <p>To add a new Entity, click on the <strong>Create Entity</strong> button
+              (top left of table). The <strong>Create New Entity</strong> dialog will appear. <br>It is a multi-step form.
+              Complete all the fields on each step and then click on <strong>Next.&nbsp;</strong>The Last screen
+              (Confirmation) allows you to double-check whether all data was entered correctly. When everything's in
+              order, click on <strong>Create</strong>.</p>
+            <h3>Managing an Existing Entity</h3>
+            <p>Click on the Entity record's Configure button to go to the <strong>Single Entity Management</strong> screen.</p>
+            <h3>Removing an Existing Entity</h3>
+            <p>To remove an existing Entity, click on it's records'
+              <strong>Remove</strong> button. A confirmation dialog will appear. This Confirmation dialog will also allow
+              you to optionally move the Entity's objects over to another entity before deleting. To simply remove the
+              Entity and all connected objects (Users/Roles/Groups/etc), just click on <strong>Remove</strong>, otherwise,
+              read on.
+            </p>
+            <p>To do a relocation, click on the <strong>'Relocate Entity
+                Objects?'</strong> checkbox. When relocating objects, you have to map Roles and Sensor Types from the old
+              Entity to the new (Target) Entity. When no compatible Sensor Type is found in the Target Entity, the
+              existing Sensor Type will be moved over as is (designated by '<strong>(to be relocated as-is)</strong>').
+              Once you have done the mappings, click on '<strong>Relocate then Remove</strong>' to move over the objects
+              and then delete the Entity.</p>
+          </b-modal>
+
         </template>
 
         <b-row class='nomargin'>
@@ -1158,5 +1246,9 @@ export default {
 
 .cc_move_form table fieldset.form-group {
   margin-bottom: 0;
+}
+
+.modal-title {
+  font-size: 2.0625rem;
 }
 </style>

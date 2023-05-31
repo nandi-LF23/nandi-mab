@@ -4,19 +4,113 @@
       <b-row align-v="center" class="py-4">
         <b-col>
           <h6 class="h2 text-white d-inline-block mb-0 mr-5" v-show="model.device_make">Sensor Types - {{
-              model.device_make
+            model.device_make
           }}</h6>
           <div v-show='loading' class='mab_spinner light right'></div>
         </b-col>
       </b-row>
     </base-header>
 
+
+
     <div class='container-fluid mt--6'>
       <validation-observer ref='form' slim>
         <b-row>
           <b-col>
-            <card body-classes="px-0 py-0">
+            <!-- <card body-classes="px-0 py-0"> -->
+            <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
+              <template slot="header">
+                <b-button v-b-modal.modal-4 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                  title="Read More">
+                  Help <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                </b-button>
+                <b-modal id="modal-4" title="Sensor Type Configuration">
+                  <p>The Sensor Type configuration screen allows you to configure a
+                    specific sensor type. This sensor configuration is then used in various areas of MAB (such as
+                    graphing).<br><br>The fields displayed on this screen will vary according to sensor type.<br>
+                  </p>
+                  <h2><span style="color: #169179;">Common Fields</span></h2>
+                  <p>A summary of the common fields related to all sensor types are
+                    given below:</p>
+                  <h3>Device Type</h3>
+                  <p>The Sensor Type. This has to match the Node type it's intended
+                    to be used for.</p>
+                  <h3>Device Category</h3>
+                  <p>An additional category assignable to this configuration.
+                    Currently this field is for informational purposes only.</p>
+                  <h3>Entity</h3>
+                  <p>The owning entity of this configuration.</p>
+                  <h3>Device Make</h3>
+                  <p>This is the descriptive title given to the configuration. It is
+                    usually hardware/vendor specific.</p>
+                  <h2><span style="color: #169179;">Soil Moisture Fields</span></h2>
+                  <p>A summary of the fields related to configuring a Soil Moisture
+                    sensor type is given below:</p>
+                  <h3>Device Depth</h3>
+                  <p>This field is used to specify the length/depth (underground) of
+                    the device. It is probe specific. <br><strong>Note: </strong>The device depth is shown either in
+                    inches or millimeters, depending on the user's Unit of Measurement setting.&nbsp;</p>
+                  <h3>Sensor Depths</h3>
+                  <p>This can also be called Sensor Spacing and determines the
+                    offsets (linear layout) of individual sensors on the probe itself.&nbsp;<br><strong>Note:
+                    </strong>The sensor depths is shown either in inches or millimeters, depending on the user's
+                    Unit of Measurement setting.&nbsp;<br></p>
+                  <h2><span style="color: #169179;">Nutrient Fields</span></h2>
+                  <p>A summary of the fields related to configuring a Nutrient
+                    sensor type is given below:</p>
+                  <h3>Device Depth</h3>
+                  <p>This field is used to specify the length/depth (underground)
+                    of the device. It is probe specific. <br><strong>Note: </strong>The device depth is shown either
+                    in inches or millimeters, depending on the user's Unit of Measurement setting.&nbsp;</p>
+                  <h3>Sensor Depths</h3>
+                  <p>This can also be called Sensor Spacing and determines the
+                    offsets (linear layout) of individual sensors on the probe itself.&nbsp;<br><strong>Note:
+                    </strong>The sensor depths is shown either in inches or millimeters, depending on the user's
+                    Unit of Measurement setting.&nbsp;</p>
+                  <h3>Sensor Config</h3>
+                  <p>The Sensor Config field is a repeater field that allows you to
+                    map out each sensor on the probe by depth level.<br>The subfields of this Repeater field is
+                    explained below:</p>
+                  <h3>Sensor Config &gt; SDI Addr.</h3>
+                  <p>This field designates the chosen SDI Address to
+                    configure.&nbsp;<br></p>
+                  <h3>Sensor Config &gt; Depth</h3>
+                  <p>This field designates the sensor's depth</p>
+                  <h3>Sensor Config &gt; Type</h3>
+                  <p>This field designates the type of nutrient sensor at the
+                    current depth</p>
+                  <h2><span style="color: #169179;">Well Control Fields</span></h2>
+                  <p>A summary of the fields related to configuring a Well
+                    Controls sensor type is given below:</p>
+                  <h3>Diameter</h3>
+                  <p>This field specifies the pipe's diameter.</p>
+                  <h3>Pulse Weight</h3>
+                  <p>A factor that determines throughput.</p>
+                  <h3>Unit of Measure</h3>
+                  <p>This unit of measurement field is used for the diameter and
+                    pulse weight calculations.</p>
+                  <h3>Application Type</h3>
+                  <p>The Well's application type. Currently it's purely
+                    informational only.&nbsp;</p>
+                  <h2><span style="color: #169179;">Meter Fields</span></h2>
+                  <p>A summary of the fields related to configuring a Meters
+                    sensor type is given below:</p>
+                  <h3>Diameter</h3>
+                  <p>This field specifies the pipe's diameter.</p>
+                  <h3>Pulse Weight</h3>
+                  <p>A factor that determines throughput.</p>
+                  <h3>Unit of Measure</h3>
+                  <p>This unit of measurement field is used for the diameter and
+                    pulse weight calculations.</p>
+                  <h3>Application Type</h3>
+                  <p>The Meter's application type. Currently it's purely
+                    informational only.&nbsp;</p>
+
+                </b-modal>
+              </template>
               <div class="card-body">
+
+
                 <b-row>
                   <b-col md>
                     <!-- Device Type -->
@@ -107,40 +201,40 @@
                 <b-row>
                   <b-col md>
                     <label class='form-control-label'>Sensor Depths</label>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_1"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_1" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '100mm' : '4"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_2"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_2" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '200mm' : '8"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_3"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_3" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '300mm' : '12"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_4"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_4" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '400mm' : '16"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_5"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_5" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '500mm' : '20"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_6"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_6" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '600mm' : '24"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_7"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_7" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '700mm' : '28"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_8"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_8" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '800mm' : '32"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_9"
-                      unchecked-value="off" value="on">
+                    <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_9" unchecked-value="off"
+                      value="on">
                       Sensor at {{ uom == 1 ? '900mm' : '36"' }}
                     </b-form-checkbox>
                     <b-form-checkbox size="lg" @change="syncFields" v-model="model.sensor_placing_10"
@@ -189,8 +283,7 @@
                   </b-col>
                   <b-col>
                     <base-input name="pulse weight" rules="required" label='Pulse Weight' vid="pulse_weight">
-                      <el-select @change="syncFields" v-model="model.pulse_weight" filterable
-                        placeholder="Pulse Weight">
+                      <el-select @change="syncFields" v-model="model.pulse_weight" filterable placeholder="Pulse Weight">
                         <el-option label="1" value="1"></el-option>
                         <el-option label="10" value="10"></el-option>
                         <el-option label="100" value="100"></el-option>
@@ -211,8 +304,7 @@
                     </base-input>
                   </b-col>
                   <b-col>
-                    <base-input name="application type" rules="required" label="Application Type"
-                      vid="application_type">
+                    <base-input name="application type" rules="required" label="Application Type" vid="application_type">
                       <el-select @change="syncFields" v-model="model.application_type" filterable
                         placeholder="Application Type">
                         <el-option label="GPM" value="gpm"></el-option>
@@ -254,7 +346,7 @@
                   </b-col>
 
                   <b-col md="6">
-                  
+
                     <base-input label="Number of Levels" name="Number of Levels" rules="required" vid="number_levels">
                       <b-form-select @change="syncFields" v-model="model.number_levels" placeholder="Number of Levels*">
                         <b-form-select-option value='1'>1</b-form-select-option>
@@ -263,7 +355,7 @@
                         <b-form-select-option value='4'>4</b-form-select-option>
                       </b-form-select>
                     </base-input>
-                  
+
                   </b-col>
                 </b-row>
 
@@ -276,10 +368,10 @@
                         <b-tr v-for="(config, index) in model.sensor_config" :key="index">
                           <b-td class="mab_table_cell">
                             <base-input name="sdi_addr" rules="required" vid="address">
-                              <el-select @change="syncFields" v-model="config.address" filterable
-                                placeholder="SDI Addr." autocomplete="off" size="small">
-                                <el-option v-for="(val, idx) in sensor_addresses" :key="idx" :label="idx"
-                                  :value="val">{{ idx }}</el-option>
+                              <el-select @change="syncFields" v-model="config.address" filterable placeholder="SDI Addr."
+                                autocomplete="off" size="small">
+                                <el-option v-for="(val, idx) in sensor_addresses" :key="idx" :label="idx" :value="val">{{
+                                  idx }}</el-option>
                               </el-select>
                             </base-input>
                           </b-td>
@@ -596,5 +688,7 @@ export default {
 };
 </script>
 <style>
-
+.modal-title {
+  font-size: 2.0625rem;
+}
 </style>

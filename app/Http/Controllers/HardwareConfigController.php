@@ -971,7 +971,7 @@ class HardwareConfigController extends Controller
         $node_address = $request->node_address . '-' . $request->probe_address;
 
         // manual uniqueness check
-        if (hardware_config::where('node_address', $node_address)->exists()) {
+        if (hardware_config::where('node_address', $node_address)->exists() || fields::where('node_id', $node_address)->exists()) {
             return response()->json(['message' => "alreadyexists"]);
         }
 
@@ -1707,6 +1707,7 @@ class HardwareConfigController extends Controller
         ]);
 
         $hwconfig = hardware_config::where('node_address', $request->node_address)->first();
+        //$field = fields::where('node_id', $request->node_address)->first();
         if (!$hwconfig) {
             return response()->json(['message' => 'nonexistent']);
         }
@@ -1740,6 +1741,7 @@ class HardwareConfigController extends Controller
         ]);
 
         hardware_config::where('id', $hwconfig->id)->delete();
+        //fields::where('node_id', $request->node_address)->delete();
 
         $result = ['message' => 'node_removed'];
         if ($grants) {

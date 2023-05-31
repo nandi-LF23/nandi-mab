@@ -57,76 +57,52 @@ for ($j = 0; $j < sizeof($body->uplinks); $j++) {
 
     $timestamp = gmdate("Y-m-d H:i:s", round($body->uplinks[$j]->datagramUplinkEvent->timestamp / 1000));
 
-    echo 'CID: ' . $cid . ' SID: ' . $sid . ' Node ID: ' . $nodeId . ' Timestamp: ' . $timestamp . PHP_EOL;
-
-    switch ($cid) {
-        case 1: {
-                switch ($sid) {
-                    case 2: {
-                            require('spec_files/0102.php');
-                            break;
-                        } // (1,2) GPS Position Message
-                    case 3: {
-                            require('spec_files/0103.php');
-                            break;
-                        }
-                    case 4: {
-                            require('spec_files/0104.php');
-                            break;
-                        } //node boot v2
+    echo 'CID: ' . $cid . ' SID: '. $sid . ' Node ID: '. $nodeId . ' Timestamp: ' . $timestamp . PHP_EOL;
+    file_put_contents('/var/www/live_rpma_import_log.log', 'CID: ' . $cid . ' SID: ' . $sid . ' Node ID: ' . $nodeId . ' Timestamp: ' . $timestamp . PHP_EOL, FILE_APPEND);
+    switch($cid)
+    {
+        case 1:
+            {
+                switch($sid)
+                {
+                    case 2: { require('spec_files/0102.php'); break; }// (1,2) GPS Position Message
+                    case 3: { require('spec_files/0103.php'); break; }
+                    case 4: { require('spec_files/0104.php'); break; }//node boot v2
                 }
                 break;
             }
-        case 2: {
-                switch ($sid) {
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3: {
-                            require('spec_files/0203.php');
-                            break;
-                        } //(2,3) Probe Reading Message
-                    case 4: {
-                            require('spec_files/0204.php');
-                            break;
-                        }
-                    case 5: {
-                            require('spec_files/0205.php');
-                            break;
-                        }
-                    case 6: {
-                            require('spec_files/0206.php');
-                            break;
-                        }
+        case 2:
+            {
+                switch($sid)
+                {
+                    case 1: break;
+                    case 2: break;
+                    case 3: { require('spec_files/0203.php'); break; }//(2,3) Probe Reading Message
+                    case 4: { require('spec_files/0204.php'); break; }
+                    case 5: { require('spec_files/0205.php'); break; }
+                    case 6: { require('spec_files/0206.php'); break; }
                 }
                 break;
             }
-        case 3: {
-                switch ($sid) {
-                    case 1: {
-                            require('spec_files/0800.php');
-                            break;
-                        }
+        case 3:
+            {
+                switch($sid)
+                {
+                    case 1: { require('spec_files/0800.php');  break; }
                 }
                 break;
             }
-        case 5:
-            break;
-        case 7:
-            break;
-        case 8: {
-                require('spec_files/0800.php');
-                break;
-            } // (8,0) Probe with Pulse Reading Message (legacy MSF)
+        case 5:break;
+        case 7:break;
+        case 8: { require('spec_files/0800.php'); break; }// (8,0) Probe with Pulse Reading Message (legacy MSF)
     }
-
     $sql1 = 'SELECT COUNT(*) FROM raw_data_b64 WHERE message_id=\'' . $messageId . '\'';
     $stmt = $db->unprepared_query($sql1);
     $row = $stmt->fetch(PDO::FETCH_NUM);
-    if (!$row[0]) {
+    if ($row[0] == 0) {
         $db->unprepared_query('INSERT INTO raw_data_b64 (device_id, b64_data, timestamp, message_id) VALUES ("' . $nodeId . '" , "' . $b64 . '" , "' . $timestamp . '", "' . $messageId . '") ON DUPLICATE KEY UPDATE message_id = VALUES(message_id)');
         // print_r($stmt);
+        $db->unprepared_query('UPDATE hardware_config SET date_time=\'' . $DateTime . '\' WHERE node_address=\'' . $nodeAddress . '\'');
 
     }
 

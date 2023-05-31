@@ -668,10 +668,10 @@
                     title="Navigate to node's graphing screen." icon>
                     Graph
                   </base-button>
-                  <b-button v-b-modal.modal-2 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                  <!-- <b-button v-b-modal.modal-2 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
                       title="Read More">
                       <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
-                    </b-button>
+                    </b-button> -->
                 </b-col>
               </b-row>
             </template>
@@ -2575,7 +2575,7 @@ export default {
               .then((resp1) => {
 
                 this.loading = false;
-                this.loadedTemplates = resp1.data.templates;
+                  this.loadedTemplates = resp1.data.templates;
                 this.totalRows = this.loadedTemplates.length;
               });
 

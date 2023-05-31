@@ -163,7 +163,7 @@ switch($paddr[0])
     default: {$probe_type = 'nutrient';break;}
 }
 echo $probe_type .PHP_EOL. $paddr[0] . PHP_EOL;
-file_put_contents('/var/www/live_rpma_import_log.log', $probe_type . PHP_EOL . $paddr[0] . PHP_EOL, FILE_APPEND);
+file_put_contents('/var/www/live_rpma_import_log.log', $probe_type . PHP_EOL . $paddr[0] . PHP_EOL);
 //die;
 //echo $probe_type . PHP_EOL . $j . PHP_EOL;
 
@@ -318,7 +318,7 @@ $sql .= '\')';
 //print_r($sql);
 
 $nutr_stmt = $db->unprepared_query($sql);
-//file_put_contents('/var/www/live_rpma_import_log.log','sql' . $sql . PHP_EOL,FILE_APPEND);
+file_put_contents('/var/www/live_rpma_import_log.log',print_r($nutr_stmt));
 
 //die;
 }
@@ -399,9 +399,10 @@ if ($probe_type == 'moisture')
 $sql1 = 'SELECT COUNT(*) FROM raw_data_b64 WHERE message_id=\''.$messageId.'\'';
 $stmt = $db->unprepared_query( $sql1 );
 $row = $stmt->fetch(PDO::FETCH_NUM);
-if ($row[0]==0) {
+if (!$row[0]) {
     $db->unprepared_query('INSERT INTO raw_data_b64 (device_id, b64_data, timestamp, message_id) VALUES ("' . $nodeId . '" , "' . $b64 . '" , "' . $timestamp . '", "' . $messageId . '") ON DUPLICATE KEY UPDATE message_id = VALUES(message_id)');
     // print_r($stmt);
     $db->unprepared_query('UPDATE hardware_config SET date_time=\'' . $DateTime . '\' WHERE node_address=\'' . $nodeAddress . '\'');
-    
+    //insert with b64
+    $db->unprepared_query($sql);
 }

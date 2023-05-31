@@ -320,25 +320,25 @@ class NutrientTemplateController extends Controller
             $item = new nutrient_template_data();
             $item->nutriprobe = $request->nutriprobe;
 
-            ($request->sensor_types['M3_1']) ? $item->M3_1 = $request->sensor_types['M3_1'] : 0;
-            ($request->sensor_types['M3_2']) ? $item->M3_2 = $request->sensor_types['M3_2'] : 0;
-            ($request->sensor_types['M3_3']) ? $item->M3_3 = $request->sensor_types['M3_3'] : 0;
-            ($request->sensor_types['M3_4']) ? $item->M3_4 = $request->sensor_types['M3_4'] : 0;
+            isset($request->sensor_types['M3_1']) ? $item->M3_1 = $request->sensor_types['M3_1'] : 0;
+            isset($request->sensor_types['M3_2']) ? $item->M3_2 = $request->sensor_types['M3_2'] : 0;
+            isset($request->sensor_types['M3_3']) ? $item->M3_3 = $request->sensor_types['M3_3'] : 0;
+            isset($request->sensor_types['M3_4']) ? $item->M3_4 = $request->sensor_types['M3_4'] : 0;
 
-            ($request->sensor_types['M4_1']) ? $item->M4_1 = $request->sensor_types['M4_1'] : 0;
-            ($request->sensor_types['M4_2']) ? $item->M4_2 = $request->sensor_types['M4_2'] : 0;
-            ($request->sensor_types['M4_3']) ? $item->M4_3 = $request->sensor_types['M4_3'] : 0;
-            ($request->sensor_types['M4_4']) ? $item->M4_4 = $request->sensor_types['M4_4'] : 0;
+            isset($request->sensor_types['M4_1']) ? $item->M4_1 = $request->sensor_types['M4_1'] : 0;
+            isset($request->sensor_types['M4_2']) ? $item->M4_2 = $request->sensor_types['M4_2'] : 0;
+            isset($request->sensor_types['M4_3']) ? $item->M4_3 = $request->sensor_types['M4_3'] : 0;
+            isset($request->sensor_types['M4_4']) ? $item->M4_4 = $request->sensor_types['M4_4'] : 0;
 
-            ($request->sensor_types['M5_1']) ? $item->M5_1 = $request->sensor_types['M5_1'] : 0;
-            ($request->sensor_types['M5_2']) ? $item->M5_2 = $request->sensor_types['M5_2'] : 0;
-            ($request->sensor_types['M5_3']) ? $item->M5_3 = $request->sensor_types['M5_3'] : 0;
-            ($request->sensor_types['M5_4']) ? $item->M5_4 = $request->sensor_types['M5_4'] : 0;
+            isset($request->sensor_types['M5_1']) ? $item->M5_1 = $request->sensor_types['M5_1'] : 0;
+            isset($request->sensor_types['M5_2']) ? $item->M5_2 = $request->sensor_types['M5_2'] : 0;
+            isset($request->sensor_types['M5_3']) ? $item->M5_3 = $request->sensor_types['M5_3'] : 0;
+            isset($request->sensor_types['M5_4']) ? $item->M5_4 = $request->sensor_types['M5_4'] : 0;
 
-            ($request->sensor_types['M6_1']) ? $item->M6_1 = $request->sensor_types['M6_1'] : 0;
-            ($request->sensor_types['M6_2']) ? $item->M6_2 = $request->sensor_types['M6_2'] : 0;
-            ($request->sensor_types['M6_3']) ? $item->M6_3 = $request->sensor_types['M6_3'] : 0;
-            ($request->sensor_types['M6_4']) ? $item->M6_4 = $request->sensor_types['M6_4'] : 0;
+            isset($request->sensor_types['M6_1']) ? $item->M6_1 = $request->sensor_types['M6_1'] : 0;
+            isset($request->sensor_types['M6_2']) ? $item->M6_2 = $request->sensor_types['M6_2'] : 0;
+            isset($request->sensor_types['M6_3']) ? $item->M6_3 = $request->sensor_types['M6_3'] : 0;
+            isset($request->sensor_types['M6_4']) ? $item->M6_4 = $request->sensor_types['M6_4'] : 0;
 
 
             $item->save();

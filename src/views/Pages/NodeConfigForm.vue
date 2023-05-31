@@ -308,6 +308,66 @@
                   Set Perimeter &amp; Zones
                 </base-button>
 
+                <b-button v-b-modal.modal-4 size="sm" variant="primary" class="btn" v-b-tooltip.hover.top
+                  title="Read More">
+                  <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+                </b-button>
+                <b-modal id="modal-4" title="Node Configuration">
+                  <p>The Node Configuration screen enables the user to modify various node
+                    related settings. A breakdown of each node setting along with a short description is given below:</p>
+                  <h3>Node Address</h3>
+                  <p>A node's given Node Address can be changed by clicking on the
+                    <strong>Change</strong> button next to the node address.
+                  </p>
+                  <h3>Node Make</h3>
+                  <p>A node's given brand.</p>
+                  <h3>Node Type</h3>
+                  <p>A node's given Type can be changed by clicking on the Change button
+                    next to the node type.</p>
+                  <h3>Commissioning Date</h3>
+                  <p>This field cannot be changed, but is helpful to show when the Node was
+                    installed/commissioned.</p>
+                  <h3>Latitude/Longitude</h3>
+                  <p>Most nodes have built-in GPS hardware to transmit the node's current
+                    location. The coordinate pairs (Latitude/Longitude) are usually updated automatically on a periodic
+                    interval (when the node transmits).</p>
+                  <h3>Set Coords Visually</h3>
+                  <p>Clicking on this button would bring up a map with a crosshair that allows
+                    the user to visually locate and set a node's coordinates manually.&nbsp;</p>
+                  <h3>Lock Coordinates?</h3>
+                  <p>This checkbox, when ticked, ensures that any manually entered
+                    coordinate pairs aren't overridden by the automatic update process.</p>
+                  <h3>Node Serial Number</h3>
+                  <p>A field used for storing the node's serial number for management purposes
+                    (Optional).</p>
+                  <h3>W.Station Name</h3>
+                  <p>This field allows you to enter a Weather Station's name that would be
+                    synced.</p>
+                  <h3>Entity</h3>
+                  <p>The Node's current owning Entity. To change the Node's entity, click on
+                    the Change button next to the Entity field. The <strong>Change Node Entity</strong> dialog would
+                    appear.
+                    Changing a node's Entity is a three-step process:</p>
+                  <ol>
+                    <li>Choose a Target entity from the Entity dropdown to move the Node over to.</li>
+                    <li>Choose an appropriate Target Sensor Type that is equivalent to the Node's current Sensor
+                      Type.&nbsp;</li>
+                    <li>Click on <strong>Change Node Entity</strong>.</li>
+                  </ol>
+                  <h3>Field Name</h3>
+                  <p>This field allows you to change the Node's corresponding Field Name
+                    (for Display purposes).</p>
+                  <h3>Field Zone ID</h3>
+                  <p>The field zone id is used to assign a the node to a specific field zone. This value
+                    normally shows up on the Node Info Popup on the Map views.&nbsp;</p>
+                  <h3>Sensor Type</h3>
+                  <p>This dropdown allows you to assign the node a specific sensor
+                    configuration (template).</p>
+                  <h3>Device Serial Number</h3>
+                  <p>The field used for storing the sensor's serial number for management
+                    purposes (Required).</p>
+                </b-modal>
+
               </template>
               <div class="card-body">
                 <b-row align-v="center">

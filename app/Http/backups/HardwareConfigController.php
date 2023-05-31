@@ -138,7 +138,42 @@ class HardwareConfigController extends Controller
                 $nodes = $nodes->skip($offset)->take($limit)->get();
             }
         }
+        if ($nodes) {
+            foreach ($nodes as &$node) {
+                Log::debug(node_data::where('probe_id', $node->node_address)->count());
 
+
+                //   Log::debug(node_data_meter::where('node_id', $node->node_address)->count());
+                if (node_data_meter::where('node_id', $node->node_address)->count() > 0) {
+                    $dt = node_data_meter::where('node_id', $node->node_address)->select('date_time')->orderByDesc('idwm')->limit(1)->first();
+                    if (isset($dt->date_time))
+                        $node->date_time = $dt->date_time;
+                    else
+                        $node->date_time = null;
+                }
+
+                // Log::debug(nutri_data::where('node_address', $node->node_address)->count());
+                if (nutri_data::where('node_address', $node->node_address)->count() > 0) {
+                    $dt = nutri_data::where('node_address', $node->node_address)->select('date_sampled')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_sampled)) {
+                        $node->date_time = $dt->date_sampled;
+                        //    Log::debug($dt);
+                        //   Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+
+                if (node_data::where('probe_id', $node->node_address)->count() > 0) {
+                    $dt = node_data::where('probe_id', $node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_time)) {
+                        $node->date_time = $dt->date_time;
+                        //  Log::debug($dt);
+                        //  Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+            }
+        }
         if ($nodes) {
             foreach ($nodes as &$row) {
                 if ($row->date_time) {
@@ -268,7 +303,7 @@ class HardwareConfigController extends Controller
                 });
             });
 
-            
+
 
         if (!$this->acc->is_admin) {
             // permission check
@@ -291,7 +326,42 @@ class HardwareConfigController extends Controller
                 $nodes = $nodes->skip($offset)->take($limit)->get();
             }
         }
+        if ($nodes) {
+            foreach ($nodes as &$node) {
+                //Log::debug(node_data::where('probe_id', $node->node_address)->count());
 
+
+                //   Log::debug(node_data_meter::where('node_id', $node->node_address)->count());
+                if (node_data_meter::where('node_id', $node->node_address)->count() > 0) {
+                    $dt = node_data_meter::where('node_id', $node->node_address)->select('date_time')->orderByDesc('idwm')->limit(1)->first();
+                    if (isset($dt->date_time))
+                        $node->date_time = $dt->date_time;
+                    else
+                        $node->date_time = null;
+                }
+
+                // Log::debug(nutri_data::where('node_address', $node->node_address)->count());
+                if (nutri_data::where('node_address', $node->node_address)->count() > 0) {
+                    $dt = nutri_data::where('node_address', $node->node_address)->select('date_sampled')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_sampled)) {
+                        $node->date_time = $dt->date_sampled;
+                        //    Log::debug($dt);
+                        //   Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+
+                if (node_data::where('probe_id', $node->node_address)->count() > 0) {
+                    $dt = node_data::where('probe_id', $node->node_address)->select('date_time')->orderByDesc('id')->limit(1)->first();
+                    if (isset($dt->date_time)) {
+                        $node->date_time = $dt->date_time;
+                        //  Log::debug($dt);
+                       //  Log::debug($node->date_time);
+                    } else
+                        $node->date_time = null;
+                }
+            }
+        }
         if ($nodes) {
             foreach ($nodes as &$row) {
                 if ($row->date_time) {
@@ -844,7 +914,7 @@ class HardwareConfigController extends Controller
         // integration options
         if ($this->acc->is_admin || !empty($grants['Node Config']['Integrate']['O'])) {
             $defaults = IntegrationManager::options($hw_config->company_id, 'hardware_config', $hw_config->node_type);
-            // Ensure Defaults only returned for Active Integrations 
+            // Ensure Defaults only returned for Active Integrations
             if (!empty($defaults)) {
                 $saved = json_decode($item->integration_opts, true);
                 $item->integration_opts = !empty($saved) ? Utils::array_merge_rec($defaults, $saved) : $defaults;
@@ -1214,7 +1284,7 @@ class HardwareConfigController extends Controller
         }
 
         // CALC PERIMETER HASHES ** With Custom Properties **
-        $prev_perimeter_hash = md5($field->perimeter); // JSON encoded 
+        $prev_perimeter_hash = md5($field->perimeter); // JSON encoded
         $curr_perimeter_hash = md5($fl_req['perimeter']);
 
         // UPDATE FIELD (Without affecting object)
@@ -1319,7 +1389,7 @@ class HardwareConfigController extends Controller
         } else {
             $new_address = $request->node_address;
         }
-        
+
         $old_address = $request->old_address;
 
         $hwconfig = hardware_config::where('node_address', $old_address)->first();
@@ -1686,7 +1756,7 @@ class HardwareConfigController extends Controller
 
     public function get_latest_coords(Request $request, $node_address)
     {
-        // TODO: Add Permissions/Limit which nodes can be looked up? ... 
+        // TODO: Add Permissions/Limit which nodes can be looked up? ...
 
         $latt = null;
         $lng  = null;

@@ -19,24 +19,14 @@
 
         <template #default="{ hide }">
           <validation-observer ref='clone_sensor_form' slim>
-            <form role="form" @submit.prevent="()=>false">
+            <form role="form" @submit.prevent="() => false">
               <b-row>
                 <b-col>
                   <div>
-                    <base-input
-                      label="Target Entity"
-                      name="company"
-                      rules="required"
-                      vid="company"
-                      placeholder="Entity"
+                    <base-input label="Target Entity" name="company" rules="required" vid="company" placeholder="Entity"
                       autocomplete="off">
-                      <el-select
-                        :disabled="Object.values(companies).length < 2"
-                        @change="companyChanged"
-                        v-model="clone_model.company_id"
-                        filterable
-                        placeholder="Entity"
-                        autocomplete="off">
+                      <el-select :disabled="Object.values(companies).length < 2" @change="companyChanged"
+                        v-model="clone_model.company_id" filterable placeholder="Entity" autocomplete="off">
 
                         <template v-for="company in companies">
                           <el-option :key="company.id" :label="company.company_name" :value="company.id">
@@ -54,10 +44,10 @@
         </template>
 
         <template #modal-footer="{ ok, cancel, hide }">
-            <b-button variant="outline-primary" class="ml-auto" @click="closeCloneSensorModal">Cancel</b-button>
-            <b-button variant="primary" @click='cloneSensor'>Clone</b-button>
+          <b-button variant="outline-primary" class="ml-auto" @click="closeCloneSensorModal">Cancel</b-button>
+          <b-button variant="primary" @click='cloneSensor'>Clone</b-button>
         </template>
-        
+
       </b-modal>
 
       <!-- Add New Sensor Dialog -->
@@ -76,7 +66,7 @@
           </el-steps>
 
           <validation-observer ref='addstep_detail' slim>
-            <form role="addstep_detail" v-show="formStep == 'detail'" autocomplete="off" @submit.prevent="()=>false">
+            <form role="addstep_detail" v-show="formStep == 'detail'" autocomplete="off" @submit.prevent="() => false">
               <b-row>
                 <b-col>
                   <h3 class="mb-2">Device Details</h3>
@@ -86,13 +76,8 @@
               <b-row>
                 <b-col>
                   <!-- Device Make (Name) -->
-                  <base-input
-                    label=""
-                    name="device make"
-                    rules="required|max:128"
-                    vid="device_make"
-                    placeholder="Device Make"
-                    v-model="model.device_make">
+                  <base-input label="" name="device make" rules="required|max:128" vid="device_make"
+                    placeholder="Device Make" v-model="model.device_make">
                   </base-input>
                 </b-col>
               </b-row>
@@ -101,28 +86,25 @@
                 <b-col>
                   <!-- Device Type -->
                   <base-input label="" name="device type" rules="required" vid="device_type">
-                    <el-select
-                      v-model="model.device_type"
-                      @change="model.device_category = ''"
-                      filterable
+                    <el-select v-model="model.device_type" @change="model.device_category = ''" filterable
                       placeholder="Device Type">
-                      <el-option :disabled="!userCan('Add', 'Soil Moisture')" label="Soil Moisture" value="Soil Moisture"></el-option>
-                      <el-option :disabled="!userCan('Add', 'Nutrients')"     label="Nutrient"      value="Nutrients" v-if="isAdmin()"></el-option>
-                      <el-option :disabled="!userCan('Add', 'Well Controls')" label="Well Controls" value="Wells"></el-option>
-                      <el-option :disabled="!userCan('Add', 'Meters')"        label="Meters"        value="Water Meter"></el-option>
+                      <el-option :disabled="!userCan('Add', 'Soil Moisture')" label="Soil Moisture"
+                        value="Soil Moisture"></el-option>
+                      <el-option :disabled="!userCan('Add', 'Nutrients')" label="Nutrient" value="Nutrients"
+                        v-if="isAdmin()"></el-option>
+                      <el-option :disabled="!userCan('Add', 'Well Controls')" label="Well Controls"
+                        value="Wells"></el-option>
+                      <el-option :disabled="!userCan('Add', 'Meters')" label="Meters" value="Water Meter"></el-option>
                     </el-select>
                   </base-input>
                 </b-col>
                 <b-col>
                   <!-- Device Category -->
                   <base-input label="" name="device category" rules="required" vid="device_category">
-                    <el-select
-                      v-model="model.device_category"
-                      filterable
-                      placeholder="Device Category">
+                    <el-select v-model="model.device_category" filterable placeholder="Device Category">
                       <template v-if="model.device_type == 'Wells' || model.device_type == 'Water Meter'">
                         <el-option label='Mechanical' value='Mechanical'>Mechanical</el-option>
-                        <el-option label='MagFlo'     value='MagFlo'>MagFlo</el-option>
+                        <el-option label='MagFlo' value='MagFlo'>MagFlo</el-option>
                         <el-option label='Ultrasonic' value='Ultrasonic'>Ultrasonic</el-option>
                       </template>
                       <template v-if="model.device_type == 'Soil Moisture'">
@@ -140,25 +122,22 @@
                 <b-col>
                   <!-- Entity/Company -->
                   <base-input name="company" rules="required" vid="company" autocomplete="off">
-                    <el-select @change="loadGroups" v-model="model.company_id" filterable placeholder="Entity" :disabled="!multipleCompanies" autocomplete="nope">
-                      <el-option v-for="company in companies" :key="company.id" :label="company.company_name" :value="company.id"></el-option>
+                    <el-select @change="loadGroups" v-model="model.company_id" filterable placeholder="Entity"
+                      :disabled="!multipleCompanies" autocomplete="nope">
+                      <el-option v-for="company in companies" :key="company.id" :label="company.company_name"
+                        :value="company.id"></el-option>
                     </el-select>
                   </base-input>
                 </b-col>
 
                 <b-col>
                   <!-- Device Type Group (Optional)-->
-                  <base-input
-                    name="group"
-                    vid="group"
-                    :disabled="!model.company_id || !groups">
-                    <el-select
-                      v-model="model.group_id"
-                      filterable
-                      placeholder="Group (Optional)"
+                  <base-input name="group" vid="group" :disabled="!model.company_id || !groups">
+                    <el-select v-model="model.group_id" filterable placeholder="Group (Optional)"
                       :disabled="!model.company_id || !groups">
                       <el-option-group label="Device Type Groups">
-                        <el-option v-for="group in groups" :key="group.id" :label="group.group_name" :value="group.id"></el-option>
+                        <el-option v-for="group in groups" :key="group.id" :label="group.group_name"
+                          :value="group.id"></el-option>
                       </el-option-group>
                     </el-select>
                   </base-input>
@@ -169,7 +148,7 @@
           </validation-observer>
 
           <validation-observer ref='addstep_config' slim>
-            <form role="addstep_config" v-show="formStep == 'config'" autocomplete="off" @submit.prevent="()=>false">
+            <form role="addstep_config" v-show="formStep == 'config'" autocomplete="off" @submit.prevent="() => false">
               <b-row>
                 <b-col>
                   <h3 class="mb-2">{{ model.device_type }} Device Configuration</h3>
@@ -181,11 +160,8 @@
                   <b-col md>
                     <base-input label="" name="device length" rules="required" vid="device_length">
                       <el-select v-model="model.device_length" filterable placeholder="Probe Length">
-                        <el-option
-                          v-for="(item, idx) in sensor_depths"
-                          :key="'e'+idx"
-                          :label="uom == 1 ? item : convertToInches(item)"
-                          :value="item">
+                        <el-option v-for="(item, idx) in sensor_depths" :key="'e' + idx"
+                          :label="uom == 1 ? item : convertToInches(item)" :value="item">
                           {{ uom == 1 ? item : convertToInches(item) }}
                         </el-option>
                       </el-select>
@@ -198,35 +174,35 @@
 
                 <b-row>
                   <b-col md>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_1"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '100mm' :  '4"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_1" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '100mm' : '4"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_2"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '200mm' :  '8"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_2" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '200mm' : '8"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_3"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '300mm' : '12"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_3" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '300mm' : '12"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_4"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '400mm' : '16"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_4" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '400mm' : '16"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_5"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '500mm' : '20"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_5" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '500mm' : '20"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_6"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '600mm' : '24"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_6" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '600mm' : '24"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_7"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '700mm' : '28"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_7" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '700mm' : '28"' }}
                     </b-form-checkbox>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_8"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '800mm' : '32"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_8" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '800mm' : '32"' }}
                     </b-form-checkbox>
 
                   </b-col>
                   <b-col md>
-                    <b-form-checkbox size="lg" v-model="model.sensor_placing_9"  unchecked-value="off" value="on">
-                      Sensor at {{ uom == 1 ?  '900mm' : '36"' }}
+                    <b-form-checkbox size="lg" v-model="model.sensor_placing_9" unchecked-value="off" value="on">
+                      Sensor at {{ uom == 1 ? '900mm' : '36"' }}
                     </b-form-checkbox>
                     <b-form-checkbox size="lg" v-model="model.sensor_placing_10" unchecked-value="off" value="on">
                       Sensor at {{ uom == 1 ? '1000mm' : '40"' }}
@@ -258,32 +234,30 @@
                       <b-td class="mab_table_cell">
                         <base-input name="sdi_addr" rules="required" vid="address">
                           <el-select v-model="config.address" filterable placeholder="SDI Address" autocomplete="off">
-                            <el-option v-for="(val, idx) in sensor_addresses" :key="idx" :label="idx" :value="val">{{idx}}</el-option>
+                            <el-option v-for="(val, idx) in sensor_addresses" :key="idx" :label="idx"
+                              :value="val">{{ idx }}</el-option>
                           </el-select>
                         </base-input>
                       </b-td>
                       <b-td class="mab_table_cell">
                         <base-input name="depth" rules="required" vid="depth">
                           <el-select v-model="config.depth" filterable placeholder="Depth">
-                            <el-option v-for="(item, idx) in sensor_depths" :key="idx" :label="item" :value="item">{{item}}</el-option>
+                            <el-option v-for="(item, idx) in sensor_depths" :key="idx" :label="item"
+                              :value="item">{{ item }}</el-option>
                           </el-select>
                         </base-input>
                       </b-td>
                       <b-td class="mab_table_cell">
                         <base-input name="type" rules="required" vid="type">
                           <el-select v-model="config.type" filterable placeholder="Type">
-                            <el-option v-for="(item,idx) in sensor_types" :key="idx" :label="item" :value="item"></el-option>
+                            <el-option v-for="(item, idx) in sensor_types" :key="idx" :label="item"
+                              :value="item"></el-option>
                           </el-select>
                         </base-input>
                       </b-td>
                       <b-td class="mab_table_cell">
                         <base-input>
-                          <base-button
-                            @click="removeSensorConfigRow(index)"
-                            class="btn"
-                            type="primary"
-                            size="sm"
-                            icon>
+                          <base-button @click="removeSensorConfigRow(index)" class="btn" type="primary" size="sm" icon>
                             Rem
                           </base-button>
                         </base-input>
@@ -297,19 +271,18 @@
                     <b-tr>
                       <b-td class="mab_table_cell">
                         <base-input name="sdi_addr" rules="required" vid="address">
-                          <el-select v-model="sensor_model.address" filterable placeholder="SDI Address" autocomplete="nope">
-                            <el-option v-for="(val, idx) in sensor_addresses" :key="idx" :label="idx" :value="val">{{idx}}</el-option>
+                          <el-select v-model="sensor_model.address" filterable placeholder="SDI Address"
+                            autocomplete="nope">
+                            <el-option v-for="(val, idx) in sensor_addresses" :key="idx" :label="idx"
+                              :value="val">{{ idx }}</el-option>
                           </el-select>
                         </base-input>
                       </b-td>
                       <b-td class="mab_table_cell">
                         <base-input name="depth" rules="required" vid="depth">
                           <el-select v-model="sensor_model.depth" filterable placeholder="Depth">
-                            <el-option
-                              v-for="(item, idx) in sensor_depths"
-                              :key="'a'+idx"
-                              :label="uom == 1 ? item : convertToInches(item)"
-                              :value="item">
+                            <el-option v-for="(item, idx) in sensor_depths" :key="'a' + idx"
+                              :label="uom == 1 ? item : convertToInches(item)" :value="item">
                               {{ uom == 1 ? item : convertToInches(item) }}
                             </el-option>
                           </el-select>
@@ -318,18 +291,15 @@
                       <b-td class="mab_table_cell">
                         <base-input name="type" rules="required" vid="type">
                           <el-select v-model="sensor_model.type" filterable placeholder="Type">
-                            <el-option v-for="(item,idx) in sensor_types" :key="idx" :label="item" :value="item"></el-option>
+                            <el-option v-for="(item, idx) in sensor_types" :key="idx" :label="item"
+                              :value="item"></el-option>
                           </el-select>
                         </base-input>
                       </b-td>
                       <b-td class="mab_table_cell">
                         <base-input>
-                          <base-button @click="addSensorConfigRow"
-                            class="btn"
-                            type="primary"
-                            size="sm"
-                            icon>
-                            Add 
+                          <base-button @click="addSensorConfigRow" class="btn" type="primary" size="sm" icon>
+                            Add
                           </base-button>
                         </base-input>
                       </b-td>
@@ -342,13 +312,8 @@
               <template v-else-if="model.device_type == 'Wells' || model.device_type == 'Water Meter'">
                 <b-row>
                   <b-col md>
-                    <base-input
-                      label="Diameter"
-                      name="device diameter"
-                      rules="required|numeric"
-                      placeholder="Device Diameter"
-                      vid="diameter"
-                      v-model="model.diameter">
+                    <base-input label="Diameter" name="device diameter" rules="required|numeric"
+                      placeholder="Device Diameter" vid="diameter" v-model="model.diameter">
                     </base-input>
                   </b-col>
                   <b-col>
@@ -396,16 +361,17 @@
                 <b-col>
                   <b-table-simple responsive small fixed>
                     <b-tr v-if="model.company_id != $store.state.user_obj.company_id">
-                      <b-td><strong>Company</strong></b-td><b-td>{{ companies['"'+model.company_id.toString()+'"'].company_name }}</b-td>
+                      <b-td><strong>Company</strong></b-td><b-td>{{
+                        companies['"' + model.company_id.toString() + '"'].company_name }}</b-td>
                     </b-tr>
-                    <b-tr><b-td><strong>Make</strong></b-td><b-td>{{model.device_make}}</b-td></b-tr>
+                    <b-tr><b-td><strong>Make</strong></b-td><b-td>{{ model.device_make }}</b-td></b-tr>
                     <b-tr><b-td><strong>Device Type</strong></b-td><b-td>{{ model.device_type }}</b-td></b-tr>
-                    <b-tr><b-td><strong>Category</strong></b-td><b-td>{{model.device_category}}</b-td></b-tr>
+                    <b-tr><b-td><strong>Category</strong></b-td><b-td>{{ model.device_category }}</b-td></b-tr>
                     <template v-if="model.device_type == 'Wells' || model.device_type == 'Water Meter'">
-                      <b-tr><b-td><strong>Diameter</strong></b-td><b-td>{{model.diameter}}</b-td></b-tr>
-                      <b-tr><b-td><strong>Pulse Weight</strong></b-td><b-td>{{model.pulse_weight}}</b-td></b-tr>
-                      <b-tr><b-td><strong>Measurement Type</strong></b-td><b-td>{{model.measurement_type}}</b-td></b-tr>
-                      <b-tr><b-td><strong>Application Type</strong></b-td><b-td>{{model.application_type}}</b-td></b-tr>
+                      <b-tr><b-td><strong>Diameter</strong></b-td><b-td>{{ model.diameter }}</b-td></b-tr>
+                      <b-tr><b-td><strong>Pulse Weight</strong></b-td><b-td>{{ model.pulse_weight }}</b-td></b-tr>
+                      <b-tr><b-td><strong>Measurement Type</strong></b-td><b-td>{{ model.measurement_type }}</b-td></b-tr>
+                      <b-tr><b-td><strong>Application Type</strong></b-td><b-td>{{ model.application_type }}</b-td></b-tr>
                     </template>
                     <template v-if="model.device_type == 'Soil Moisture' || model.device_type == 'Nutrients'">
                       <b-tr>
@@ -417,11 +383,7 @@
                     </template>
                   </b-table-simple>
 
-                  <b-table-simple
-                    responsive
-                    small
-                    fixed
-                    v-if="model.device_type == 'Soil Moisture'">
+                  <b-table-simple responsive small fixed v-if="model.device_type == 'Soil Moisture'">
                     <b-thead>
                       <b-tr>
                         <b-th>Depth</b-th>
@@ -432,50 +394,65 @@
                     </b-thead>
                     <b-tbody>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '100mm' :  '4"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_1 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '900mm' : '36"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_9 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '100mm' : '4"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_1 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '900mm' : '36"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_9 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '200mm' :  '8"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_2 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '200mm' : '8"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_2 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td><strong>Sensor at {{ uom == 1 ? '1000mm' : '40"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_10 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_10 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '300mm' : '12"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_3 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '300mm' : '12"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_3 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td><strong>Sensor at {{ uom == 1 ? '1100mm' : '44"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_11 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_11 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '400mm' : '16"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_4 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '400mm' : '16"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_4 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td><strong>Sensor at {{ uom == 1 ? '1200mm' : '48"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_12 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_12 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '500mm' : '20"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_5 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '500mm' : '20"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_5 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td><strong>Sensor at {{ uom == 1 ? '1300mm' : '52"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_13 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_13 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '600mm' : '24"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_6 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '600mm' : '24"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_6 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td><strong>Sensor at {{ uom == 1 ? '1400mm' : '56"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_14 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_14 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '700mm' : '28"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_7 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '700mm' : '28"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_7 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td><strong>Sensor at {{ uom == 1 ? '1500mm' : '60"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_15 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_15 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                       </b-tr>
                       <b-tr>
-                        <b-td><strong>Sensor at {{ uom == 1 ?  '800mm' : '32"' }}</strong></b-td>
-                        <b-td><b-icon variant="success" :icon="model.sensor_placing_8 ? 'check-circle' : 'circle'" aria-hidden="true"></b-icon></b-td>
+                        <b-td><strong>Sensor at {{ uom == 1 ? '800mm' : '32"' }}</strong></b-td>
+                        <b-td><b-icon variant="success" :icon="model.sensor_placing_8 ? 'check-circle' : 'circle'"
+                            aria-hidden="true"></b-icon></b-td>
                         <b-td></b-td>
                         <b-td></b-td>
                       </b-tr>
@@ -491,10 +468,10 @@
                       </b-tr>
                     </b-thead>
                     <b-tbody>
-                      <b-tr v-for="(item,idx) in model.sensor_config" :key="idx">
-                        <b-td><strong>{{item.depth}}</strong></b-td>
-                        <b-td>{{ item.address.replace('_','.') }}</b-td>
-                        <b-td>{{item.type}}</b-td>
+                      <b-tr v-for="(item, idx) in model.sensor_config" :key="idx">
+                        <b-td><strong>{{ item.depth }}</strong></b-td>
+                        <b-td>{{ item.address.replace('_', '.') }}</b-td>
+                        <b-td>{{ item.type }}</b-td>
                       </b-tr>
                     </b-tbody>
                   </b-table-simple>
@@ -508,23 +485,85 @@
 
         <template #modal-footer="{ ok, cancel, hide }">
           <base-button type="outline-primary" class="mr-auto" @click="closeCreateSensorTypeModal">Cancel</base-button>
-          <base-button type="outline-primary" class="ml-auto" @click="prevStep()" v-show="formStep != 'detail'">Previous</base-button>
-          <base-button type="primary" @click="formStep == 'confirm' ? addSensorType() : nextStep()"> {{ formStep == 'confirm' ? 'Create' : 'Next' }}</base-button>
+          <base-button type="outline-primary" class="ml-auto" @click="prevStep()"
+            v-show="formStep != 'detail'">Previous</base-button>
+          <base-button type="primary" @click="formStep == 'confirm' ? addSensorType() : nextStep()"> {{ formStep ==
+            'confirm' ? 'Create' : 'Next' }}</base-button>
         </template>
       </b-modal>
 
       <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
         <template slot="header">
-          <base-button 
-            :disabled="!userCan('Add', 'Sensor Types')"
-            @click.native="openCreateSensorTypeModal()"
-            class="btn"
-            size="sm"
-            type="primary"
-            v-b-tooltip.hover.top title="Add a new sensor type. Sensor types are tied to hardware nodes."
-            icon>
+          <base-button :disabled="!userCan('Add', 'Sensor Types')" @click.native="openCreateSensorTypeModal()" class="btn"
+            size="sm" type="primary" v-b-tooltip.hover.top
+            title="Add a new sensor type. Sensor types are tied to hardware nodes." icon>
             Add Sensor Type
           </base-button>
+          <b-button v-b-modal.modal-4 size="sm" variant="primary" class="btn"
+            v-b-tooltip.hover.top title="Read More">
+            <b-icon icon="question-circle-fill" aria-label="Help"></b-icon>
+          </b-button>
+          <b-modal id="modal-4" title="Sensor Types">
+
+              <p>In MAB, each sensor that's connected to a node needs it's own
+                configuration. Various nodes of the same type (and entity) can share sensor configurations (like
+                templates) as long as they're using the same (or compatible) sensor hardware.</p>
+              <p>The Sensor Types screen shows a list of all of the sensor configuration
+                templates. A breakdown of each table column is given below:</p>
+              
+                <div class="table-responsive">
+                  <table class="table table-sm">
+                  <tbody>
+                    <tr>
+                      <td><strong>Column</strong></td>
+                      <td><strong>Description</strong></td>
+                      <td><strong>Additional Notes</strong></td>
+                    </tr>
+                    <tr>
+                      <td>Entity</td>
+                      <td>The Node's owning Entity</td>
+                      <td>Visible to Admins and Manager roles</td>
+                    </tr>
+                    <tr>
+                      <td>Device Make</td>
+                      <td>The Sensor Type Configuration's Title</td>
+                      <td><br></td>
+                    </tr>
+                    <tr>
+                      <td>Device Type</td>
+                      <td>The Sensor Type</td>
+                      <td>The same as the Node's Type</td>
+                    </tr>
+                    <tr>
+                      <td>Actions</td>
+                      <td>Various Actionable Buttons</td>
+                      <td>Visibility depends on Permissions/Role</td>
+                    </tr>
+                  </tbody>
+                </table>
+                </div>
+
+              <h4>Adding a Sensor Type</h4>
+              <p>To add a new sensor type configuration to your entity, locate and click
+                on the <strong>Add Sensor Type</strong> button at the top left corner of the Sensor Types screen. This
+                will open the multi-step <strong>Add New Sensor Type</strong> dialog. Fill in all of the required fields
+                for each step (Device Details/Configuration) and click on the <strong>Next</strong> button to proceed to
+                each section.</p>
+              <p>Once you reach the final confirmation section, please confirm that all
+                data was entered correctly and then click on the <strong>Create </strong>button. This will create the
+                sensor type configuration record and if successful, a green success notification (top right) would
+                display.&nbsp;</p>
+              <h4>Removing an Existing Sensor Type</h4>
+              <p>To remove a previously added sensor type, locate it in the Sensor Types
+                table (either manually or via the Search Input located to the top right of the table). Then, click on the
+                Record's <strong>Remove</strong> button (in the actions column). A confirmation dialog will appear. To
+                confirm and remove the sensor type, click on <strong>Remove</strong>.<br><br><strong>Please Note:</strong>
+                Removing a sensor type record might fail when it's currently being used by one or more nodes.</p>
+              <h4>Configure an Existing Sensor Type</h4>
+              <p>In order to manage a sensor type configuration, a dedicated sensor type
+                configuration screen is used. To access each sensor's configuration screen, locate the
+                <strong>Configure</strong> button on the Sensor Types table and click on it.</p>
+          </b-modal>
         </template>
 
         <b-row class='nomargin'>
@@ -537,22 +576,14 @@
             </b-form-select>
           </b-col>
           <b-col md>
-            <el-select v-if="entities && entities.length && entities.length > 1"
-              class="fullwidth"
-              clearable
-              filterable
-              placeholder="Filter by Entity.."
-              v-model="filterEntity"
-              @change="loadSensorTypes">
+            <el-select v-if="entities && entities.length && entities.length > 1" class="fullwidth" clearable filterable
+              placeholder="Filter by Entity.." v-model="filterEntity" @change="loadSensorTypes">
               <el-option v-for="e in entities" :value="e.id" :label="e.company_name" :key="e.id"></el-option>
             </el-select>
           </b-col>
           <b-col md>
             <base-input prepend-icon="fas fa-search">
-              <b-input v-model="filterText"
-                :debounce="1000"
-                @update="loadSensorTypes"
-                placeholder="Search...">
+              <b-input v-model="filterText" :debounce="1000" @update="loadSensorTypes" placeholder="Search...">
               </b-input>
             </base-input>
           </b-col>
@@ -560,20 +591,8 @@
 
         <b-row class='nomargin'>
           <b-col md>
-            <b-table
-              striped
-              bordered
-              outlined
-              small
-              stacked="lg"
-              responsive
-              show-empty
-              primary-key="id"
-              no-local-sorting
-              @sort-changed="sortingChanged"
-              :fields="tableColumns"
-              :items="tableData"
-              :busy.sync="bInitialQuery">
+            <b-table striped bordered outlined small stacked="lg" responsive show-empty primary-key="id" no-local-sorting
+              @sort-changed="sortingChanged" :fields="tableColumns" :items="tableData" :busy.sync="bInitialQuery">
 
               <template #cell()="data">
                 {{ data.value }}
@@ -581,31 +600,19 @@
 
               <template #cell(actions)="data" v-if="canAction">
                 <div class="d-flex justify-content-center">
-                  <b-button 
-                    :disabled="!userCan('Clone', 'Sensor Types', data.item.id, 'O')"
-                    @click="handleClone(data.index, data.item)"
-                    class="btn"
-                    variant="outline-primary"
-                    size="sm">
-                  Clone
+                  <b-button :disabled="!userCan('Clone', 'Sensor Types', data.item.id, 'O')"
+                    @click="handleClone(data.index, data.item)" class="btn" variant="outline-primary" size="sm">
+                    Clone
                   </b-button>
 
-                  <b-button 
-                    :disabled="!userCan('Edit', 'Sensor Types', data.item.id, 'O')"
-                    @click="handleConfigure(data.index, data.item)"
-                    class="btn"
-                    variant="outline-primary"
-                    size="sm">
-                  Configure
+                  <b-button :disabled="!userCan('Edit', 'Sensor Types', data.item.id, 'O')"
+                    @click="handleConfigure(data.index, data.item)" class="btn" variant="outline-primary" size="sm">
+                    Configure
                   </b-button>
 
-                  <b-button 
-                    :disabled="!userCan('Delete', 'Sensor Types', data.item.id, 'O')"
-                    @click="handleDelete(data.index, data.item)"
-                    class="btn"
-                    variant="outline-primary"
-                    size="sm">
-                  Remove
+                  <b-button :disabled="!userCan('Delete', 'Sensor Types', data.item.id, 'O')"
+                    @click="handleDelete(data.index, data.item)" class="btn" variant="outline-primary" size="sm">
+                    Remove
                   </b-button>
                 </div>
               </template>
@@ -635,10 +642,12 @@
         <div slot="footer" class='align-right'>
           <b-row>
             <b-col md>
-              Showing {{ Math.min(1 + (perPage * (currentPage-1)), totalRows) }} to {{ Math.min((perPage*(currentPage-1)) + perPage, totalRows)  }} of {{ totalRows }} entries
+              Showing {{ Math.min(1 + (perPage * (currentPage - 1)), totalRows) }} to {{ Math.min((perPage * (currentPage - 1))
+                + perPage, totalRows) }} of {{ totalRows }} entries
             </b-col>
             <b-col md>
-              <b-pagination @input="loadSensorTypes" v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right"></b-pagination>
+              <b-pagination @input="loadSensorTypes" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"
+                align="right"></b-pagination>
             </b-col>
           </b-row>
         </div>
@@ -646,7 +655,7 @@
       </card>
 
     </b-container>
-    </div>
+  </div>
 </template>
 <script>
 
@@ -657,16 +666,16 @@ import mab_utils from '../../util/mab-utils';
 
 export default {
 
-  mixins: [ mab_utils ],
+  mixins: [mab_utils],
 
   components: {
-    [Steps.name]:  Steps,
-    [Step.name]:   Step,
+    [Steps.name]: Steps,
+    [Step.name]: Step,
     [Select.name]: Select,
     [Option.name]: Option,
     [OptionGroup.name]: OptionGroup
   },
-  
+
   data() {
     return {
 
@@ -745,7 +754,7 @@ export default {
         sensor_id: null,
         company_id: null,
       },
-      
+
       sensor_model: {
         address: '',
         depth: '',
@@ -813,65 +822,61 @@ export default {
 
       multipleCompanies: false,
       canAction: false
-      
+
     };
   },
   methods: {
 
-    loadSensorTypes()
-    {
+    loadSensorTypes() {
 
       this.loading = true;
 
       this.$axios.post("/api/hardwaremanagementtable", {
         cur_page: this.currentPage,
         per_page: this.perPage,
-        initial:  this.bInitialQuery,
-        filter:   this.filterText,
-        entity:   this.filterEntity,
-        sort_by:  this.sortBy,
+        initial: this.bInitialQuery,
+        filter: this.filterText,
+        entity: this.filterEntity,
+        sort_by: this.sortBy,
         sort_dir: this.sortDir ? 'desc' : 'asc'
       })
-      .then(resp => {
+        .then(resp => {
 
-        this.loading = false;
-        this.bInitialQuery = false;
-        this.entities = resp.data.entities;
+          this.loading = false;
+          this.bInitialQuery = false;
+          this.entities = resp.data.entities;
 
-        if(this.isAdmin() || this.userLimits('View', 'Sensor Types', 'C').length > 1)
-        {
-          this.multipleCompanies = true;
-          this.tableColumns.unshift({
-            key: 'company_name',
-            label: 'Entity',
-            sortable: true,
-            tdClass: 'valign'
-          });
-        }
+          if (this.isAdmin() || this.userLimits('View', 'Sensor Types', 'C').length > 1) {
+            this.multipleCompanies = true;
+            this.tableColumns.unshift({
+              key: 'company_name',
+              label: 'Entity',
+              sortable: true,
+              tdClass: 'valign'
+            });
+          }
 
-        if(this.isAdmin() || this.userCan('Edit', 'Sensor Types') || this.userCan('Delete', 'Sensor Types'))
-        {
-          this.canAction = true;
-          this.tableColumns.push({
-            key: 'actions',
-            label: 'Actions',
-            thClass: 'halign'
-          });
-        }
+          if (this.isAdmin() || this.userCan('Edit', 'Sensor Types') || this.userCan('Delete', 'Sensor Types')) {
+            this.canAction = true;
+            this.tableColumns.push({
+              key: 'actions',
+              label: 'Actions',
+              thClass: 'halign'
+            });
+          }
 
-        this.tableData = resp.data.rows;
-        this.totalRows = resp.data.total;
+          this.tableData = resp.data.rows;
+          this.totalRows = resp.data.total;
 
-        if(this.totalRows == 0){ this.currentPage = 1; }
+          if (this.totalRows == 0) { this.currentPage = 1; }
 
-      });
+        });
     },
 
-    loadCompanies()
-    {
+    loadCompanies() {
       this.$axios.post("/api/companies_list", {
         context: [
-          { verb: 'Add',   module: 'Sensor Types' },
+          { verb: 'Add', module: 'Sensor Types' },
           { verb: 'Clone', module: 'Sensor Types' },
         ]
       }).then((resp) => {
@@ -879,48 +884,41 @@ export default {
       });
     },
 
-    loadGroups()
-    {
+    loadGroups() {
       this.$axios.post("/api/groups_list", {
         company_id: this.model.company_id ? this.model.company_id : this.$store.state.user_obj.company_id,
-        context: [ { verb: 'Add', module: 'Sensor Types' } ]
+        context: [{ verb: 'Add', module: 'Sensor Types' }]
       })
-      .then((resp) => {
-        this.groups = resp.data.groups;
-      });
+        .then((resp) => {
+          this.groups = resp.data.groups;
+        });
     },
 
-    openCreateSensorTypeModal()
-    {
+    openCreateSensorTypeModal() {
       this.showNewSensorTypeModal = true;
     },
 
-    closeCreateSensorTypeModal()
-    {
+    closeCreateSensorTypeModal() {
       this.clearModel();
       this.showNewSensorTypeModal = false;
     },
 
-    openCloneSensorModal(row)
-    {
+    openCloneSensorModal(row) {
       this.clone_model.sensor_id = row.id;
       this.showCloneSensorModal = true;
     },
 
-    closeCloneSensorModal()
-    {
+    closeCloneSensorModal() {
       this.clearCloneModel();
       this.showCloneSensorModal = false;
     },
 
-    clearCloneModel()
-    {
+    clearCloneModel() {
       this.clone_model.sensor_id = null;
       this.clone_model.company_id = null;
     },
 
-    clearModel()
-    {
+    clearModel() {
       this.formStep = 'detail';
       this.formStepIndex = 0;
 
@@ -955,87 +953,83 @@ export default {
 
     },
 
-    addSensorType()
-    {
+    addSensorType() {
       console.log(this.model);
-      if(this.formsValid){
+      if (this.formsValid) {
         this.loading = true;
         this.$axios.post("/api/hardwaremanagementnew", this.model)
-        .then((response) => {
-          this.loading = false;
-          if(response.data.message == 'sensor_added'){
-            this.loadSensorTypes();
-            this.closeCreateSensorTypeModal();
-            this.$notify({
-              title: 'Success',
-              message: 'New sensor type added',
-              type: 'success',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
-            });
-            this.formsValid = false;
-          }
-        }).catch(err => {
-          this.loading = false;
-          if(err.response.data.errors){
-            this.$refs.form.setErrors(err.response.data.errors);
-          }
-        });
+          .then((response) => {
+            this.loading = false;
+            if (response.data.message == 'sensor_added') {
+              this.loadSensorTypes();
+              this.closeCreateSensorTypeModal();
+              this.$notify({
+                title: 'Success',
+                message: 'New sensor type added',
+                type: 'success',
+                verticalAlign: 'top',
+                horizontalAlign: 'right'
+              });
+              this.formsValid = false;
+            }
+          }).catch(err => {
+            this.loading = false;
+            if (err.response.data.errors) {
+              this.$refs.form.setErrors(err.response.data.errors);
+            }
+          });
       }
     },
 
     /* Clone Sensor */
 
-    cloneSensor()
-    {
+    cloneSensor() {
       console.log(this.model);
       this.$refs.clone_sensor_form.validate()
-      .then(result => {
-        if (!result) { return; } 
+        .then(result => {
+          if (!result) { return; }
 
-        this.loading = true;
-        this.$axios.post("/api/hardwaremanagementclone", this.clone_model)
-        .then((response) => {
-          this.loading = false;
-          if(response.data.message == 'sensor_cloned'){
-            this.loadSensorTypes();
-            this.closeCloneSensorModal();
-            this.$notify({
-              title: 'Success',
-              message: 'Sensor cloned',
-              type: 'success',
-              verticalAlign: 'top',
-              horizontalAlign: 'right'
+          this.loading = true;
+          this.$axios.post("/api/hardwaremanagementclone", this.clone_model)
+            .then((response) => {
+              this.loading = false;
+              if (response.data.message == 'sensor_cloned') {
+                this.loadSensorTypes();
+                this.closeCloneSensorModal();
+                this.$notify({
+                  title: 'Success',
+                  message: 'Sensor cloned',
+                  type: 'success',
+                  verticalAlign: 'top',
+                  horizontalAlign: 'right'
+                });
+              }
+            }).catch(err => {
+              this.loading = false;
+              if (err.response.data.errors) {
+                this.$refs.form.setErrors(err.response.data.errors);
+              }
             });
-          }
-        }).catch(err => {
-          this.loading = false;
-          if(err.response.data.errors){
-            this.$refs.form.setErrors(err.response.data.errors);
-          }
         });
-      });
     },
 
     /* Wizard Methods */
 
-    nextStep()
-    {
+    nextStep() {
       this.$refs["addstep_" + this.formSteps[this.formStepIndex]].validate()
-      .then(result => {
-        if (!result) { this.formsValid = false; return; } 
-        this.formsValid = true;
-        if(this.formStepIndex < (this.formSteps.length-1)){
-          this.formStepIndex++;
-          this.formStep = this.formSteps[this.formStepIndex];
-          console.log(this.model);
-        }
-      });
+        .then(result => {
+          if (!result) { this.formsValid = false; return; }
+          this.formsValid = true;
+          if (this.formStepIndex < (this.formSteps.length - 1)) {
+            this.formStepIndex++;
+            this.formStep = this.formSteps[this.formStepIndex];
+            console.log(this.model);
+          }
+        });
     },
 
-    prevStep()
-    {
-      if(this.formStepIndex > 0){
+    prevStep() {
+      if (this.formStepIndex > 0) {
         this.formStepIndex--;
         this.formStep = this.formSteps[this.formStepIndex];
       }
@@ -1044,45 +1038,41 @@ export default {
 
     /* Dialog Sensor Row Repeater Methods */
 
-    addSensorConfigRow()
-    {
-      if(this.sensor_model.address && this.sensor_model.depth && this.sensor_model.type){
+    addSensorConfigRow() {
+      if (this.sensor_model.address && this.sensor_model.depth && this.sensor_model.type) {
         this.model.sensor_config.push(JSON.parse(JSON.stringify(this.sensor_model)));
 
         // always stored as metric, so safe calc to do:
-        let num = parseInt(parseInt(this.sensor_model.depth.replace(/mm/g,'')) / 100);
-        this.model['sensor_placing_'+num] = true;
+        let num = parseInt(parseInt(this.sensor_model.depth.replace(/mm/g, '')) / 100);
+        this.model['sensor_placing_' + num] = true;
         // clear model
 
         this.sensor_model.address = '';
         this.sensor_model.depth = '';
         this.sensor_model.type = '';
-        
+
         this.$refs["addstep_config"].reset();
 
         console.log(this.model.sensor_config);
       }
     },
 
-    removeSensorConfigRow(index){
-        this.model.sensor_config.splice(index, 1);
+    removeSensorConfigRow(index) {
+      this.model.sensor_config.splice(index, 1);
     },
 
     /* Table Methods */
 
-    handleConfigure(index, row)
-    {
+    handleConfigure(index, row) {
       console.log(row);
       this.$router.push("/sensor_types/edit/" + row.id)
     },
 
-    handleClone(index, row)
-    {
+    handleClone(index, row) {
       this.openCloneSensorModal(row);
     },
 
-    handleDelete(index, row)
-    {
+    handleDelete(index, row) {
       swal.fire({
         title: 'Are you sure?',
         text: `Please confirm sensor type removal`,
@@ -1101,50 +1091,47 @@ export default {
       });
     },
 
-    deleteSensor(row)
-    {
+    deleteSensor(row) {
       this.loading = true;
-      this.$axios.post("/api/hardwaremanagementdestroy", {id: row.id })
-      .then((response) => {
-        this.loading = false;
-        if(response.data.message == 'sensor_removed'){
+      this.$axios.post("/api/hardwaremanagementdestroy", { id: row.id })
+        .then((response) => {
+          this.loading = false;
+          if (response.data.message == 'sensor_removed') {
 
-          let indexToDelete = this.tableData.findIndex(
-            tableRow => tableRow.id === row.id
-          );
-          if (indexToDelete >= 0) {
-            this.tableData.splice(indexToDelete, 1);
+            let indexToDelete = this.tableData.findIndex(
+              tableRow => tableRow.id === row.id
+            );
+            if (indexToDelete >= 0) {
+              this.tableData.splice(indexToDelete, 1);
+            }
+
+            this.$notify({
+              title: 'Success',
+              message: 'Sensor type has been removed',
+              type: 'success',
+              verticalAlign: 'top',
+              horizontalAlign: 'right'
+            });
           }
-
-          this.$notify({
-            title: 'Success',
-            message: 'Sensor type has been removed',
-            type: 'success',
-            verticalAlign: 'top',
-            horizontalAlign: 'right'
-          });
-        }
-      }).catch(err => {
-        this.loading = false;
-        if(err.response.data.errors){
-          this.$refs.form.setErrors(err.response.data.errors);
-        }
-      });
+        }).catch(err => {
+          this.loading = false;
+          if (err.response.data.errors) {
+            this.$refs.form.setErrors(err.response.data.errors);
+          }
+        });
     },
 
-    sortingChanged(e)
-    {
-      this.sortBy  = e.sortBy;
+    sortingChanged(e) {
+      this.sortBy = e.sortBy;
       this.sortDir = e.sortDesc;
       this.loadSensorTypes();
     }
   },
 
   // filter change reset page
-  watch: { filterText: function(n,o) { this.currentPage = n != o ? 1 : this.currentPage } },
+  watch: { filterText: function (n, o) { this.currentPage = n != o ? 1 : this.currentPage } },
 
-  mounted()
-  {
+  mounted() {
     this.loadSensorTypes();
     this.loadCompanies();
     this.loadGroups();
@@ -1152,7 +1139,11 @@ export default {
 };
 </script>
 <style>
-  .no-border-card .card-footer{
-    border-top: 0;
-  }
+.no-border-card .card-footer {
+  border-top: 0;
+}
+
+.modal-title {
+    font-size: 2.0625rem;
+}
 </style>
